@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隐私政策 - 有数规划</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --primary-color-dark: #3367d6;
+            --text-primary-color: #2c3e50;
+            --text-secondary-color: #666;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --hover-bg: rgba(66, 133, 244, 0.05);
+            --gradient-bg: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            --card-border: 1px solid #e0e0e0;
+        }
+
+        body.dark-theme {
+            --text-primary-color: #f7fafc;
+            --text-secondary-color: #a0aec0;
+            --bg-color: #0f1419;
+            --card-bg: #1a202c;
+            --border-color: #4a5568;
+            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --hover-bg: rgba(255, 255, 255, 0.05);
+            --gradient-bg: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            --card-border: 1px solid #4a5568;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary-color);
+            background: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            background-image: var(--gradient-bg);
+        }
+
+        .privacy-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+            border: var(--card-border);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .privacy-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4285f4, #34a853, #ea4335, #fbbc04);
+            border-radius: 20px 20px 0 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(66, 133, 244, 0.2);
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            border-radius: 2px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            font-weight: 600;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(180deg, #4285f4, #34a853);
+            border-radius: 3px;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--text-secondary-color);
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        ul {
+            margin-bottom: 20px;
+            padding-left: 25px;
+            color: var(--text-secondary-color);
+        }
+
+        li {
+            margin-bottom: 12px;
+            position: relative;
+            line-height: 1.7;
+        }
+
+        li::before {
+            content: '•';
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            left: -20px;
+            font-size: 1.2em;
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 600;
+            background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(66, 133, 244, 0.1) 50%, transparent 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.95em;
+            color: var(--text-secondary-color);
+            margin-top: 40px;
+            padding: 25px 0;
+            border-top: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .last-updated::before {
+            content: '🕒';
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            margin-top: 30px;
+            font-weight: 600;
+            font-size: 1.05em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn i {
+            font-size: 1.1em;
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn:hover i {
+            transform: translateX(-3px);
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .back-btn:hover::before {
+            left: 100%;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4);
+        }
+
+        .back-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* 深色模式特殊样式 */
+        body.dark-theme .privacy-container {
+            background: linear-gradient(145deg, #1a202c 0%, #2d3748 100%);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                0 8px 25px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        body.dark-theme h1 {
+            text-shadow: 0 2px 15px rgba(99, 179, 237, 0.4);
+        }
+
+        body.dark-theme h1::after {
+            background: linear-gradient(90deg, #63b3ed, #48bb78);
+            box-shadow: 0 0 20px rgba(99, 179, 237, 0.3);
+        }
+
+        body.dark-theme h2::before {
+            background: linear-gradient(180deg, #63b3ed, #48bb78);
+            box-shadow: 0 0 15px rgba(99, 179, 237, 0.2);
+        }
+
+        body.dark-theme .highlight {
+            background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(99, 179, 237, 0.15) 50%, transparent 100%);
+        }
+
+        body.dark-theme .back-btn {
+            background: linear-gradient(135deg, #63b3ed 0%, #4299e1 100%);
+            box-shadow: 0 4px 15px rgba(99, 179, 237, 0.4);
+        }
+
+        body.dark-theme .back-btn:hover {
+            box-shadow: 0 8px 25px rgba(99, 179, 237, 0.6);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .privacy-container {
+                padding: 30px 25px;
+                border-radius: 16px;
+            }
+            
+            h1 {
+                font-size: 2em;
+                margin-bottom: 30px;
+            }
+            
+            h2 {
+                font-size: 1.3em;
+                margin-top: 30px;
+            }
+            
+            p, li {
+                font-size: 1em;
+            }
+            
+            .back-btn {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .privacy-container {
+                padding: 25px 20px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 25px;
+            }
+            
+            h2 {
+                font-size: 1.2em;
+                margin-top: 25px;
+            }
+            
+            .back-btn {
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .privacy-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color-dark);
+        }
+
+        body.dark-theme ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        body.dark-theme ::-webkit-scrollbar-thumb {
+            background: #63b3ed;
+        }
+
+        body.dark-theme ::-webkit-scrollbar-thumb:hover {
+            background: #4299e1;
+        }
+
+        /* 复制链接样式 */
+        .copy-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 2px 6px;
+            border-radius: 4px;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .copy-link:hover {
+            background: var(--hover-bg);
+            transform: translateY(-1px);
+        }
+
+        .copy-link.copy-success {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            font-weight: 600;
+        }
+
+        .copy-link.copy-error {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            font-weight: 600;
+        }
+
+        /* 深色模式下的复制链接样式 */
+        body.dark-theme .copy-link {
+            color: #63b3ed;
+        }
+
+        body.dark-theme .copy-link:hover {
+            background: rgba(99, 179, 237, 0.15);
+        }
+
+        body.dark-theme .copy-link.copy-success {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.15);
+        }
+
+        body.dark-theme .copy-link.copy-error {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="privacy-container">
+        <h1>隐私政策</h1>
+        
+        <p>欢迎使用"有数规划"应用。本软件由<strong>刘米洋</strong>开发，我们非常重视您的隐私保护和个人信息安全。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。</p>
+
+        <h2>1. 信息收集</h2>
+        <p>我们承诺不会收集您的任何个人信息到服务器：</p>
+        <ul>
+            <li><span class="highlight">零数据收集</span>：本应用完全在您的设备本地运行，不会向任何服务器上传您的个人数据</li>
+            <li><span class="highlight">本地处理</span>：所有数据（包括用户名、专注时间记录、任务完成情况等）均保存在您的设备本地</li>
+            <li><span class="highlight">无网络传输</span>：除非您主动选择导出数据，否则不会有任何数据通过网络传输</li>
+        </ul>
+
+        <h2>2. 信息使用</h2>
+        <p>所有信息仅在您的设备本地使用：</p>
+        <ul>
+            <li>用于提供应用功能和服务</li>
+            <li>用于个性化您的使用体验</li>
+            <li>用于统计分析以改进应用性能（完全在本地进行）</li>
+        </ul>
+
+        <h2>3. 信息存储</h2>
+        <p>我们采用以下方式存储您的数据：</p>
+        <ul>
+            <li><span class="highlight">本地存储</span>：所有数据均存储在您的设备本地浏览器中</li>
+            <li><span class="highlight">用户控制</span>：您可以随时通过浏览器设置清除数据</li>
+            <li><span class="highlight">导出备份</span>：您可以随时导出您的数据进行备份</li>
+        </ul>
+
+        <h2>4. 数据安全</h2>
+        <p>我们采取以下措施保护您的数据安全：</p>
+        <ul>
+            <li>所有数据均保存在您的设备本地，不经过网络传输</li>
+            <li>您可以通过浏览器设置随时查看和管理您的数据</li>
+            <li>您可以随时导出或删除您的所有数据</li>
+        </ul>
+
+        <h2>5. 个性化与推送服务</h2>
+        <p>当前版本应用不包含任何个性化推荐或定向推送功能：</p>
+        <ul>
+            <li><span class="highlight">无个性化推荐</span>：应用不会根据您的使用习惯提供个性化内容推荐</li>
+            <li><span class="highlight">无定向推送</span>：应用不会向您推送基于个人数据的定向广告或内容</li>
+            <li><span class="highlight">无行为分析</span>：应用不会分析您的使用行为用于营销目的</li>
+        </ul>
+
+        <h2>6. 您的权利</h2>
+        <p>作为用户，您拥有以下权利：</p>
+        <ul>
+            <li>访问您的个人信息（通过应用界面查看）</li>
+            <li>更正不准确的信息（直接在应用中修改）</li>
+            <li>删除您的所有数据（通过浏览器设置清除）</li>
+            <li>导出您的数据（通过应用导出功能）</li>
+            <li><span class="highlight">账号注销</span>：您可以通过设置/数据管理/清除（并在窗口内确认清除所有数据同时会注销账号）</li>
+        </ul>
+        
+        <h2>7. 使用规范</h2>
+        <p>为确保本软件的正常运行和用户体验，用户在使用本软件时应遵守以下规范：</p>
+        <ul>
+            <li><span class="highlight">合法合规使用</span>：用户应遵守国家法律法规，严禁利用本软件从事任何违法违规活动，包括但不限于传播违法信息、侵犯他人合法权益、破坏网络安全等行为</li>
+            <li><span class="highlight">正当使用范围</span>：本软件仅供个人时间管理和生活规划使用，不得用于商业用途或其他超出软件设计目的的用途</li>
+            <li><span class="highlight">数据使用规范</span>：用户应妥善保管自己的数据，不得利用本软件存储、传播任何违法、有害、侵犯他人隐私或违反社会公序良俗的内容</li>
+            <li><span class="highlight">禁止恶意行为</span>：用户不得对本软件进行逆向工程、反编译、篡改代码等行为，不得利用本软件从事任何损害软件正常运行或影响其他用户正常使用的行为</li>
+        </ul>
+
+        <h2>8. 未成年人保护</h2>
+        <p>我们非常重视对未成年人个人信息的保护。如果您是未满18周岁的未成年人，请在监护人的指导下使用我们的服务。</p>
+
+        <h2>9. 政策更新</h2>
+        <p>我们可能会不时更新本隐私政策。更新后的政策将在本页面发布，并在重大变更时通过应用内通知提醒您。</p>
+
+        <h2>10. 联系我们</h2>
+        <p>如果您对本隐私政策有任何疑问或建议，请通过以下方式联系我们：</p>
+        <ul>
+            <li>应用内反馈功能</li>
+            <li>发送邮件至：<a href="#" class="copy-link" data-url="youshurobin2025@163.com" onclick="copyToClipboard(event)">youshurobin2025@163.com</a></li>
+            <li>QQ群反馈：<a href="#" class="copy-link" data-url="737075490" onclick="copyToClipboard(event)">737075490</a></li>
+        </ul>
+
+        <h2>11. 第三方SDK服务说明</h2>
+        <p>本应用郑重声明：</p>
+        <ul>
+            <li><span class="highlight">无第三方SDK集成</span>：本应用未集成任何第三方SDK（软件开发工具包），包括但不限于广告SDK、统计分析SDK、支付SDK、社交分享SDK等</li>
+            <li><span class="highlight">无数据收集行为</span>：本应用不会收集、传输、共享或出售您的任何个人信息给任何第三方机构或个人</li>
+            <li><span class="highlight">纯本地应用</span>：本应用为纯前端Web应用程序，所有功能均在用户设备本地实现，无需联网即可正常使用全部功能</li>
+            <li><span class="highlight">无设备信息收集</span>：本应用不会收集设备序列号、IMEI、MAC地址、设备硬件信息等任何设备识别信息</li>
+        </ul>
+        <p>关于移动智能终端补充设备标识体系统一调用SDK的说明：</p>
+        <ul>
+            <li>本应用不会在您同意隐私政策前初始化任何SDK</li>
+            <li>本应用不会通过任何SDK收集您的OAID、IMEI、设备MAC地址、软件安装列表、通讯录、短信等个人信息</li>
+            <li>本应用不会在后台或您同意隐私政策前调用系统API接口获取用户个人信息、设备信息</li>
+        </ul>
+
+        <h2>12. 网络功能说明</h2>
+        <p>本应用部分功能需要连接网络以获取外部数据，具体说明如下：</p>
+        <ul>
+            <li><span class="highlight">天气查询功能</span>：应用会在页面加载时自动向uapis.cn发送请求以获取天气数据，传输内容仅包括您设置的城市名称。应用会每5分钟自动刷新一次天气数据，您也可以手动刷新</li>
+            <li><span class="highlight">星座运势功能</span>：当您使用星座运势功能时，应用会向xxapi.cn发送请求以获取星座运势数据，传输内容仅包括您选择的星座类型</li>
+            <li><span class="highlight">今日热搜功能</span>：应用会在页面加载时自动向uapis.cn发送请求以获取当前热门话题数据，此功能不传输任何个人信息</li>
+            <li><span class="highlight">历史上的今天功能</span>：应用会在页面加载时自动向uapis.cn发送请求以获取历史事件数据，此功能不传输任何个人信息</li>
+            <li><span class="highlight">电话号码归属地查询功能</span>：当您使用电话号码归属地查询功能时，应用会向uapis.cn发送请求以获取手机号码归属地信息，传输内容仅包括您输入的手机号码</li>
+        </ul>
+        <p>以上网络功能中，星座运势和电话号码归属地查询为用户主动触发，天气查询、今日热搜和历史上的今天功能会在页面加载时自动获取数据。应用不会在后台定期自动发送网络请求（天气功能的自动刷新仅在页面打开时进行）。</p>
+        <p>所有网络请求均通过HTTPS加密传输，确保数据安全。获取的数据仅用于功能展示，会在浏览器中进行短暂缓存以提升性能，但不会存储到服务器或用于其他用途。</p>
+        <p>应用中使用的API密钥均经过安全处理，不会向用户暴露或收集任何用户信息。</p>
+        <p>从第三方获取的数据可能存在延迟、不准确或不完整的情况，仅供用户参考，不构成任何投资或决策建议。用户应以官方发布数据为准。</p>
+
+        <h2>13. 用户权限说明</h2>
+        <p>为了提供完整的功能体验，本应用可能会请求以下浏览器权限：</p>
+        <ul>
+            <li><span class="highlight">剪贴板权限</span>：当您使用复制功能时，应用会请求访问剪贴板权限，用于将文本内容复制到剪贴板。此权限仅在您主动触发复制操作时使用，不会在后台读取或监控您的剪贴板内容</li>
+            <li><span class="highlight">通知权限</span>：当您启用专注模式或倒计时提醒功能时，应用会请求发送通知权限，用于在任务完成时向您发送提醒。此权限仅用于发送功能相关的通知，不会发送广告或其他无关信息</li>
+            <li><span class="highlight">存储权限</span>：应用会使用浏览器的本地存储功能（localStorage和sessionStorage）来保存您的设置、任务数据等信息，以便在您下次访问时恢复您的使用状态。这些数据完全保存在您的设备本地，不会上传到服务器</li>
+        </ul>
+        <p>所有权限请求都需要您明确授权，您可以随时在浏览器设置中管理这些权限。应用不会在您未授权的情况下访问任何敏感权限。</p>
+        <p>此外，当您使用分享功能时，应用会调用系统的分享接口，此功能会在您主动触发时将您选择分享的内容发送到您指定的接收方，不会保存或上传您的分享内容。</p>
+
+        <h2>14. OAID说明</h2>
+        <p>本应用郑重声明：</p>
+        <ul>
+            <li><span class="highlight">不收集OAID</span>：本应用不会收集您的OAID（Open Anonymous Device Identifier，开放匿名设备标识符）或其他任何设备唯一标识符</li>
+            <li><span class="highlight">无设备指纹采集</span>：本应用不会采集设备指纹信息，包括但不限于设备型号、操作系统版本、屏幕分辨率、浏览器类型等</li>
+            <li><span class="highlight">无广告标识符使用</span>：本应用为无广告纯工具应用，不包含任何广告SDK，因此不会使用OAID、AAID（Android广告标识符）等广告相关标识符</li>
+            <li><span class="highlight">符合隐私规范</span>：本应用严格遵守相关法律法规及应用商店的隐私政策要求，致力于保护用户的个人信息和隐私安全</li>
+        </ul>
+
+        <h2>15. 用户数据与分享内容责任声明</h2>
+        <p>用户在使用本软件过程中产生的所有数据及通过本软件分享的内容，其责任完全由用户本人承担。开发者不对用户生成的任何数据或分享内容承担责任，包括但不限于数据的准确性、完整性、合法性、安全性等。用户应确保其使用本软件生成的数据和分享的内容符合国家法律法规，并承担由此产生的一切法律责任。</p>
+
+        <div class="last-updated">
+            最后更新时间：2025年10月13日
+        </div>
+    </div>
+
+    <script>
+        // 自动深色模式切换函数
+        function updateTheme() {
+            const now = new Date();
+            const hour = now.getHours();
+            
+            // 晚上6点到早上6点使用深色模式
+            const isDarkTime = hour >= 18 || hour < 6;
+            
+            if (isDarkTime) {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        }
+
+        // 页面加载时立即检查主题
+        updateTheme();
+        
+        // 每分钟检查一次时间，实现自动主题切换
+        setInterval(updateTheme, 60000);
+        
+        // 检测系统主题偏好（作为备用方案）
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // 如果系统偏好深色模式，但当前时间不在深色时间段，仍然使用浅色模式
+            const now = new Date();
+            const hour = now.getHours();
+            const isDarkTime = hour >= 18 || hour < 6;
+            
+            if (isDarkTime) {
+                document.body.classList.add('dark-theme');
+            }
+        }
+
+        // 监听系统主题变化（作为备用方案）
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            const now = new Date();
+            const hour = now.getHours();
+            const isDarkTime = hour >= 18 || hour < 6;
+            
+            if (e.matches && isDarkTime) {
+                document.body.classList.add('dark-theme');
+            } else if (!isDarkTime) {
+                document.body.classList.remove('dark-theme');
+            }
+        });
+
+        // 复制到粘贴板功能
+        function copyToClipboard(event) {
+            event.preventDefault();
+            const link = event.target;
+            const url = link.getAttribute('data-url');
+            
+            // 尝试使用现代Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showCopySuccess(link);
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                    fallbackCopy(url, link);
+                });
+            } else {
+                // 降级方案
+                fallbackCopy(url, link);
+            }
+        }
+
+        // 降级复制方案
+        function fallbackCopy(text, link) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopySuccess(link);
+            } catch (err) {
+                console.error('降级复制失败:', err);
+                showCopyError(link);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 显示复制成功提示
+        function showCopySuccess(link) {
+            const originalText = link.textContent;
+            const originalClass = link.className;
+            
+            // 添加成功样式
+            link.textContent = '✓ 已复制';
+            link.className = 'copy-link copy-success';
+            
+            // 3秒后恢复原样
+            setTimeout(() => {
+                link.textContent = originalText;
+                link.className = originalClass;
+            }, 3000);
+        }
+
+        // 显示复制失败提示
+        function showCopyError(link) {
+            const originalText = link.textContent;
+            const originalClass = link.className;
+            
+            // 添加错误样式
+            link.textContent = '✗ 复制失败';
+            link.className = 'copy-link copy-error';
+            
+            // 3秒后恢复原样
+            setTimeout(() => {
+                link.textContent = originalText;
+                link.className = originalClass;
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
