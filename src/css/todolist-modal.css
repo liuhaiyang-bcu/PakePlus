@@ -1,0 +1,518 @@
+/* ===== 清单模态框样式优化 ===== */
+
+/* 清单导入模态框样式 */
+#todolist-import-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1100;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#todolist-import-modal.show {
+    display: flex;
+}
+
+#todolist-import-modal .modal-content {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid #dee2e6;
+}
+
+#todolist-import-modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+#todolist-import-modal .modal-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 24px 24px 20px;
+    border-radius: 20px 20px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin: -1px -1px 0 -1px;
+}
+
+#todolist-import-modal .modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+#todolist-import-modal .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 11;
+}
+
+#todolist-import-modal .close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+#todolist-import-modal .modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+#todolist-import-modal .import-format-hint {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+}
+
+#todolist-import-modal .import-format-hint h4 {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#todolist-import-modal .import-format-hint pre {
+    margin: 0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #6c757d;
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    overflow-x: auto;
+}
+
+#todolist-import-modal .form-group {
+    margin-bottom: 20px;
+}
+
+#todolist-import-modal .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+#todolist-import-modal .form-group textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    color: #2c3e50;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+#todolist-import-modal .form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    outline: none;
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+#todolist-import-modal .modal-actions {
+    padding: 20px 24px 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid #dee2e6;
+    margin: 0 -1px -1px -1px;
+    background: #f8f9fa;
+    border-radius: 0 0 20px 20px;
+}
+
+#todolist-import-modal .primary-btn,
+#todolist-import-modal .secondary-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+#todolist-import-modal .primary-btn {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+#todolist-import-modal .primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+#todolist-import-modal .secondary-btn {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 2px solid #dee2e6;
+}
+
+#todolist-import-modal .secondary-btn:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    transform: translateY(-2px);
+}
+
+/* ===== 清单编辑模态框样式优化 ===== */
+
+/* 清单编辑模态框样式 */
+#todolist-edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1100;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#todolist-edit-modal.show {
+    display: flex;
+}
+
+#todolist-edit-modal .modal-content {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid #dee2e6;
+}
+
+#todolist-edit-modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+#todolist-edit-modal .modal-header {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    padding: 24px 24px 20px;
+    border-radius: 20px 20px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin: -1px -1px 0 -1px;
+}
+
+#todolist-edit-modal .modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+#todolist-edit-modal .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 11;
+}
+
+#todolist-edit-modal .close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+#todolist-edit-modal .modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+#todolist-edit-modal .import-format-hint {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+}
+
+#todolist-edit-modal .import-format-hint h4 {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#todolist-edit-modal .import-format-hint pre {
+    margin: 0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #6c757d;
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    overflow-x: auto;
+}
+
+#todolist-edit-modal .form-group {
+    margin-bottom: 20px;
+}
+
+#todolist-edit-modal .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+#todolist-edit-modal .form-group textarea {
+    width: 100%;
+    min-height: 300px;
+    padding: 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    color: #2c3e50;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+#todolist-edit-modal .form-group textarea:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+    outline: none;
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+#todolist-edit-modal .modal-actions {
+    padding: 20px 24px 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid #dee2e6;
+    margin: 0 -1px -1px -1px;
+    background: #f8f9fa;
+    border-radius: 0 0 20px 20px;
+}
+
+#todolist-edit-modal .primary-btn,
+#todolist-edit-modal .secondary-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+#todolist-edit-modal .primary-btn {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+#todolist-edit-modal .primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+#todolist-edit-modal .secondary-btn {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 2px solid #dee2e6;
+}
+
+#todolist-edit-modal .secondary-btn:hover {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+    transform: translateY(-2px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    #todolist-import-modal,
+    #todolist-edit-modal {
+        padding: 10px;
+    }
+    
+    #todolist-import-modal .modal-content,
+    #todolist-edit-modal .modal-content {
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    #todolist-import-modal .modal-header,
+    #todolist-edit-modal .modal-header {
+        padding: 20px 20px 16px;
+    }
+    
+    #todolist-import-modal .modal-body,
+    #todolist-edit-modal .modal-body {
+        padding: 20px;
+    }
+    
+    #todolist-import-modal .modal-actions,
+    #todolist-edit-modal .modal-actions {
+        padding: 16px 20px 20px;
+        flex-direction: column;
+    }
+    
+    #todolist-import-modal .primary-btn,
+    #todolist-import-modal .secondary-btn,
+    #todolist-edit-modal .primary-btn,
+    #todolist-edit-modal .secondary-btn {
+        width: 100%;
+    }
+    
+    #todolist-import-modal .import-format-hint pre,
+    #todolist-edit-modal .import-format-hint pre {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+/* 深色模式适配 */
+body.dark-theme #todolist-import-modal .modal-content,
+body.dark-theme #todolist-edit-modal .modal-content {
+    background: #1a1a1a;
+    border-color: #404040;
+}
+
+body.dark-theme #todolist-import-modal .import-format-hint,
+body.dark-theme #todolist-edit-modal .import-format-hint {
+    background: #2d2d2d;
+    border-color: #404040;
+}
+
+body.dark-theme #todolist-import-modal .import-format-hint h4,
+body.dark-theme #todolist-edit-modal .import-format-hint h4 {
+    color: #e0e0e0;
+}
+
+body.dark-theme #todolist-import-modal .import-format-hint pre,
+body.dark-theme #todolist-edit-modal .import-format-hint pre {
+    background: #1a1a1a;
+    border-color: #404040;
+    color: #a0a0a0;
+}
+
+body.dark-theme #todolist-import-modal .form-group label,
+body.dark-theme #todolist-edit-modal .form-group label {
+    color: #e0e0e0;
+}
+
+body.dark-theme #todolist-import-modal .form-group textarea,
+body.dark-theme #todolist-edit-modal .form-group textarea {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #404040;
+}
+
+body.dark-theme #todolist-import-modal .modal-actions,
+body.dark-theme #todolist-edit-modal .modal-actions {
+    background: #2d2d2d;
+    border-color: #404040;
+}
+
+body.dark-theme #todolist-import-modal .secondary-btn,
+body.dark-theme #todolist-edit-modal .secondary-btn {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #404040;
+}
+
+/* 动画效果 */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+#todolist-import-modal.show .modal-content,
+#todolist-edit-modal.show .modal-content {
+    animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
