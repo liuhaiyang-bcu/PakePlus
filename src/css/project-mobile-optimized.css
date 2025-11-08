@@ -1,0 +1,434 @@
+/* 项目视图移动端优化样式 */
+
+/* 移动端项目容器优化 */
+@media (max-width: 768px) {
+  .projects-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px;
+    margin: 0;
+  }
+
+  /* 项目卡片统一样式 */
+  .project-card {
+    background: var(--card-bg, #ffffff);
+    border-radius: 12px;
+    padding: 10px;
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* 项目头部优化 */
+  .project-header {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .project-header h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    color: var(--text-color, #333);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .project-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: 6px;
+  }
+
+  /* 项目日期信息优化 */
+  .project-dates {
+    margin-bottom: 8px;
+    font-size: 10px;
+    color: var(--text-color, #666);
+    line-height: 1.4;
+  }
+
+  .project-dates div {
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .project-dates i {
+    font-size: 9px;
+    width: 10px;
+    text-align: center;
+  }
+
+  /* 截止日期倒计时样式 */
+  .deadline-countdown {
+    font-size: 9px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+    font-weight: 500;
+  }
+
+  .deadline-countdown.urgent {
+    background: #ffebee;
+    color: #d32f2f;
+  }
+
+  .deadline-countdown.overdue {
+    background: #fce4ec;
+    color: #c2185b;
+  }
+
+  /* 项目进度条优化 */
+  .project-progress {
+    margin-bottom: 8px;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #8bc34a);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-size: 9px;
+    color: var(--text-color, #666);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* 高级进度条样式兼容 */
+  .advanced-progress-container {
+    margin: 8px 0;
+  }
+
+  .advanced-progress-bar {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  .advanced-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .advanced-progress-text {
+    font-size: 9px;
+    color: var(--text-color, #666);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* 项目统计信息优化 - 小但可读的字体 */
+  .project-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 7px;
+    color: var(--text-color, #666);
+  }
+
+  .project-stats span {
+    flex: 1;
+    text-align: center;
+    padding: 2px 3px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 3px;
+    margin: 0 1px;
+    line-height: 1.2;
+    font-size: 10px;
+  }
+
+  /* 项目按钮优化 */
+  .project-buttons {
+    display: flex;
+    gap: 4px;
+    margin-top: auto;
+  }
+
+  .project-buttons button {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 9px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-weight: 500;
+  }
+
+  .project-buttons button i {
+    font-size: 8px;
+  }
+
+  .project-buttons button:first-child {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  .project-buttons button:first-child:hover {
+    background: #bbdefb;
+  }
+
+  .project-buttons button.delete-btn {
+    background: #ffebee;
+    color: #d32f2f;
+  }
+
+  .project-buttons button.delete-btn:hover {
+    background: #ffcdd2;
+  }
+
+  /* 空项目消息优化 */
+  .empty-projects-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    background: var(--card-bg, #ffffff);
+    border-radius: 12px;
+    margin: 8px;
+  }
+
+  .empty-projects-message .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .empty-projects-message h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: var(--text-color, #333);
+  }
+
+  .empty-projects-message p {
+    font-size: 12px;
+    color: var(--text-color, #666);
+    margin-bottom: 16px;
+  }
+
+  .empty-projects-message .create-project-btn {
+    padding: 10px 20px;
+    font-size: 12px;
+    background: var(--primary-color, #4285f4);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .empty-projects-message .create-project-btn:hover {
+    background: var(--primary-color-dark, #3367d6);
+    transform: translateY(-1px);
+  }
+}
+
+/* 超小屏幕优化 (宽度小于480px) */
+@media (max-width: 480px) {
+  .projects-container {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .project-card {
+    min-height: 120px;
+    padding: 8px;
+  }
+
+  .project-header h3 {
+    font-size: 12px;
+  }
+
+  .project-dates {
+    font-size: 9px;
+  }
+
+  /* 超小屏幕下统计信息字体 */
+  .project-stats {
+    font-size: 6px;
+  }
+
+  .project-stats span {
+    font-size: 5px;
+  }
+
+  .project-buttons button {
+    padding: 5px 6px;
+    font-size: 8px;
+  }
+
+  /* 超小屏幕下高级进度条优化 */
+  .advanced-progress-container {
+    margin: 5px 0;
+  }
+
+  .advanced-progress-bar {
+    height: 5px;
+  }
+
+  .advanced-progress-header {
+    font-size: 0.75rem;
+  }
+
+  .advanced-progress-stats {
+    font-size: 0.65rem;
+  }
+
+  .advanced-progress-text {
+    font-size: 0.6rem;
+  }
+}
+
+/* 暗色主题适配 */
+@media (max-width: 768px) {
+  [data-theme="dark"] .project-card,
+  body.dark-theme .project-card {
+    background: var(--dark-card-bg, #374151);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--dark-text-color, #e5e7eb);
+  }
+
+  [data-theme="dark"] .project-header h3,
+  body.dark-theme .project-header h3 {
+    color: var(--dark-text-color, #e5e7eb);
+  }
+
+  [data-theme="dark"] .project-dates,
+  body.dark-theme .project-dates {
+    color: var(--dark-text-color-secondary, #9ca3af);
+  }
+
+  [data-theme="dark"] .progress-text,
+  body.dark-theme .progress-text {
+    color: var(--dark-text-color-secondary, #9ca3af);
+  }
+
+  [data-theme="dark"] .project-stats,
+  body.dark-theme .project-stats {
+    color: var(--dark-text-color-secondary, #9ca3af);
+  }
+
+  [data-theme="dark"] .project-stats span,
+  body.dark-theme .project-stats span {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  [data-theme="dark"] .project-buttons button:first-child,
+  body.dark-theme .project-buttons button:first-child {
+    background: rgba(66, 133, 244, 0.2);
+    color: #64b5f6;
+  }
+
+  [data-theme="dark"] .project-buttons button.delete-btn,
+  body.dark-theme .project-buttons button.delete-btn {
+    background: rgba(244, 67, 54, 0.2);
+    color: #ef5350;
+  }
+
+  [data-theme="dark"] .empty-projects-message,
+  body.dark-theme .empty-projects-message {
+    background: var(--dark-card-bg, #374151);
+    color: var(--dark-text-color, #e5e7eb);
+  }
+
+  [data-theme="dark"] .empty-projects-message h3,
+  body.dark-theme .empty-projects-message h3 {
+    color: var(--dark-text-color, #e5e7eb);
+  }
+
+  [data-theme="dark"] .empty-projects-message p,
+  body.dark-theme .empty-projects-message p {
+    color: var(--dark-text-color-secondary, #9ca3af);
+  }
+}
+
+/* 确保电脑端不受影响 */
+@media (min-width: 769px) {
+  .projects-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    padding: 0.5rem;
+  }
+
+  .project-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius, 16px);
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(229, 231, 235, 0.1);
+    position: relative;
+    backdrop-filter: blur(10px);
+    min-height: auto;
+    padding: 1.75rem;
+  }
+
+  .project-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .project-header h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+  }
+
+  .project-dates {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.85;
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .project-buttons button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    border-radius: 25px;
+  }
+}
