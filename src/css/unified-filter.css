@@ -1,0 +1,823 @@
+/* 统一筛选卡片样式 */
+
+/* 统一筛选容器 */
+.unified-filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 2px 0;
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    border: 1px solid rgba(66, 133, 244, 0.15);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* 统一筛选标题 */
+.unified-filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 3px;
+}
+
+.unified-filter-title {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.unified-filter-title i {
+    color: var(--primary-color);
+    font-size: 9px;
+}
+
+.unified-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* 课程表模式和重要分级按钮 */
+.timetable-btn,
+.priority-matrix-btn {
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.timetable-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+.priority-matrix-btn {
+    background: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+}
+
+.timetable-btn i,
+.priority-matrix-btn i {
+    font-size: 11px;
+}
+
+.timetable-btn:hover,
+.priority-matrix-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.timetable-btn:hover {
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.45);
+}
+
+.priority-matrix-btn:hover {
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.45);
+}
+
+.timetable-btn:active,
+.priority-matrix-btn:active {
+    transform: translateY(0);
+}
+
+.timetable-btn:active {
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.priority-matrix-btn:active {
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+}
+
+/* 深色主题适配 */
+body.dark-theme .timetable-btn {
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+}
+body.dark-theme .priority-matrix-btn {
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.45);
+}
+
+/* 小屏优化 */
+@media (max-width: 480px) {
+    .timetable-btn,
+    .priority-matrix-btn {
+        padding: 3px 8px;
+        font-size: 9px;
+        border-radius: 12px;
+        gap: 4px;
+    }
+    .timetable-btn i,
+    .priority-matrix-btn i { font-size: 10px; }
+}
+
+/* 清除所有筛选按钮 */
+.clear-all-filters-btn {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 2px 4px;
+    font-size: 7px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    box-shadow: 0 1px 2px rgba(255, 107, 107, 0.2);
+}
+
+.clear-all-filters-btn:hover {
+    background: linear-gradient(135deg, #ee5a52 0%, #ff6b6b 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(255, 107, 107, 0.4);
+}
+
+/* 快速清除动画 */
+.clear-all-filters-btn.clearing {
+    transform: scale(0.95);
+    opacity: 0.8;
+    transition: all 0.1s ease;
+}
+
+.clear-all-filters-btn.clearing:hover {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+/* 清除操作时的视觉反馈 */
+.unified-filter-container.clearing {
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+/* 清除完成后的恢复动画 */
+.unified-filter-container.clearing-complete {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* 优化清除按钮的点击反馈 */
+.clear-all-filters-btn:active {
+    transform: scale(0.9);
+    transition: transform 0.1s ease;
+}
+
+/* 深色模式下的清除按钮优化 */
+body.dark-theme .clear-all-filters-btn.clearing {
+    background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+    box-shadow: 0 2px 4px rgba(255, 82, 82, 0.4);
+}
+
+body.dark-theme .clear-all-filters-btn.clearing:hover {
+    background: linear-gradient(135deg, #d32f2f 0%, #ff5252 100%);
+    box-shadow: 0 3px 6px rgba(255, 82, 82, 0.5);
+}
+
+/* 筛选选项卡 */
+.filter-tabs {
+    display: flex;
+    gap: 1px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(66, 133, 244, 0.1);
+    padding-bottom: 3px;
+}
+
+.filter-tab {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    position: relative;
+}
+
+.filter-tab:hover {
+    background: rgba(66, 133, 244, 0.1);
+    color: var(--primary-color);
+}
+
+.filter-tab.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(66, 133, 244, 0.3);
+}
+
+.filter-tab i {
+    font-size: 10px;
+}
+
+.tab-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: inherit;
+    border-radius: 4px;
+    padding: 1px 3px;
+    font-size: 8px;
+    font-weight: 600;
+    margin-left: 2px;
+}
+
+/* 筛选面板 */
+.filter-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.filter-panel.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 统一筛选内容 */
+.unified-filter-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    max-height: 500px;
+}
+
+.unified-filter-content.collapsed {
+    max-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* 继承原有筛选样式 */
+.unified-filter-container .tag-filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+}
+
+.unified-filter-container .tag-filter-btn {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: var(--text-color);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 2px 5px;
+    font-size: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    user-select: none;
+}
+
+.unified-filter-container .tag-filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.unified-filter-container .tag-filter-btn.selected {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+.unified-filter-container .project-select {
+    width: 100%;
+    padding: 2px 5px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 8px;
+    background: #fff;
+    color: #495057;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.unified-filter-container .project-select:hover {
+    border-color: var(--primary-color);
+}
+
+.unified-filter-container .project-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.unified-filter-container .date-range-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.unified-filter-container .date-input-group {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.unified-filter-container .date-input-group label {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.unified-filter-container .date-input {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 8px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    min-width: 80px;
+}
+
+.unified-filter-container .date-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+    transform: translateY(-1px);
+}
+
+.unified-filter-container .quick-date-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.unified-filter-container .quick-date-btn {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: var(--text-color);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 2px 5px;
+    font-size: 7px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    user-select: none;
+    white-space: nowrap;
+}
+
+.unified-filter-container .quick-date-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.unified-filter-container .quick-date-btn.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+.unified-filter-container .filter-status {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 7px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    padding: 1px 3px;
+    background: rgba(66, 133, 244, 0.1);
+    border-radius: 3px;
+    border-left: 2px solid var(--primary-color);
+}
+
+.unified-filter-container .filter-status.active {
+    background: rgba(52, 168, 83, 0.1);
+    border-left-color: var(--success-color);
+    color: var(--success-color);
+}
+
+/* 暗色主题适配 */
+body.dark-theme .unified-filter-container {
+    background: rgba(45, 45, 45, 0.9);
+    border-color: rgba(66, 133, 244, 0.2);
+}
+
+body.dark-theme .unified-filter-title {
+    color: var(--text-color-dark);
+}
+
+body.dark-theme .filter-tab {
+    color: var(--text-secondary-dark);
+}
+
+body.dark-theme .filter-tab:hover {
+    background: rgba(66, 133, 244, 0.2);
+    color: var(--primary-color);
+}
+
+body.dark-theme .filter-tab.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+body.dark-theme .tag-filter-btn {
+    background: linear-gradient(135deg, #3c3c3c 0%, #2d2d2d 100%);
+    color: var(--text-color-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .tag-filter-btn:hover {
+    background: linear-gradient(135deg, #4a4a4a 0%, #3c3c3c 100%);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+body.dark-theme .tag-filter-btn.selected {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+    color: white;
+}
+
+body.dark-theme .project-select {
+    background: linear-gradient(135deg, #3c3c3c 0%, #2d2d2d 100%);
+    border-color: #555;
+    color: var(--text-color-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .project-select:hover {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #4a4a4a 0%, #3c3c3c 100%);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+}
+
+body.dark-theme .project-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3);
+    background: linear-gradient(135deg, #4a4a4a 0%, #3c3c3c 100%);
+}
+
+/* 深色模式下的下拉选项样式 */
+body.dark-theme .project-select option {
+    background: #2d2d2d;
+    color: var(--text-color-dark);
+    border: none;
+}
+
+body.dark-theme .project-select option:hover {
+    background: #3c3c3c;
+}
+
+body.dark-theme .project-select option:checked {
+    background: var(--primary-color);
+    color: white;
+}
+
+body.dark-theme .date-input {
+    background: linear-gradient(135deg, #3c3c3c 0%, #2d2d2d 100%);
+    color: var(--text-color-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .quick-date-btn {
+    background: linear-gradient(135deg, #3c3c3c 0%, #2d2d2d 100%);
+    color: var(--text-color-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .quick-date-btn:hover {
+    background: linear-gradient(135deg, #4a4a4a 0%, #3c3c3c 100%);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+body.dark-theme .filter-status {
+    background: rgba(66, 133, 244, 0.15);
+    color: var(--text-secondary-dark);
+}
+
+body.dark-theme .filter-status.active {
+    background: rgba(52, 168, 83, 0.15);
+    color: var(--success-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .unified-filter-container {
+        padding: 3px 4px; /* 更小内边距 */
+        gap: 1px; /* 更小间距 */
+        margin: 1px 0;
+    }
+    
+    .unified-filter-header {
+        margin-bottom: 1px; /* 更小标题下间距 */
+    }
+    
+    .unified-filter-title {
+        font-size: 8px;
+    }
+    
+    .unified-filter-title i {
+        font-size: 8px;
+    }
+    
+    .filter-tabs {
+        gap: 1px;
+        margin-bottom: 2px; /* 更小间距 */
+        padding-bottom: 2px; /* 更小内边距 */
+    }
+    
+    .filter-tab {
+        padding: 1px 3px; /* 更紧凑 */
+        font-size: 7px; /* 更小字号 */
+    }
+    
+    .filter-tab i {
+        font-size: 7px; /* 同步缩小图标 */
+    }
+    
+    .tab-count {
+        font-size: 5px;
+        padding: 1px 2px;
+    }
+    
+    .clear-all-filters-btn {
+        padding: 1px 3px; /* 更小按钮 */
+        font-size: 6px;
+    }
+    
+    .timetable-btn,
+    .priority-matrix-btn {
+        padding: 1px 4px;
+        font-size: 6px;
+        border-radius: 6px;
+    }
+    
+    .unified-filter-container .tag-filter-btn {
+        padding: 1px 3px;
+        font-size: 6px;
+        border-radius: 5px;
+    }
+    
+    .unified-filter-container .project-select {
+        padding: 1px 3px;
+        font-size: 6px;
+    }
+    
+    .unified-filter-container .date-input {
+        padding: 1px 3px;
+        font-size: 6px;
+        min-width: 60px;
+    }
+    
+    .unified-filter-container .quick-date-btn {
+        padding: 1px 3px;
+        font-size: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .unified-filter-container {
+        padding: 2px 3px; /* 进一步缩小 */
+        gap: 1px;
+        margin: 1px 0;
+    }
+    
+    .unified-filter-header {
+        margin-bottom: 1px;
+    }
+    
+    .unified-filter-title {
+        font-size: 7px;
+    }
+    
+    .unified-filter-title i {
+        font-size: 7px;
+    }
+    
+    .filter-tabs {
+        flex-wrap: wrap;
+        gap: 1px; /* 更紧凑 */
+        margin-bottom: 1px;
+        padding-bottom: 1px;
+    }
+    
+    .filter-tab {
+        padding: 1px 2px; /* 更紧凑 */
+        font-size: 6px;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .filter-tab i {
+        font-size: 6px;
+    }
+    
+    .tab-count {
+        font-size: 4px;
+        padding: 0px 1px;
+    }
+    
+    .clear-all-filters-btn {
+        padding: 1px 2px;
+        font-size: 5px;
+    }
+    
+    .timetable-btn,
+    .priority-matrix-btn {
+        padding: 1px 3px;
+        font-size: 5px;
+        border-radius: 4px;
+        gap: 1px;
+    }
+    
+    .unified-filter-container .tag-filter-btn {
+        padding: 1px 2px;
+        font-size: 5px;
+        border-radius: 4px;
+    }
+    
+    .unified-filter-container .project-select {
+        padding: 1px 2px;
+        font-size: 5px;
+    }
+    
+    .unified-filter-container .date-input {
+        padding: 1px 2px;
+        font-size: 5px;
+        min-width: 50px;
+    }
+    
+    .unified-filter-container .quick-date-btn {
+        padding: 1px 2px;
+        font-size: 4px;
+    }
+    
+    .unified-filter-container .filter-status {
+        font-size: 5px;
+        padding: 1px 2px;
+        gap: 1px;
+        margin-top: 1px;
+    }
+}
+
+/* 深色模式下的项目筛选容器样式 */
+body.dark-theme .project-filter-select {
+    background: transparent;
+}
+
+body.dark-theme .project-filter-select select {
+    background: linear-gradient(135deg, #3c3c3c 0%, #2d2d2d 100%);
+    border-color: #555;
+    color: var(--text-color-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .project-filter-select select:hover {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #4a4a4a 0%, #3c3c3c 100%);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.2);
+}
+
+body.dark-theme .project-filter-select select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3);
+    background: linear-gradient(135deg, #4a4a4a 0%, #3c3c3c 100%);
+}
+
+/* 深色模式下的下拉选项样式 */
+body.dark-theme .project-select option {
+    background: #2d2d2d;
+    color: var(--text-color-dark);
+    border: none;
+}
+
+body.dark-theme .project-select option:hover {
+    background: #3c3c3c;
+}
+
+body.dark-theme .project-select option:checked {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* 深色模式下的项目筛选交互效果 */
+body.dark-theme .project-filter-select select:disabled {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+    color: #666;
+    border-color: #444;
+    cursor: not-allowed;
+}
+
+body.dark-theme .project-filter-select select:disabled:hover {
+    border-color: #444;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 深色模式下的项目筛选面板样式 */
+body.dark-theme #project-filter-panel {
+    background: transparent;
+}
+
+/* 深色模式下的项目筛选状态指示器特殊样式 */
+body.dark-theme #project-filter-status {
+    background: rgba(66, 133, 244, 0.15);
+    border-left-color: var(--primary-color);
+}
+
+body.dark-theme #project-filter-status.active {
+    background: rgba(52, 168, 83, 0.15);
+    border-left-color: var(--success-color);
+    color: var(--success-color);
+}
+
+/* 响应式设计中的深色模式适配 */
+@media (max-width: 768px) {
+    body.dark-theme .project-select {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+    
+    body.dark-theme .project-select option {
+        font-size: 9px;
+        padding: 2px 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    body.dark-theme .project-select {
+        font-size: 8px;
+        padding: 2px 4px;
+        min-width: 80px;
+    }
+    
+    body.dark-theme .project-select option {
+        font-size: 8px;
+        padding: 1px 3px;
+    }
+    
+    body.dark-theme #project-filter-status {
+        font-size: 8px;
+        padding: 1px 3px;
+    }
+}
+
+/* 深色模式切换时的过渡动画 */
+.project-select,
+.project-select option,
+#project-filter-status {
+    transition: all 0.3s ease;
+}
+
+body.dark-theme .project-select,
+body.dark-theme .project-select option,
+body.dark-theme #project-filter-status {
+    transition: all 0.3s ease;
+}
+
+/* 深色模式下的项目筛选悬停效果增强 */
+body.dark-theme .project-filter-select:hover .project-select {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.25);
+}
+
+/* 深色模式下的项目筛选焦点效果增强 */
+body.dark-theme .project-filter-select .project-select:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.4), 0 4px 12px rgba(66, 133, 244, 0.3);
+} 
