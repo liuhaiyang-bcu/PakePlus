@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务协议 - 有数规划</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --primary-color-dark: #3367d6;
+            --text-primary-color: #2c3e50;
+            --text-secondary-color: #666;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --hover-bg: rgba(66, 133, 244, 0.05);
+            --gradient-bg: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            --card-border: 1px solid #e0e0e0;
+        }
+
+        body.dark-theme {
+            --text-primary-color: #f7fafc;
+            --text-secondary-color: #a0aec0;
+            --bg-color: #0f1419;
+            --card-bg: #1a202c;
+            --border-color: #4a5568;
+            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --hover-bg: rgba(255, 255, 255, 0.05);
+            --gradient-bg: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            --card-border: 1px solid #4a5568;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary-color);
+            background: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            background-image: var(--gradient-bg);
+        }
+
+        .terms-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--box-shadow);
+            border: var(--card-border);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terms-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4285f4, #34a853, #ea4335, #fbbc04);
+            border-radius: 20px 20px 0 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(66, 133, 244, 0.2);
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #4285f4, #34a853);
+            border-radius: 2px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            font-weight: 600;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(180deg, #4285f4, #34a853);
+            border-radius: 3px;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: var(--text-secondary-color);
+            font-size: 1.05em;
+            line-height: 1.8;
+        }
+
+        ul {
+            margin-bottom: 20px;
+            padding-left: 25px;
+            color: var(--text-secondary-color);
+        }
+
+        li {
+            margin-bottom: 12px;
+            position: relative;
+            line-height: 1.7;
+        }
+
+        li::before {
+            content: '•';
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            left: -20px;
+            font-size: 1.2em;
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 600;
+            background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(66, 133, 244, 0.1) 50%, transparent 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .last-updated {
+            text-align: right;
+            font-size: 0.95em;
+            color: var(--text-secondary-color);
+            margin-top: 40px;
+            padding: 25px 0;
+            border-top: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .last-updated::before {
+            content: '🕒';
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            margin-top: 30px;
+            font-weight: 600;
+            font-size: 1.05em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn i {
+            font-size: 1.1em;
+            transition: transform 0.3s ease;
+        }
+
+        .back-btn:hover i {
+            transform: translateX(-3px);
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .back-btn:hover::before {
+            left: 100%;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4);
+        }
+
+        .back-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* 深色模式特殊样式 */
+        body.dark-theme .terms-container {
+            background: linear-gradient(145deg, #1a202c 0%, #2d3748 100%);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                0 8px 25px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        body.dark-theme h1 {
+            text-shadow: 0 2px 15px rgba(99, 179, 237, 0.4);
+        }
+
+        body.dark-theme h1::after {
+            background: linear-gradient(90deg, #63b3ed, #48bb78);
+            box-shadow: 0 0 20px rgba(99, 179, 237, 0.3);
+        }
+
+        body.dark-theme h2::before {
+            background: linear-gradient(180deg, #63b3ed, #48bb78);
+            box-shadow: 0 0 15px rgba(99, 179, 237, 0.2);
+        }
+
+        body.dark-theme .highlight {
+            background: linear-gradient(120deg, transparent 0%, transparent 50%, rgba(99, 179, 237, 0.15) 50%, transparent 100%);
+        }
+
+        body.dark-theme .back-btn {
+            background: linear-gradient(135deg, #63b3ed 0%, #4299e1 100%);
+            box-shadow: 0 4px 15px rgba(99, 179, 237, 0.4);
+        }
+
+        body.dark-theme .back-btn:hover {
+            box-shadow: 0 8px 25px rgba(99, 179, 237, 0.6);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .terms-container {
+                padding: 30px 25px;
+                border-radius: 16px;
+            }
+            
+            h1 {
+                font-size: 2em;
+                margin-bottom: 30px;
+            }
+            
+            h2 {
+                font-size: 1.3em;
+                margin-top: 30px;
+            }
+            
+            p, li {
+                font-size: 1em;
+            }
+            
+            .back-btn {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .terms-container {
+                padding: 25px 20px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 25px;
+            }
+            
+            h2 {
+                font-size: 1.2em;
+                margin-top: 25px;
+            }
+            
+            .back-btn {
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .terms-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color-dark);
+        }
+
+        body.dark-theme ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        body.dark-theme ::-webkit-scrollbar-thumb {
+            background: #63b3ed;
+        }
+
+        body.dark-theme ::-webkit-scrollbar-thumb:hover {
+            background: #4299e1;
+        }
+    </style>
+</head>
+<body>
+    <div class="terms-container">
+        <h1>服务协议</h1>
+        
+        <p>欢迎使用"有数规划"应用（以下简称"本软件"）。在您使用本软件之前，请仔细阅读以下服务协议内容。</p>
+
+        <h2>1. 软件简介</h2>
+        <p>本软件是一款个人时间管理和生活规划工具，主要功能包括：</p>
+        <ul>
+            <li>日程与任务管理</li>
+            <li>大项目规划</li>
+            <li>事件清单功能</li>
+            <li>番茄钟专注计时</li>
+            <li>人文关怀功能（作息提醒、喝水提醒等）</li>
+            <li>便捷工具（分贝仪、日期计算等）</li>
+            <li>资讯与运势查询（天气、热搜等）</li>
+        </ul>
+
+        <h2>2. 使用说明</h2>
+        <p>本软件为免费软件，您可以：</p>
+        <ul>
+            <li>在个人设备上安装和使用本软件</li>
+            <li>创建、编辑、删除您的个人数据</li>
+            <li>导出和备份您的数据</li>
+            <li>通过设置清除所有数据</li>
+        </ul>
+        
+        <h2>3. 使用规范</h2>
+        <p>为确保本软件的正常运行和用户体验，用户在使用本软件时应遵守以下规范：</p>
+        <ul>
+            <li><span class="highlight">合法合规使用</span>：用户应遵守国家法律法规，严禁利用本软件从事任何违法违规活动，包括但不限于传播违法信息、侵犯他人合法权益、破坏网络安全等行为</li>
+            <li><span class="highlight">正当使用范围</span>：本软件仅供个人时间管理和生活规划使用，不得用于商业用途或其他超出软件设计目的的用途</li>
+            <li><span class="highlight">数据使用规范</span>：用户应妥善保管自己的数据，不得利用本软件存储、传播任何违法、有害、侵犯他人隐私或违反社会公序良俗的内容</li>
+            <li><span class="highlight">禁止恶意行为</span>：用户不得对本软件进行逆向工程、反编译、篡改代码等行为，不得利用本软件从事任何损害软件正常运行或影响其他用户正常使用的行为</li>
+        </ul>
+
+        <h2>4. 数据与隐私</h2>
+        <p>我们非常重视您的隐私保护：</p>
+        <ul>
+            <li>本软件采用本地存储方式，您的所有数据均保存在您的设备本地</li>
+            <li>部分功能（如天气查询等）需要连接网络获取外部数据</li>
+            <li>我们不会收集、存储或上传您的任何个人数据</li>
+            <li>您可以通过浏览器设置随时清除所有本地数据</li>
+        </ul>
+
+        <h2>5. 注意事项</h2>
+        <p>为了您更好地使用本软件，请注意：</p>
+        <ul>
+            <li>请定期备份重要数据，避免因设备问题导致数据丢失</li>
+            <li>部分网络功能需要稳定的网络连接</li>
+            <li>软件功能可能会根据用户反馈进行优化和调整</li>
+            <li>请合理安排使用时间，避免过度依赖</li>
+        </ul>
+
+        <h2>6. 联系方式</h2>
+        <p>如您有任何问题或建议，请通过以下方式联系我们：</p>
+        <ul>
+            <li>电子邮箱：youshurobin2025@163.com</li>
+            <li>QQ群：737075490</li>
+            <li>应用内反馈功能</li>
+        </ul>
+
+        <h2>7. 用户数据与分享内容责任声明</h2>
+        <p>用户在使用本软件过程中产生的所有数据及通过本软件分享的内容，其责任完全由用户本人承担。开发者不对用户生成的任何数据或分享内容承担责任，包括但不限于数据的准确性、完整性、合法性、安全性等。用户应确保其使用本软件生成的数据和分享的内容符合国家法律法规，并承担由此产生的一切法律责任。</p>
+
+        <div class="last-updated">
+            最后更新时间：2025年10月13日
+        </div>
+
+        <a href="about.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span>返回关于页面</span>
+        </a>
+    </div>
+
+    <script>
+        // 自动深色模式切换函数
+        function updateTheme() {
+            const now = new Date();
+            const hour = now.getHours();
+            
+            // 晚上6点到早上6点使用深色模式
+            const isDarkTime = hour >= 18 || hour < 6;
+            
+            if (isDarkTime) {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        }
+
+        // 页面加载时立即检查主题
+        updateTheme();
+        
+        // 每分钟检查一次时间，实现自动主题切换
+        setInterval(updateTheme, 60000);
+        
+        // 检测系统主题偏好（作为备用方案）
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // 如果系统偏好深色模式，但当前时间不在深色时间段，仍然使用浅色模式
+            const now = new Date();
+            const hour = now.getHours();
+            const isDarkTime = hour >= 18 || hour < 6;
+            
+            if (isDarkTime) {
+                document.body.classList.add('dark-theme');
+            }
+        }
+
+        // 监听系统主题变化（作为备用方案）
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            const now = new Date();
+            const hour = now.getHours();
+            const isDarkTime = hour >= 18 || hour < 6;
+            
+            if (e.matches && isDarkTime) {
+                document.body.classList.add('dark-theme');
+            } else if (!isDarkTime) {
+                document.body.classList.remove('dark-theme');
+            }
+        });
+    </script>
+</body>
+</html>
