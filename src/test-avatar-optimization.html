@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>头像优化测试</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #4285f4;
+        }
+        .avatar-preview {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .avatar-item {
+            text-align: center;
+        }
+        .avatar-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ddd;
+            object-fit: cover;
+            margin-bottom: 8px;
+        }
+        .avatar-info {
+            font-size: 12px;
+            color: #666;
+        }
+        .upload-area {
+            border: 2px dashed #4285f4;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 16px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #3367d6;
+            background: #f8f9ff;
+        }
+        .file-input {
+            display: none;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #3367d6;
+        }
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4285f4;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ 头像自动优化测试</h1>
+        
+        <div class="test-section">
+            <h3>📊 当前头像状态</h3>
+            <div class="avatar-preview">
+                <div class="avatar-item">
+                    <img id="current-avatar" class="avatar-img" src="img/1.png" alt="当前头像">
+                    <div class="avatar-info">当前头像</div>
+                </div>
+                <div class="avatar-item">
+                    <img id="optimized-avatar" class="avatar-img" src="img/1.png" alt="优化后头像">
+                    <div class="avatar-info">优化后</div>
+                </div>
+            </div>
+            <div id="avatar-stats" class="stats-grid"></div>
+            <button class="btn btn-primary" onclick="checkCurrentAvatar()">检查当前头像</button>
+            <button class="btn btn-secondary" onclick="optimizeCurrentAvatar()">优化现有头像</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📁 头像上传测试</h3>
+            <div class="info-box">
+                <h4>测试说明</h4>
+                <p>上传头像图片，系统会自动压缩到30KB以下，尺寸调整为300x300像素，并清理旧头像数据。</p>
+            </div>
+            <div class="upload-area" onclick="document.getElementById('avatarTestInput').click()">
+                <div>📷 点击上传头像进行测试</div>
+                <div style="font-size: 12px; color: #666; margin-top: 8px;">
+                    支持 JPG、PNG 格式，最大 20MB
+                </div>
+                <input type="file" id="avatarTestInput" class="file-input" accept="image/*">
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 压缩设置测试</h3>
+            <div style="display: flex; gap: 10px; align-items: center; margin: 16px 0;">
+                <label>目标大小 (KB):</label>
+                <input type="number" id="targetSizeInput" value="30" min="5" max="200" style="width: 80px; padding: 4px;">
+                <label>最大尺寸:</label>
+                <input type="number" id="maxSizeInput" value="300" min="100" max="800" style="width: 80px; padding: 4px;">
+                <button class="btn btn-secondary" onclick="updateSettings()">更新设置</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📈 优化统计</h3>
+            <div id="optimization-stats" class="stats-grid"></div>
+            <button class="btn btn-primary" onclick="showStats()">显示统计</button>
+            <button class="btn btn-secondary" onclick="clearStats()">清除统计</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 操作日志</h3>
+            <div id="log" class="log-area"></div>
+            <button class="btn btn-secondary" onclick="clearLog()">清除日志</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🗑️ 数据清理测试</h3>
+            <button class="btn btn-secondary" onclick="cleanupTempData()">清理临时数据</button>
+            <button class="btn btn-secondary" onclick="resetAvatar()">重置头像</button>
+            <button class="btn btn-secondary" onclick="showStorageUsage()">显示存储占用</button>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="js/storage.js"></script>
+    <script src="js/avatar-optimizer.js"></script>
+
+    <script>
+        let testOptimizer;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            testOptimizer = window.avatarOptimizer;
+            log('头像优化测试工具已初始化');
+            checkCurrentAvatar();
+        });
+
+        // 日志函数
+        function log(message) {
+            const logArea = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logArea.textContent += `[${timestamp}] ${message}\n`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        // 检查当前头像
+        function checkCurrentAvatar() {
+            try {
+                const stats = testOptimizer.getOptimizationStats();
+                log('=== 当前头像状态 ===');
+                log(`有头像: ${stats.hasAvatar ? '是' : '否'}`);
+                
+                if (stats.hasAvatar) {
+                    log(`已优化: ${stats.isOptimized ? '是' : '否'}`);
+                    log(`当前大小: ${stats.currentSizeKB}KB`);
+                    log(`目标大小: ${stats.targetSizeKB}KB`);
+                    log(`需要优化: ${stats.needsOptimization ? '是' : '否'}`);
+                    
+                    // 更新头像显示
+                    const userInfo = StorageManager.getUserInfo();
+                    if (userInfo.avatar) {
+                        document.getElementById('current-avatar').src = userInfo.avatar;
+                    }
+                }
+                
+                updateAvatarStats(stats);
+                
+            } catch (error) {
+                log(`检查头像失败: ${error.message}`);
+            }
+        }
+
+        // 更新头像统计显示
+        function updateAvatarStats(stats) {
+            const container = document.getElementById('avatar-stats');
+            
+            if (!stats.hasAvatar) {
+                container.innerHTML = '<div class="stat-card"><div class="stat-value">无</div><div class="stat-label">当前头像</div></div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.currentSizeKB}</div>
+                    <div class="stat-label">当前大小 (KB)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.targetSizeKB}</div>
+                    <div class="stat-label">目标大小 (KB)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.isOptimized ? '✅' : '❌'}</div>
+                    <div class="stat-label">已优化</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.needsOptimization ? '需要' : '无需'}</div>
+                    <div class="stat-label">优化状态</div>
+                </div>
+            `;
+        }
+
+        // 优化现有头像
+        async function optimizeCurrentAvatar() {
+            try {
+                log('开始优化现有头像...');
+                
+                const result = await testOptimizer.optimizeExistingAvatar();
+                
+                if (result.optimized) {
+                    log(`✅ 优化完成: ${result.originalSizeKB}KB → ${result.newSizeKB}KB`);
+                    log(`压缩率: ${result.compressionRatio}%`);
+                    
+                    // 更新显示
+                    const userInfo = StorageManager.getUserInfo();
+                    document.getElementById('optimized-avatar').src = userInfo.avatar;
+                    
+                    checkCurrentAvatar();
+                } else {
+                    log(`无需优化: ${result.reason}`);
+                }
+                
+            } catch (error) {
+                log(`优化失败: ${error.message}`);
+            }
+        }
+
+        // 文件上传处理
+        document.getElementById('avatarTestInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            log(`开始处理上传的头像: ${file.name} (${Math.round(file.size / 1024)}KB)`);
+            
+            try {
+                // 显示原始头像
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('current-avatar').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                // 压缩头像
+                const compressedResult = await testOptimizer.compressAvatar(file);
+                
+                // 清理旧头像
+                const cleanupResult = testOptimizer.cleanupOldAvatar(compressedResult.data);
+                
+                // 更新用户信息
+                StorageManager.updateUserInfo({
+                    avatar: compressedResult.data
+                });
+                
+                // 显示压缩后的头像
+                document.getElementById('optimized-avatar').src = compressedResult.data;
+                
+                // 记录结果
+                const originalKB = Math.round(file.size / 1024);
+                const compressedKB = Math.round(compressedResult.size / 1024);
+                const savedKB = originalKB - compressedKB;
+                
+                log(`✅ 压缩完成: ${originalKB}KB → ${compressedKB}KB (节省${savedKB}KB)`);
+                log(`压缩率: ${compressedResult.compressionRatio}%`);
+                log(`尺寸: ${compressedResult.width}x${compressedResult.height}`);
+                
+                if (cleanupResult.cleaned) {
+                    log(`🗑️ 清理旧头像，释放空间: ${cleanupResult.freedSpaceKB}KB`);
+                }
+                
+                checkCurrentAvatar();
+                
+            } catch (error) {
+                log(`处理失败: ${error.message}`);
+            }
+            
+            e.target.value = '';
+        });
+
+        // 更新设置
+        function updateSettings() {
+            const targetSize = parseInt(document.getElementById('targetSizeInput').value);
+            const maxSize = parseInt(document.getElementById('maxSizeInput').value);
+            
+            if (testOptimizer) {
+                testOptimizer.maxSizeKB = targetSize;
+                testOptimizer.maxDimension = maxSize;
+                log(`设置已更新: 目标大小=${targetSize}KB, 最大尺寸=${maxSize}px`);
+            }
+        }
+
+        // 显示统计
+        function showStats() {
+            const container = document.getElementById('optimization-stats');
+            
+            // 计算存储占用
+            let totalSize = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    totalSize += localStorage[key].length;
+                }
+            }
+            
+            const userInfo = StorageManager.getUserInfo();
+            const avatarSize = userInfo.avatar ? Math.round((userInfo.avatar.length * 3) / 4 / 1024) : 0;
+            
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${avatarSize}</div>
+                    <div class="stat-label">头像大小 (KB)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Math.round(totalSize / 1024)}</div>
+                    <div class="stat-label">总存储 (KB)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${avatarSize > 0 ? Math.round(avatarSize / totalSize * 1024 * 100) : 0}%</div>
+                    <div class="stat-label">头像占比</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Object.keys(localStorage).length}</div>
+                    <div class="stat-label">存储项数</div>
+                </div>
+            `;
+            
+            log('统计信息已更新');
+        }
+
+        // 清除统计
+        function clearStats() {
+            document.getElementById('optimization-stats').innerHTML = '';
+            log('统计信息已清除');
+        }
+
+        // 清理临时数据
+        function cleanupTempData() {
+            testOptimizer._cleanupTempAvatarData();
+            log('临时数据已清理');
+        }
+
+        // 重置头像
+        function resetAvatar() {
+            if (confirm('确定要重置头像吗？')) {
+                StorageManager.updateUserInfo({
+                    avatar: 'img/1.png'
+                });
+                
+                document.getElementById('current-avatar').src = 'img/1.png';
+                document.getElementById('optimized-avatar').src = 'img/1.png';
+                
+                log('头像已重置为默认头像');
+                checkCurrentAvatar();
+            }
+        }
+
+        // 显示存储占用
+        function showStorageUsage() {
+            log('=== 存储占用详情 ===');
+            
+            let totalSize = 0;
+            const items = [];
+            
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    const size = localStorage[key].length;
+                    totalSize += size;
+                    items.push({
+                        key: key,
+                        size: size,
+                        sizeKB: Math.round(size / 1024)
+                    });
+                }
+            }
+            
+            // 按大小排序
+            items.sort((a, b) => b.size - a.size);
+            
+            log(`总存储大小: ${Math.round(totalSize / 1024)}KB`);
+            log('各项占用:');
+            
+            items.slice(0, 10).forEach(item => {
+                log(`  ${item.key}: ${item.sizeKB}KB`);
+            });
+            
+            if (items.length > 10) {
+                log(`  ... 还有 ${items.length - 10} 项`);
+            }
+        }
+    </script>
+</body>
+</html>
