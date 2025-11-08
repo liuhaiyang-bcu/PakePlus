@@ -1,0 +1,202 @@
+/* 图片批量优化相关样式 */
+
+.optimization-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.optimization-options {
+    margin-bottom: 20px;
+}
+
+.option-group {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.option-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #4285f4;
+}
+
+.option-group input[type="number"] {
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 80px;
+}
+
+.progress-info {
+    margin-bottom: 12px;
+}
+
+#progress-text {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+#progress-details {
+    font-size: 12px;
+    color: #666;
+}
+
+.progress-bar-container {
+    background: #e9ecef;
+    border-radius: 8px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #4285f4, #34a853);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 8px;
+}
+
+.result-success {
+    text-align: center;
+    padding: 20px;
+    background: #e8f5e8;
+    border-radius: 8px;
+    border: 1px solid #4caf50;
+}
+
+.result-success h4 {
+    color: #2e7d32;
+    margin-bottom: 12px;
+}
+
+.result-success p {
+    margin: 8px 0;
+    color: #2e7d32;
+}
+
+/* 批量优化按钮样式 */
+.batch-optimize-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(238, 90, 36, 0.3);
+}
+
+.batch-optimize-btn:hover {
+    background: linear-gradient(135deg, #ee5a24, #d63031);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(238, 90, 36, 0.4);
+}
+
+.batch-optimize-btn:active {
+    transform: translateY(0);
+}
+
+.batch-optimize-btn i {
+    margin-right: 4px;
+}
+
+/* 深色主题适配 */
+body.dark-theme .optimization-stats {
+    background: #23272e;
+    border: 1px solid #333a45;
+}
+
+body.dark-theme .stat-label {
+    color: #b0b8c1;
+}
+
+body.dark-theme .stat-value {
+    color: #e6e6e6;
+}
+
+body.dark-theme .option-group label {
+    color: #e6e6e6;
+}
+
+body.dark-theme .option-group input[type="number"] {
+    background: #23272e;
+    border: 1px solid #333a45;
+    color: #e6e6e6;
+}
+
+body.dark-theme #progress-text {
+    color: #e6e6e6;
+}
+
+body.dark-theme #progress-details {
+    color: #b0b8c1;
+}
+
+body.dark-theme .progress-bar-container {
+    background: #333a45;
+}
+
+body.dark-theme .result-success {
+    background: #1b2e1b;
+    border: 1px solid #4caf50;
+}
+
+body.dark-theme .result-success h4,
+body.dark-theme .result-success p {
+    color: #66bb6a;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .optimization-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .option-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .batch-optimize-btn {
+        width: 100%;
+        padding: 10px 16px;
+    }
+}
