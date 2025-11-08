@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>2025年假日、纪念日与节气 - 有数规划</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/holiday-schedule.css">
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html?view=countdown'">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-alt" style="color: #667eea; margin-right: 10px;"></i>2025年假日、纪念日与节气</h1>
+            <p>距离下一个假期、纪念日或节气还有多久？让我们一起期待吧！</p>
+        </div>
+
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner"></i>
+            正在加载节假日信息...
+        </div>
+
+        <div id="content" style="display: none;">
+            <!-- 节日状态显示区域 -->
+            <div class="holiday-status-section">
+                <!-- 正在过的节日或节气 -->
+                <div class="current-event" id="current-event" style="display: none;">
+                    <!-- 动态生成 -->
+                </div>
+
+                <!-- 下一个节假日倒数 -->
+                <div class="next-holiday" id="next-holiday">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 统计摘要 -->
+            <div class="summary-section">
+                <h3 class="summary-title"><i class="fas fa-chart-bar" style="color: #667eea; margin-right: 8px;"></i>2025年假期、纪念日与节气统计</h3>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-holidays">8</div>
+                        <div class="stat-label">个假期</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-days">28</div>
+                        <div class="stat-label">天假期</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="remaining-holidays">0</div>
+                        <div class="stat-label">剩余假期</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="remaining-days">0</div>
+                        <div class="stat-label">剩余假期天数</div>
+                    </div>
+                    <!-- 节气统计项将通过JavaScript动态添加 -->
+                </div>
+            </div>
+
+            <!-- 筛选和搜索区域 -->
+            <div class="filter-search-section">
+                <!-- 搜索框 -->
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="搜索节假日或节气...">
+                    <button id="search-clear" class="search-clear" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- 筛选器 -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">全部</button>
+                            <button class="filter-btn" data-filter="holiday">法定假日</button>
+                            <button class="filter-btn" data-filter="memorial">纪念日</button>
+                            <button class="filter-btn" data-filter="solar">节气</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-status="all">全部状态</button>
+                            <button class="filter-btn" data-status="upcoming">即将到来</button>
+                            <button class="filter-btn" data-status="passed">已过</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 节假日列表 -->
+            <div class="holiday-grid" id="holiday-grid">
+                <!-- 动态生成节假日卡片 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 节日详情弹窗 -->
+    <div class="holiday-modal-overlay" id="holiday-modal-overlay">
+        <div class="holiday-modal">
+            <div class="holiday-modal-header">
+                <h2 class="holiday-modal-title" id="holiday-modal-title"></h2>
+                <button class="holiday-modal-close" id="holiday-modal-close">&times;</button>
+            </div>
+            <div class="holiday-modal-body">
+                <h3 id="holiday-modal-subtitle">节日介绍</h3>
+                <p id="holiday-modal-description"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/holiday-schedule.js"></script>
+</body>
+</html>
