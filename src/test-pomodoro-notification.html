@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专注时钟通知测试</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        .log {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>专注时钟通知测试页面</h1>
+    
+    <div class="test-section">
+        <h2>权限检查</h2>
+        <button id="check-permission">检查通知权限</button>
+        <button id="request-permission">请求通知权限</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>调试日志</h2>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        // 日志函数
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            logElement.appendChild(logEntry);
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        // 检查通知权限
+        function checkPermission() {
+            if (typeof plus !== 'undefined') {
+                log('在uni-app环境中，使用plus.push检查权限');
+                // 在uni-app环境中检查推送权限
+                try {
+                    plus.push.getClientInfoAsync((info) => {
+                        log('客户端推送标识信息: ' + JSON.stringify(info));
+                    }, (e) => {
+                        log('获取客户端推送标识信息失败: ' + JSON.stringify(e));
+                    });
+                } catch (error) {
+                    log('检查推送权限失败: ' + error.message);
+                }
+            } else if ('Notification' in window) {
+                log('浏览器通知权限状态: ' + Notification.permission);
+            } else {
+                log('不支持通知功能');
+            }
+        }
+        
+        // 请求通知权限
+        function requestPermission() {
+            if (typeof plus !== 'undefined') {
+                log('在uni-app环境中，无法直接请求推送权限，请在设备设置中开启');
+            } else if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    log('通知权限请求结果: ' + permission);
+                }).catch(error => {
+                    log('请求通知权限失败: ' + error.message);
+                });
+            } else {
+                log('不支持通知功能');
+            }
+        }
+        
+        // 发送专注完成通知
+        function sendFocusCompleteNotification() {
+            log('发送专注完成通知...');
+            
+            // 模拟专注完成的数据
+            const eventData = {
+                eventName: '学习JavaScript',
+                completedPomodoros: 1,
+                totalFocusTime: 25
+            };
+            
+            // 发送通知
+            sendSystemNotification('专注完成', `您已完成"${eventData.eventName}"的专注任务，获得15积分奖励！`);
+        }
+        
+        // 发送系统级通知
+        function sendSystemNotification(title, message) {
+            // 检查是否在uni-app环境中
+            if (typeof plus !== 'undefined') {
+                try {
+                    log('在uni-app环境中发送系统通知: ' + title);
+                    var options = {
+                        cover: false,
+                        title: title,
+                        sound: "system"
+                    };
+                    plus.push.createMessage(message, 'test_pomodoro', options);
+                    log('系统通知发送成功');
+                } catch (error) {
+                    log('发送系统通知失败: ' + error.message);
+                }
+            } else if (window.systemNotificationManager) {
+                // 使用系统通知管理器发送通知
+                try {
+                    systemNotificationManager.sendSystemNotification(title, message, 'test_pomodoro');
+                    log('通过系统通知管理器发送通知成功');
+                } catch (error) {
+                    log('通过系统通知管理器发送通知失败: ' + error.message);
+                }
+            } else if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    new Notification(title, {
+                        body: message,
+                        icon: './img/icon.png',
+                        tag: 'test_pomodoro'
+                    });
+                    log('Web通知发送成功: ' + title);
+                } catch (error) {
+                    log('发送Web通知失败: ' + error.message);
+                }
+            } else {
+                log('无法发送通知，可能未获得权限或不支持通知功能');
+            }
+        }
+        
+        // 页面加载完成后
+        document.addEventListener('DOMContentLoaded', function() {
+            log('专注时钟通知测试页面已加载');
+            
+            document.getElementById('check-permission').addEventListener('click', checkPermission);
+            document.getElementById('request-permission').addEventListener('click', requestPermission);
+            
+            // 自动检查权限
+            setTimeout(checkPermission, 1000);
+        });
+    </script>
+</body>
+</html>
