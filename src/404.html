@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>404 - 页面未找到</title>
+  <link rel="icon" href="img/logo.png" type="image/png">
+  <!-- 动态更新的主题色，用于浏览器地址栏等 UI 颜色 -->
+  <meta id="meta-theme-color" name="theme-color" content="#f8fafc" />
+
+  <script>
+    // 在 CSS 加载前设置主题，尽量减少闪烁
+    (function initThemeEarly() {
+      const now = new Date();
+      const hour = now.getHours(); // 0~23
+      const isDark = (hour >= 18 || hour < 6);
+      const root = document.documentElement;
+      root.classList.add(isDark ? 'theme-dark' : 'theme-light');
+      const meta = document.getElementById('meta-theme-color');
+      if (meta) meta.setAttribute('content', isDark ? '#0f172a' : '#f8fafc');
+    })();
+  </script>
+
+  <style>
+    /* 基础设置 */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                   Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      transition: background-color 240ms ease, color 240ms ease;
+      /* 防止文本选择 */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      /* 防止右键菜单 */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* 主题变量：浅色 */
+    .theme-light {
+      color-scheme: light;
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --card: #ffffff;
+      --accent: #2563eb;
+      --accent-contrast: #ffffff;
+      --ring: rgba(37, 99, 235, 0.35);
+      --shadow: 0 6px 20px rgba(2, 6, 23, 0.08);
+      --soft: rgba(15, 23, 42, 0.05);
+      --divider: rgba(15, 23, 42, 0.08);
+    }
+
+    /* 主题变量：深色（18:00~06:00） */
+    .theme-dark {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --card: #0b1220;
+      --accent: #60a5fa;
+      --accent-contrast: #0b1220;
+      --ring: rgba(96, 165, 250, 0.5);
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      --soft: rgba(226, 232, 240, 0.06);
+      --divider: rgba(226, 232, 240, 0.12);
+    }
+
+    /* 左上角圆形“返回主页”按钮 */
+    .home-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      box-shadow: var(--shadow);
+      border: 1px solid transparent;
+      transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+      user-select: none;
+    }
+    .home-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.02);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+    }
+    .home-btn:active {
+      transform: translateY(0);
+      filter: brightness(0.98);
+    }
+    .home-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    /* 主体布局与样式 */
+    .wrapper {
+      width: min(960px, 92vw);
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--card), color-mix(in oklab, var(--card), transparent 10%));
+      border: 1px solid var(--divider);
+      border-radius: 18px;
+      padding: clamp(24px, 5vw, 56px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .card::before {
+      /* 柔和装饰背景 */
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, var(--soft), transparent 60%),
+        radial-gradient(900px 480px at 110% 0%, var(--soft), transparent 60%);
+      z-index: -1;
+    }
+
+    .code {
+      font-size: clamp(72px, 14vw, 168px);
+      line-height: 1;
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--text), color-mix(in oklab, var(--text), transparent 30%));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .title {
+      margin: 12px 0 6px;
+      font-size: clamp(20px, 3.4vw, 28px);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: clamp(14px, 2.6vw, 16px);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .primary-link, .ghost-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+      border: 1px solid transparent;
+    }
+
+    .primary-link {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      box-shadow: var(--shadow);
+    }
+    .primary-link:hover { transform: translateY(-1px); }
+    .primary-link:active { transform: translateY(0); }
+    .primary-link:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--ring); }
+
+    .ghost-link {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--divider);
+    }
+    .ghost-link:hover { background: var(--soft); }
+
+    /* 小提示 */
+    .tip {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 响应式处理：小屏保留圆形按钮的触控舒适度 */
+    @media (max-width: 420px) {
+      .home-btn {
+        width: 84px;
+        height: 84px;
+        font-size: 13px;
+      }
+    }
+
+    /* 减少动态效果的用户尊重设置 */
+    @media (prefers-reduced-motion: reduce) {
+      .home-btn, .primary-link { transition: none; }
+      body { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 左上角圆形按钮：点击返回 index.html，按钮名称为“返回主页” -->
+  <main class="wrapper" role="main">
+    <section class="card" aria-labelledby="not-found-title">
+      <h1 class="code" aria-hidden="true">404</h1>
+      <h2 id="not-found-title" class="title">抱歉，您访问的页面不见了</h2>
+      <p class="desc">链接可能已失效、地址输入有误，或页面被移动了。</p>
+
+      <div class="actions">
+        <a class="primary-link" href="index.html" aria-label="返回主页">
+          <span>返回主页</span>
+        </a>
+      </div>
+
+      <p class="tip">提示：本页面会在晚上 18:00 ~ 次日 06:00 之间自动切换至深色模式，其他时间为浅色模式。</p>
+    </section>
+  </main>
+
+  <script>
+    // 根据系统时间应用主题（晚上18:00~早上6:00为深色）
+    function isDarkNow(date = new Date()) {
+      const h = date.getHours();
+      return (h >= 18 || h < 6);
+    }
+
+    function applyTheme(dark) {
+      const root = document.documentElement;
+      root.classList.toggle('theme-dark', dark);
+      root.classList.toggle('theme-light', !dark);
+
+      const meta = document.getElementById('meta-theme-color');
+      if (meta) meta.setAttribute('content', dark ? '#0f172a' : '#f8fafc');
+    }
+
+    function msUntilNextSwitch(now = new Date()) {
+      const dark = isDarkNow(now);
+      const next = new Date(now);
+
+      if (dark) {
+        // 下一次切换到浅色：今天/明天 06:00
+        next.setHours(6, 0, 0, 0);
+        if (now >= next) next.setDate(next.getDate() + 1);
+      } else {
+        // 下一次切换到深色：今天 18:00（若已过18点，理论上不会在浅色区间出现）
+        next.setHours(18, 0, 0, 0);
+        if (now >= next) next.setDate(next.getDate() + 1);
+      }
+      return next - now;
+    }
+
+    function scheduleThemeSwitch() {
+      // 立即应用一次
+      applyTheme(isDarkNow());
+
+      // 在下一个切换点自动切换
+      const wait = msUntilNextSwitch();
+      window.__themeSwitchTimer && clearTimeout(window.__themeSwitchTimer);
+      window.__themeSwitchTimer = setTimeout(() => {
+        applyTheme(isDarkNow());
+        scheduleThemeSwitch(); // 递归安排下一次
+      }, wait);
+    }
+
+    // 当页面加载、可见性改变（例如从后台返回）、或每隔一段时间，进行校准
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') scheduleThemeSwitch();
+    });
+
+    // 定时校准，防止系统时间被人工修改时出现偏差
+    window.__themeCalibration && clearInterval(window.__themeCalibration);
+    window.__themeCalibration = setInterval(() => {
+      applyTheme(isDarkNow());
+    }, 60 * 1000); // 每分钟校准一次
+
+    // 启动
+    scheduleThemeSwitch();
+  </script>
+</body>
+</html>
