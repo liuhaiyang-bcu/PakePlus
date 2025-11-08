@@ -1,0 +1,282 @@
+/* 通知设置模态框样式 */
+#notification-settings-modal {
+  display: none;
+  position: fixed;
+  z-index: 2001;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.35);
+  justify-content: center;
+  align-items: center;
+}
+
+#notification-settings-modal.open {
+  display: flex;
+}
+
+.notification-settings-modal-content {
+  background: var(--card-bg, #fff);
+  color: var(--text-color, #333);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  min-width: 320px;
+  max-width: 90vw;
+  padding: 32px 28px 24px 28px;
+  animation: fadeIn 0.2s;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.notification-settings-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.notification-settings-icon {
+  font-size: 28px;
+  color: var(--primary-color, #4285f4);
+  background: linear-gradient(135deg, #e3f0ff 60%, #b3d8ff 100%);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(66,133,244,0.08);
+}
+
+.notification-settings-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--primary-color, #4285f4);
+}
+
+#close-notification-settings {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-color, #333);
+  cursor: pointer;
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
+.notification-settings-section {
+  margin-bottom: 24px;
+}
+
+.notification-settings-section-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--primary-color, #4285f4);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background: var(--card-bg-light, #f8f9fa);
+  border-radius: 10px;
+  border: 1px solid var(--border-color, #e0e0e0);
+  transition: all 0.2s ease;
+}
+
+.notification-settings-item:hover {
+  background: var(--card-bg-hover, #f0f2f5);
+  border-color: var(--primary-color, #4285f4);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(66,133,244,0.1);
+}
+
+.notification-settings-item-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+}
+
+.notification-settings-item-icon {
+  font-size: 18px;
+  color: var(--primary-color, #4285f4);
+}
+
+.notification-settings-item-name {
+  font-weight: 500;
+}
+
+.notification-settings-item-toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.notification-settings-item-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.notification-settings-item-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.notification-settings-item-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.notification-settings-item-toggle input:checked + .notification-settings-item-toggle-slider {
+  background-color: var(--primary-color, #4285f4);
+}
+
+.notification-settings-item-toggle input:checked + .notification-settings-item-toggle-slider:before {
+  transform: translateX(24px);
+}
+
+.notification-settings-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.notification-settings-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.notification-settings-save-btn {
+  background-color: var(--primary-color, #4285f4);
+  color: white;
+}
+
+.notification-settings-save-btn:hover {
+  background-color: var(--primary-color-dark, #3367d6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+.notification-settings-cancel-btn {
+  background-color: var(--secondary-color, #f5f5f5);
+  color: var(--text-color, #333);
+}
+
+.notification-settings-cancel-btn:hover {
+  background-color: var(--secondary-color-dark, #e0e0e0);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 深色主题适配 */
+body.dark-theme #notification-settings-modal .notification-settings-modal-content {
+  background: var(--card-bg-dark, #222);
+  color: var(--text-color-dark, #e0e0e0);
+}
+
+body.dark-theme #close-notification-settings {
+  color: var(--text-color-dark, #e0e0e0);
+}
+
+body.dark-theme .notification-settings-item {
+  background: var(--card-bg-dark-light, #2a2a2a);
+  border-color: var(--border-color-dark, #333);
+}
+
+body.dark-theme .notification-settings-item:hover {
+  background: var(--card-bg-dark-hover, #333);
+  border-color: var(--primary-color-dark, #3367d6);
+}
+
+body.dark-theme .notification-settings-item-icon {
+  color: var(--primary-color-dark, #3367d6);
+}
+
+body.dark-theme .notification-settings-item-name {
+  color: var(--text-color-dark, #e0e0e0);
+}
+
+body.dark-theme .notification-settings-actions {
+  border-top-color: var(--border-color-dark, #333);
+}
+
+body.dark-theme .notification-settings-cancel-btn {
+  background-color: var(--secondary-color-dark, #333);
+  color: var(--text-color-dark, #e0e0e0);
+}
+
+body.dark-theme .notification-settings-cancel-btn:hover {
+  background-color: var(--secondary-color-dark-hover, #444);
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .notification-settings-modal-content {
+    min-width: 90vw;
+    padding: 18px 6vw 16px 6vw;
+  }
+  
+  .notification-settings-header {
+    gap: 12px;
+  }
+  
+  .notification-settings-icon {
+    font-size: 24px;
+    padding: 8px;
+  }
+  
+  .notification-settings-title {
+    font-size: 1.1rem;
+  }
+  
+  .notification-settings-item {
+    padding: 10px 12px;
+  }
+  
+  .notification-settings-item-label {
+    gap: 10px;
+  }
+  
+  .notification-settings-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .notification-settings-btn {
+    width: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
