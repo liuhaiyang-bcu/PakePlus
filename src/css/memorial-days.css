@@ -1,0 +1,285 @@
+/**
+ * 纪念日显示样式
+ */
+
+/* 纪念日区域 */
+.memorial-days-section {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--card-background, #f8f9fa);
+    border-radius: 12px;
+    border: 1px solid var(--border-color, #e9ecef);
+}
+
+.memorial-days-title {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color, #333);
+    margin-bottom: 12px;
+}
+
+.memorial-days-title i {
+    margin-right: 8px;
+    color: #4285f4;
+}
+
+.memorial-days-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 纪念日项目 */
+.memorial-day-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--background-color, #fff);
+    border: 1px solid var(--border-light, #f0f0f0);
+    transition: all 0.2s ease;
+}
+
+.memorial-day-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.memorial-icon {
+    font-size: 18px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.memorial-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.memorial-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color, #333);
+    margin-bottom: 2px;
+}
+
+.memorial-description {
+    font-size: 12px;
+    color: var(--text-secondary, #666);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.memorial-status {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* 不同类型的纪念日样式 */
+.memorial-day-item.legal-holiday {
+    border-left: 4px solid #e74c3c;
+    background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+}
+
+.memorial-day-item.legal-holiday .memorial-status {
+    background: #e74c3c;
+    color: white;
+}
+
+.memorial-day-item.vacation-day {
+    border-left: 4px solid #27ae60;
+    background: linear-gradient(135deg, #f0fff4 0%, #fff 100%);
+}
+
+.memorial-day-item.vacation-day .memorial-status {
+    background: #27ae60;
+    color: white;
+}
+
+.memorial-day-item.work-day {
+    border-left: 4px solid #f39c12;
+    background: linear-gradient(135deg, #fffbf0 0%, #fff 100%);
+}
+
+.memorial-day-item.work-day .memorial-status {
+    background: #f39c12;
+    color: white;
+}
+
+.memorial-day-item.partial-holiday {
+    border-left: 4px solid #9b59b6;
+    background: linear-gradient(135deg, #faf5ff 0%, #fff 100%);
+}
+
+.memorial-day-item.partial-holiday .memorial-status {
+    background: #9b59b6;
+    color: white;
+}
+
+.memorial-day-item.memorial-day {
+    border-left: 4px solid #34495e;
+    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+}
+
+.memorial-day-item.memorial-day .memorial-status {
+    background: #34495e;
+    color: white;
+}
+
+/* 深色模式适配 */
+.dark-theme .memorial-days-section {
+    background: var(--card-background-dark, #2c3e50);
+    border-color: var(--border-color-dark, #34495e);
+}
+
+.dark-theme .memorial-day-item {
+    background: var(--background-color-dark, #34495e);
+    border-color: var(--border-light-dark, #4a5f7a);
+}
+
+.dark-theme .memorial-name {
+    color: var(--text-color-dark, #ecf0f1);
+}
+
+.dark-theme .memorial-description {
+    color: var(--text-secondary-dark, #bdc3c7);
+}
+
+.dark-theme .memorial-days-title {
+    color: var(--text-color-dark, #ecf0f1);
+}
+
+/* 深色模式下的渐变背景 */
+.dark-theme .memorial-day-item.legal-holiday {
+    background: linear-gradient(135deg, #3c2415 0%, #2c3e50 100%);
+}
+
+.dark-theme .memorial-day-item.vacation-day {
+    background: linear-gradient(135deg, #1e3a2e 0%, #2c3e50 100%);
+}
+
+.dark-theme .memorial-day-item.work-day {
+    background: linear-gradient(135deg, #3d2f1f 0%, #2c3e50 100%);
+}
+
+.dark-theme .memorial-day-item.partial-holiday {
+    background: linear-gradient(135deg, #2f1b3c 0%, #2c3e50 100%);
+}
+
+.dark-theme .memorial-day-item.memorial-day {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .memorial-days-section {
+        margin-top: 12px;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    
+    .memorial-day-item {
+        padding: 8px 10px;
+        border-radius: 6px;
+    }
+    
+    .memorial-icon {
+        font-size: 16px;
+        margin-right: 10px;
+    }
+    
+    .memorial-name {
+        font-size: 13px;
+    }
+    
+    .memorial-description {
+        font-size: 11px;
+    }
+    
+    .memorial-status {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+}
+
+/* 动画效果 */
+.memorial-days-section {
+    animation: memorialFadeIn 0.3s ease-out;
+}
+
+@keyframes memorialFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.memorial-day-item {
+    animation: memorialItemSlideIn 0.4s ease-out;
+}
+
+@keyframes memorialItemSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 特殊节日的额外装饰 */
+.memorial-day-item.legal-holiday .memorial-icon {
+    animation: celebrationPulse 2s ease-in-out infinite;
+}
+
+@keyframes celebrationPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* 工作日调休的特殊提示 */
+.memorial-day-item.work-day {
+    position: relative;
+}
+
+.memorial-day-item.work-day::after {
+    content: '⚠️';
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* 无纪念日时的占位样式 */
+.no-memorial-days {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary, #666);
+    font-size: 13px;
+}
+
+.no-memorial-days i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+}
+
+.dark-theme .no-memorial-days {
+    color: var(--text-secondary-dark, #bdc3c7);
+}
