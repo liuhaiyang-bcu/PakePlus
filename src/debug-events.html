@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件通知调试页面</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .debug-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        .log {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .event-item {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #eee;
+            border-radius: 3px;
+        }
+        .status-active {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        .status-inactive {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>事件通知调试页面</h1>
+    
+    <div class="debug-section">
+        <h2>当前时间</h2>
+        <div id="current-time"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>所有事件</h2>
+        <button id="refresh-events">刷新事件列表</button>
+        <button id="create-test-event">创建测试事件</button>
+        <div id="events-list"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>通知设置检查</h2>
+        <button id="check-notification-settings">检查通知设置</button>
+        <div id="notification-settings"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>手动测试</h2>
+        <button id="test-ongoing-notification">测试正在进行中通知</button>
+        <button id="check-ongoing-events">检查正在进行的事件</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>调试日志</h2>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script>
+        // 日志函数
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            logElement.appendChild(logEntry);
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        // 更新当前时间显示
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('current-time').innerHTML = `
+                <p>当前时间: ${now.toLocaleString()}</p>
+                <p>时间戳: ${now.getTime()}</p>
+            `;
+        }
+        
+        // 刷新事件列表
+        function refreshEvents() {
+            log('刷新事件列表...');
+            try {
+                const data = StorageManager.getData();
+                const events = data.events || [];
+                
+                log(`找到 ${events.length} 个事件`);
+                
+                const eventsList = document.getElementById('events-list');
+                eventsList.innerHTML = '';
+                
+                const now = new Date();
+                
+                events.forEach(event => {
+                    const eventDiv = document.createElement('div');
+                    eventDiv.className = 'event-item';
+                    
+                    const startTime = event.startTime ? new Date(event.startTime) : null;
+                    const endTime = event.endTime ? new Date(event.endTime) : null;
+                    
+                    // 检查事件状态
+                    let status = '未知';
+                    let statusClass = 'status-inactive';
+                    
+                    if (event.completed) {
+                        status = '已完成';
+                        statusClass = 'status-inactive';
+                    } else if (startTime && endTime) {
+                        if (now >= startTime && now <= endTime) {
+                            status = '正在进行中';
+                            statusClass = 'status-active';
+                        } else if (now < startTime) {
+                            status = '未开始';
+                        } else if (now > endTime) {
+                            status = '已结束';
+                        }
+                    } else if (startTime) {
+                        if (now >= startTime) {
+                            status = '已开始(无结束时间)';
+                            statusClass = 'status-active';
+                        } else {
+                            status = '未开始';
+                        }
+                    }
+                    
+                    eventDiv.className += ' ' + statusClass;
+                    
+                    eventDiv.innerHTML = `
+                        <h3>${event.name || '未命名事件'}</h3>
+                        <p>ID: ${event.id}</p>
+                        <p>状态: ${status}</p>
+                        ${startTime ? `<p>开始时间: ${startTime.toLocaleString()} (${startTime.getTime()})</p>` : '<p>开始时间: 未设置</p>'}
+                        ${endTime ? `<p>结束时间: ${endTime.toLocaleString()} (${endTime.getTime()})</p>` : '<p>结束时间: 未设置</p>'}
+                        <p>是否完成: ${event.completed ? '是' : '否'}</p>
+                        ${event.projectId ? `<p>项目ID: ${event.projectId}</p>` : ''}
+                    `;
+                    
+                    eventsList.appendChild(eventDiv);
+                });
+            } catch (error) {
+                log('刷新事件列表失败: ' + error.message);
+            }
+        }
+        
+        // 创建测试事件
+        function createTestEvent() {
+            log('创建测试事件...');
+            try {
+                const now = new Date();
+                const startTime = new Date(now.getTime() - 5 * 60 * 1000); // 5分钟前开始
+                const endTime = new Date(now.getTime() + 5 * 60 * 1000); // 5分钟后结束
+                
+                const testEvent = {
+                    id: 'test_event_' + Date.now(),
+                    name: '测试事件 - 正在进行中',
+                    startTime: startTime.toISOString(),
+                    endTime: endTime.toISOString(),
+                    completed: false,
+                    color: '#4285f4',
+                    createTime: now.toISOString(),
+                    updateTime: now.toISOString()
+                };
+                
+                StorageManager.saveEvent(testEvent);
+                log('测试事件创建成功: ' + testEvent.name);
+                refreshEvents();
+            } catch (error) {
+                log('创建测试事件失败: ' + error.message);
+            }
+        }
+        
+        // 检查通知设置
+        function checkNotificationSettings() {
+            log('检查通知设置...');
+            try {
+                const settingsStr = localStorage.getItem('notificationSettings');
+                const settingsDiv = document.getElementById('notification-settings');
+                
+                if (settingsStr) {
+                    const settings = JSON.parse(settingsStr);
+                    settingsDiv.innerHTML = `
+                        <p>事件通知: ${settings.eventNotifications !== false ? '开启' : '关闭'}</p>
+                        <p>清单通知: ${settings.todoNotifications !== false ? '开启' : '关闭'}</p>
+                        <p>倒数日通知: ${settings.countdownNotifications !== false ? '开启' : '关闭'}</p>
+                        <p>打卡通知: ${settings.dakaNotifications !== false ? '开启' : '关闭'}</p>
+                        <p>番茄钟通知: ${settings.pomodoroNotifications !== false ? '开启' : '关闭'}</p>
+                    `;
+                } else {
+                    settingsDiv.innerHTML = '<p>未找到通知设置，使用默认设置</p>';
+                }
+                
+                // 检查全局通知函数
+                if (typeof isNotificationEnabled === 'function') {
+                    log('isNotificationEnabled 函数可用');
+                } else {
+                    log('警告: isNotificationEnabled 函数不可用');
+                }
+            } catch (error) {
+                log('检查通知设置失败: ' + error.message);
+            }
+        }
+        
+        // 测试正在进行中通知
+        function testOngoingNotification() {
+            log('测试正在进行中通知...');
+            try {
+                if (typeof plus !== 'undefined') {
+                    log('在uni-app环境中发送测试通知');
+                    var options = {
+                        cover: false,
+                        title: '测试通知',
+                        sound: "system"
+                    };
+                    plus.push.createMessage('这是一个测试的正在进行中通知', 'test_ongoing', options);
+                    log('测试通知发送成功');
+                } else if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('测试通知', {
+                        body: '这是一个测试的正在进行中通知',
+                        icon: './img/icon.png',
+                        tag: 'test_ongoing'
+                    });
+                    log('Web通知发送成功');
+                } else {
+                    log('无法发送通知，可能未获得权限或不支持通知功能');
+                }
+            } catch (error) {
+                log('发送测试通知失败: ' + error.message);
+            }
+        }
+        
+        // 检查正在进行的事件
+        function checkOngoingEvents() {
+            log('检查正在进行的事件...');
+            try {
+                const data = StorageManager.getData();
+                const events = data.events || [];
+                const now = new Date();
+                
+                log(`当前时间: ${now.toLocaleString()}`);
+                
+                let ongoingCount = 0;
+                
+                events.forEach(event => {
+                    if (event.completed) return;
+                    
+                    const startTime = event.startTime ? new Date(event.startTime) : null;
+                    const endTime = event.endTime ? new Date(event.endTime) : null;
+                    
+                    if (startTime && endTime) {
+                        if (now >= startTime && now <= endTime) {
+                            ongoingCount++;
+                            log(`发现正在进行的事件: ${event.name}`);
+                            log(`  开始时间: ${startTime.toLocaleString()}`);
+                            log(`  结束时间: ${endTime.toLocaleString()}`);
+                            log(`  当前时间: ${now.toLocaleString()}`);
+                            
+                            // 检查是否已发送提醒
+                            const reminderKey = `system_event_ongoing_${event.id}_${startTime.getTime()}_${endTime.getTime()}`;
+                            const reminderSent = localStorage.getItem(reminderKey);
+                            log(`  提醒状态: ${reminderSent ? '已发送' : '未发送'}`);
+                        }
+                    }
+                });
+                
+                log(`总共找到 ${ongoingCount} 个正在进行的事件`);
+                
+                if (ongoingCount === 0) {
+                    log('没有发现正在进行的事件，请确保创建了时间范围包含当前时间的事件');
+                }
+            } catch (error) {
+                log('检查正在进行的事件失败: ' + error.message);
+            }
+        }
+        
+        // 页面加载完成后
+        document.addEventListener('DOMContentLoaded', function() {
+            log('事件通知调试页面已加载');
+            
+            // 更新当前时间
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            
+            // 绑定按钮事件
+            document.getElementById('refresh-events').addEventListener('click', refreshEvents);
+            document.getElementById('create-test-event').addEventListener('click', createTestEvent);
+            document.getElementById('check-notification-settings').addEventListener('click', checkNotificationSettings);
+            document.getElementById('test-ongoing-notification').addEventListener('click', testOngoingNotification);
+            document.getElementById('check-ongoing-events').addEventListener('click', checkOngoingEvents);
+            
+            // 初始加载
+            setTimeout(() => {
+                refreshEvents();
+                checkNotificationSettings();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
