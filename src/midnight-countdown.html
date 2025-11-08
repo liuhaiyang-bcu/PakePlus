@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>午夜倒计时</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000000; /* 全黑背景 */
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            z-index: 1;
+        }
+        
+        .countdown-header {
+            margin-bottom: 30px;
+        }
+        
+        .countdown-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .countdown-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .time-display-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            margin: 20px 0;
+        }
+        
+        .time-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 30, 30, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .arrival-message {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .time-info.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .time-label {
+            font-size: 1rem;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+        
+        .new-day-date, .tomorrow-date {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .new-day-weekday, .tomorrow-weekday {
+            font-size: 1.4rem;
+            opacity: 0.9;
+        }
+        
+        .countdown-display {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 30px 0;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            background: rgba(30, 30, 30, 0.8);
+            padding: 20px 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .redirect-message {
+            font-size: 1.2rem;
+            margin-top: 30px;
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            margin-top: 40px;
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3); /* 调整粒子透明度 */
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { transform: translateY(-100px) translateX(20px); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .countdown-header h1 {
+                font-size: 2rem;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+            
+            .time-display-container {
+                height: 150px;
+            }
+            
+            .new-day-date, .tomorrow-date {
+                font-size: 1.5rem;
+            }
+            
+            .new-day-weekday, .tomorrow-weekday {
+                font-size: 1.2rem;
+            }
+            
+            .arrival-message {
+                font-size: 2rem;
+            }
+            
+            .countdown-display {
+                font-size: 3rem;
+                padding: 15px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="countdown-header">
+            <h1><i class="fas fa-moon" style="margin-right: 10px;"></i>午夜倒计时</h1>
+            <p>时间切换展示</p>
+        </div>
+        
+        <div class="time-display-container">
+            <div class="time-info active" id="currentTimeInfo">
+                <div class="time-label">现在时间</div>
+                <div class="new-day-date" id="newDayDate">
+                    2023年1月1日
+                </div>
+                <div class="new-day-weekday" id="newDayWeekday">
+                    星期日
+                </div>
+            </div>
+            
+            <div class="time-info" id="tomorrowTimeInfo">
+                <div class="time-label">明日时间</div>
+                <div class="tomorrow-date" id="tomorrowDate">
+                    2023年1月2日
+                </div>
+                <div class="tomorrow-weekday" id="tomorrowWeekday">
+                    星期一
+                </div>
+            </div>
+            
+            <div class="time-info" id="arrivalInfo">
+                <div class="arrival-message">明日已到</div>
+            </div>
+        </div>
+        
+        <div class="countdown-display" id="countdown">
+            00:05
+        </div>
+        
+        <div class="redirect-message" id="redirectMessage">
+            准备跳转回主页...
+        </div>
+    </div>
+
+    <script>
+        // 创建背景粒子效果
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 随机大小
+                const size = Math.random() * 5 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机位置
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // 随机动画延迟
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 获取星期几的中文名称
+        function getWeekdayName(date) {
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            return weekdays[date.getDay()];
+        }
+        
+        // 格式化日期显示
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            return `${year}年${month}月${day}日`;
+        }
+        
+        // 设置当前日期和明天日期显示
+        function setNewDayInfo() {
+            // 使用当前日期
+            const today = new Date();
+            
+            // 显示当前日期和星期
+            document.getElementById('newDayDate').textContent = formatDate(today);
+            document.getElementById('newDayWeekday').textContent = getWeekdayName(today);
+            
+            // 计算明天的日期
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+            
+            // 显示明天日期和星期
+            document.getElementById('tomorrowDate').textContent = formatDate(tomorrow);
+            document.getElementById('tomorrowWeekday').textContent = getWeekdayName(tomorrow);
+        }
+        
+        // 切换时间显示
+        function switchTimeDisplay(displayType) {
+            const currentTimeInfo = document.getElementById('currentTimeInfo');
+            const tomorrowTimeInfo = document.getElementById('tomorrowTimeInfo');
+            const arrivalInfo = document.getElementById('arrivalInfo');
+            
+            // 首先隐藏所有面板
+            currentTimeInfo.classList.remove('active');
+            tomorrowTimeInfo.classList.remove('active');
+            arrivalInfo.classList.remove('active');
+            
+            // 根据类型显示对应面板
+            if (displayType === 'current') {
+                currentTimeInfo.classList.add('active');
+            } else if (displayType === 'tomorrow') {
+                tomorrowTimeInfo.classList.add('active');
+            } else if (displayType === 'arrival') {
+                arrivalInfo.classList.add('active');
+            }
+        }
+        
+        // 更新倒计时显示
+        function updateCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            const redirectMessage = document.getElementById('redirectMessage');
+            let seconds = 5; // 从5秒开始倒计时
+            
+            // 立即显示初始时间
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            countdownElement.textContent = 
+                `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            
+            // 初始显示当前时间
+            switchTimeDisplay('current');
+            
+            const countdownInterval = setInterval(() => {
+                seconds--;
+                
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                
+                countdownElement.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+                
+                // 在倒计时为3秒时切换到显示明天时间
+                if (seconds === 3) {
+                    switchTimeDisplay('tomorrow');
+                }
+                
+                // 在倒计时为1秒时显示"明日已到"
+                if (seconds === 1) {
+                    switchTimeDisplay('arrival');
+                }
+                
+                // 当倒计时结束时跳转回主页
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    redirectMessage.textContent = '正在跳转回主页...';
+                    // 延迟一小段时间后跳转，让用户看到提示
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                }
+            }, 1000);
+        }
+        
+        // 检查是否应该自动跳转（在凌晨00:00:05时）
+        function checkAutoRedirect() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // 如果当前时间已经是00:00:05或之后，则立即跳转
+            if (hours === 0 && minutes === 0 && seconds >= 5) {
+                document.getElementById('redirectMessage').textContent = '正在跳转回主页...';
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+                return true;
+            }
+            return false;
+        }
+        
+        // 定期检查是否应该自动跳转
+        function setupAutoRedirectCheck() {
+            // 检查一次当前时间
+            if (checkAutoRedirect()) {
+                return;
+            }
+            
+            // 每100毫秒检查一次，确保精准跳转
+            setInterval(checkAutoRedirect, 100);
+        }
+        
+        // 立即返回主页
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            setNewDayInfo();
+            // 如果不需要立即跳转，则开始倒计时
+            if (!checkAutoRedirect()) {
+                updateCountdown();
+                setupAutoRedirectCheck();
+            }
+        });
+    </script>
+</body>
+</html>
