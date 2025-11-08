@@ -1,0 +1,887 @@
+/* ===== 打卡模态框样式优化 ===== */
+
+/* 打卡模态框样式 */
+.daka-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1100;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.daka-modal.show {
+    display: flex;
+}
+
+.daka-modal-content {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid #dee2e6;
+}
+
+.daka-modal.show .daka-modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.daka-modal-header {
+    background: linear-gradient(135deg, #34a853, #2d8f47);
+    color: white;
+    padding: 24px 24px 20px;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    margin: -1px -1px 0 -1px;
+}
+
+.daka-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.daka-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.daka-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.daka-modal-body {
+    padding: 24px;
+}
+
+.daka-form-group {
+    margin-bottom: 20px;
+}
+
+.daka-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.daka-form-input,
+.daka-form-textarea,
+.daka-form-select {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    color: #2c3e50;
+    box-sizing: border-box;
+}
+
+.daka-form-input:focus,
+.daka-form-textarea:focus,
+.daka-form-select:focus {
+    border-color: #34a853;
+    box-shadow: 0 0 0 3px rgba(52, 168, 83, 0.15);
+    outline: none;
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+.daka-form-input::placeholder,
+.daka-form-textarea::placeholder {
+    color: #6c757d;
+}
+
+.daka-form-textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* 时间范围选择器样式 */
+.daka-time-range {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.daka-time-range .daka-form-input {
+    flex: 1;
+}
+
+.daka-time-range .time-separator {
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* 标签输入样式 */
+.daka-tags-input {
+    position: relative;
+}
+
+.daka-tags-hint {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+/* 模态框操作按钮区域 */
+.daka-modal-actions {
+    padding: 20px 24px 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid #dee2e6;
+    margin: 0 -1px -1px -1px;
+    background: #f8f9fa;
+    border-radius: 0 0 20px 20px;
+}
+
+.daka-modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+}
+
+.daka-modal-btn.primary {
+    background: linear-gradient(135deg, #34a853, #2d8f47);
+    color: white;
+    box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
+}
+
+.daka-modal-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 168, 83, 0.4);
+}
+
+.daka-modal-btn.secondary {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 2px solid #dee2e6;
+}
+
+.daka-modal-btn.secondary:hover {
+    background: #34a853;
+    color: white;
+    border-color: #34a853;
+    transform: translateY(-2px);
+}
+
+.daka-modal-btn.danger {
+    background: linear-gradient(135deg, #ea4335, #d33426);
+    color: white;
+    box-shadow: 0 4px 12px rgba(234, 67, 53, 0.3);
+}
+
+.daka-modal-btn.danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(234, 67, 53, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .daka-modal {
+        padding: 10px;
+    }
+    
+    .daka-modal-content {
+        max-width: 100%;
+        margin: 0;
+    }
+    
+    .daka-modal-header {
+        padding: 20px 20px 16px;
+    }
+    
+    .daka-modal-body {
+        padding: 20px;
+    }
+    
+    .daka-modal-actions {
+        padding: 16px 20px 20px;
+        flex-direction: column;
+    }
+    
+    .daka-modal-btn {
+        width: 100%;
+    }
+    
+    .daka-time-range {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .daka-time-range .time-separator {
+        display: none;
+    }
+}
+
+/* 深色模式适配 */
+body.dark-theme .daka-modal-content {
+    background: #1a1a1a;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-form-group label {
+    color: #e0e0e0;
+}
+
+body.dark-theme .daka-form-input,
+body.dark-theme .daka-form-textarea,
+body.dark-theme .daka-form-select {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-form-input:focus,
+body.dark-theme .daka-form-textarea:focus,
+body.dark-theme .daka-form-select:focus {
+    border-color: #34a853;
+    box-shadow: 0 0 0 3px rgba(52, 168, 83, 0.2);
+}
+
+body.dark-theme .daka-form-input::placeholder,
+body.dark-theme .daka-form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+body.dark-theme .daka-modal-actions {
+    background: #2d2d2d;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-modal-btn.secondary {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-time-range .time-separator {
+    color: #a0a0a0;
+}
+
+body.dark-theme .daka-tags-hint {
+    color: #a0a0a0;
+}
+
+/* 动画效果 */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.daka-modal.show .daka-modal-content {
+    animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===== 打卡导入和编辑模态框特殊样式 ===== */
+
+/* 打卡导入模态框样式 */
+#daka-import-modal .daka-modal-header {
+    background: linear-gradient(135deg, #007bff, #0056b3); /* 蓝色主题 */
+}
+
+#daka-import-modal .daka-modal-btn.primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+#daka-import-modal .daka-modal-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+#daka-import-modal .daka-form-input:focus,
+#daka-import-modal .daka-form-textarea:focus,
+#daka-import-modal .daka-form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+/* 打卡编辑模态框样式 */
+#daka-edit-modal .daka-modal-header {
+    background: linear-gradient(135deg, #28a745, #1e7e34); /* 绿色主题 */
+}
+
+#daka-edit-modal .daka-modal-btn.primary {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+#daka-edit-modal .daka-modal-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+#daka-edit-modal .daka-form-input:focus,
+#daka-edit-modal .daka-form-textarea:focus,
+#daka-edit-modal .daka-form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+}
+
+/* 深色模式下的导入和编辑模态框 */
+body.dark-theme #daka-import-modal .daka-form-input:focus,
+body.dark-theme #daka-import-modal .daka-form-textarea:focus,
+body.dark-theme #daka-import-modal .daka-form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+body.dark-theme #daka-edit-modal .daka-form-input:focus,
+body.dark-theme #daka-edit-modal .daka-form-textarea:focus,
+body.dark-theme #daka-edit-modal .daka-form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+/* ===== 打卡详情和编辑记录模态框样式 ===== */
+
+/* 打卡详情模态框样式 */
+#daka-detail-modal .daka-modal-header {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3); /* 紫色主题 */
+}
+
+#daka-detail-modal .daka-modal-btn.primary {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+#daka-detail-modal .daka-modal-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+}
+
+/* 打卡详情内容样式 */
+#daka-detail-modal .daka-modal-body {
+    padding: 24px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#daka-detail-modal .daka-detail-punch-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#daka-detail-modal .daka-detail-punch-item {
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(111, 66, 193, 0.06);
+    margin-bottom: 12px;
+    padding: 16px;
+    border: 1px solid #e9ecef;
+    position: relative;
+    transition: box-shadow 0.2s;
+}
+
+#daka-detail-modal .daka-detail-punch-item:hover {
+    box-shadow: 0 4px 16px rgba(111, 66, 193, 0.13);
+}
+
+#daka-detail-modal .daka-detail-punch-date {
+    font-size: 14px;
+    color: #6f42c1;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#daka-detail-modal .daka-detail-punch-text {
+    font-size: 14px;
+    color: #2c3e50;
+    margin: 8px 0 0 0;
+    line-height: 1.6;
+    word-break: break-all;
+}
+
+#daka-detail-modal .daka-detail-punch-attachments {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+#daka-detail-modal .daka-detail-punch-img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#daka-detail-modal .daka-detail-punch-img:hover {
+    transform: scale(1.05);
+}
+
+#daka-detail-modal .daka-punch-edit-btn {
+    margin-top: 8px;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#daka-detail-modal .daka-punch-edit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+/* 编辑打卡记录模态框样式 */
+#daka-edit-punch-modal .daka-modal-header {
+    background: linear-gradient(135deg, #fd7e14, #e55a00); /* 橙色主题 */
+}
+
+#daka-edit-punch-modal .daka-modal-btn.primary {
+    background: linear-gradient(135deg, #fd7e14, #e55a00);
+    box-shadow: 0 4px 12px rgba(253, 126, 20, 0.3);
+}
+
+#daka-edit-punch-modal .daka-modal-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(253, 126, 20, 0.4);
+}
+
+#daka-edit-punch-modal .daka-form-input:focus,
+#daka-edit-punch-modal .daka-form-textarea:focus,
+#daka-edit-punch-modal .daka-form-select:focus {
+    border-color: #fd7e14;
+    box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.15);
+}
+
+/* 图片预览模态框样式 */
+#daka-preview-modal {
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+#daka-preview-modal .daka-modal-content {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    position: relative;
+}
+
+#daka-preview-modal img {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease;
+}
+
+#daka-preview-modal img:hover {
+    transform: scale(1.02);
+}
+
+#daka-preview-modal .daka-img-toolbar {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+    z-index: 2;
+}
+
+#daka-preview-modal .daka-img-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 18px;
+    color: #2c3e50;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+#daka-preview-modal .daka-img-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+#daka-preview-modal .daka-img-btn#daka-img-save-btn {
+    color: #007bff;
+}
+
+#daka-preview-modal .daka-img-btn#daka-img-copy-btn {
+    color: #28a745;
+}
+
+#daka-preview-modal .daka-modal-close {
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 20px;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+#daka-preview-modal .daka-modal-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 深色模式下的详情和编辑记录模态框 */
+body.dark-theme #daka-detail-modal .daka-detail-punch-item {
+    background: #2d2d2d;
+    border-color: #404040;
+}
+
+body.dark-theme #daka-detail-modal .daka-detail-punch-text {
+    color: #e0e0e0;
+}
+
+body.dark-theme #daka-edit-punch-modal .daka-form-input:focus,
+body.dark-theme #daka-edit-punch-modal .daka-form-textarea:focus,
+body.dark-theme #daka-edit-punch-modal .daka-form-select:focus {
+    border-color: #fd7e14;
+    box-shadow: 0 0 0 3px rgba(253, 126, 20, 0.2);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    #daka-detail-modal .daka-modal-body {
+        padding: 20px;
+    }
+    
+    #daka-detail-modal .daka-detail-punch-item {
+        padding: 12px;
+    }
+    
+    #daka-preview-modal .daka-img-toolbar {
+        top: 10px;
+        right: 10px;
+        gap: 8px;
+    }
+    
+    #daka-preview-modal .daka-img-btn {
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+    
+    #daka-preview-modal img {
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+}
+
+/* ===== 打卡选择页面特殊样式 ===== */
+
+/* 打卡选择页面样式 */
+.daka-modal[data-type="punch-select"] .daka-modal-header {
+    background: linear-gradient(135deg, #4285f4, #3367d6); /* 蓝色主题 */
+}
+
+.daka-modal[data-type="punch-select"] .daka-modal-btn.primary {
+    background: linear-gradient(135deg, #4285f4, #3367d6);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+.daka-modal[data-type="punch-select"] .daka-modal-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+}
+
+.daka-modal[data-type="punch-select"] .daka-modal-btn.secondary {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 2px solid #dee2e6;
+}
+
+.daka-modal[data-type="punch-select"] .daka-modal-btn.secondary:hover {
+    background: #4285f4;
+    color: white;
+    border-color: #4285f4;
+    transform: translateY(-2px);
+}
+
+/* 打卡选择按钮组样式 */
+.daka-punch-options {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.daka-punch-option-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 16px 20px;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    background: #f8f9fa;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.daka-punch-option-btn:hover {
+    border-color: #4285f4;
+    background: #e3f0ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
+}
+
+.daka-punch-option-btn i {
+    font-size: 24px;
+    color: #4285f4;
+}
+
+.daka-punch-option-btn.primary {
+    background: linear-gradient(135deg, #4285f4, #3367d6);
+    color: white;
+    border-color: #4285f4;
+}
+
+.daka-punch-option-btn.primary:hover {
+    background: linear-gradient(135deg, #3367d6, #2a56c6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.3);
+}
+
+.daka-punch-option-btn.primary i {
+    color: white;
+}
+
+/* 打卡内容区域样式 */
+.daka-punch-detail-area {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+    border: 1px solid #dee2e6;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 文件上传区域样式 */
+.daka-file-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.daka-file-upload-area:hover {
+    border-color: #4285f4;
+    background: #f8f9fa;
+}
+
+.daka-file-upload-area i {
+    font-size: 32px;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.daka-file-upload-area p {
+    margin: 8px 0 0 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* 图片预览网格 */
+.daka-image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.daka-image-preview-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.daka-image-preview-item:hover {
+    transform: scale(1.05);
+}
+
+.daka-image-preview-item img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    display: block;
+}
+
+.daka-image-remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.daka-image-remove-btn:hover {
+    background: rgba(234, 67, 53, 0.8);
+}
+
+/* 深色模式适配 */
+body.dark-theme .daka-modal[data-type="punch-select"] .daka-modal-btn.secondary {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-punch-option-btn {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-punch-option-btn:hover {
+    border-color: #4285f4;
+    background: #1a1a1a;
+}
+
+body.dark-theme .daka-punch-detail-area {
+    background: #2d2d2d;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-file-upload-area {
+    background: #1a1a1a;
+    border-color: #404040;
+}
+
+body.dark-theme .daka-file-upload-area:hover {
+    border-color: #4285f4;
+    background: #23272e;
+}
+
+body.dark-theme .daka-file-upload-area i {
+    color: #b0b8c1;
+}
+
+body.dark-theme .daka-file-upload-area p {
+    color: #b0b8c1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .daka-punch-options {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .daka-punch-option-btn {
+        min-width: auto;
+        padding: 12px 16px;
+    }
+    
+    .daka-punch-detail-area {
+        padding: 16px;
+    }
+    
+    .daka-image-preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    }
+    
+    .daka-image-preview-item img {
+        height: 60px;
+    }
+}
