@@ -1,0 +1,433 @@
+.relax-group-tabs {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0 10px 0;
+  background: transparent;
+  border-bottom: 1px solid #ececec;
+  margin-bottom: 18px;
+}
+.relax-group-tab {
+  background: #f5f5f7;
+  border: none;
+  outline: none;
+  padding: 8px 22px;
+  border-radius: 20px;
+  font-size: 15px;
+  color: #666;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.relax-group-tab.active {
+  background: #4285f4;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(66,133,244,0.08);
+}
+.relax-group-tab:hover:not(.active) {
+  background: #e3e8f0;
+  color: #4285f4;
+}
+
+/* 顶部搜索栏样式 */
+.relax-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0 0;
+}
+.relax-search input {
+  flex: 1 1 auto;
+  min-width: 160px;
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  outline: none;
+}
+.relax-search button {
+  border: none;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #f5f5f7;
+  cursor: pointer;
+}
+.relax-search button:hover { background: #e3e8f0; }
+
+/* 轻松一刻 搜索栏美化 */
+.relax-search {
+  position: relative;
+  background: #fafafa;
+  border: 1px solid #e8e8ef;
+  border-radius: 14px;
+  padding: 10px 10px;
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.relax-search:focus-within {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.12);
+  background: #fff;
+}
+
+.relax-search input {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.relax-search input::placeholder {
+  color: #9ca3af;
+}
+
+.relax-search button {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  transition: background 0.2s ease, transform 0.1s ease, border-color 0.2s ease;
+}
+
+.relax-search button:hover {
+  background: #e5e7eb;
+}
+
+.relax-search button:active {
+  transform: scale(0.98);
+}
+
+/* 语义化区分：搜索与清除按钮 */
+#relax-search-btn {
+  background: #e8f0fe;
+  border-color: #c7d2fe;
+}
+
+#relax-search-btn:hover {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}
+
+#relax-search-clear {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
+#relax-search-clear:hover {
+  background: #eef0f2;
+}
+
+/* PC端和平板端（>=600px）顶部栏布局 */
+@media (min-width: 600px) {
+  .relax-container {
+    display: block;
+  }
+  .relax-group-sidebar {
+    width: 100%;
+    min-width: 0;
+    margin-right: 0;
+    padding: 10px 0;
+    border-right: none;
+    border-bottom: 1px solid #ececec;
+    background: transparent;
+    height: auto;
+  }
+  .relax-group-tabs {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    border-bottom: none;
+    border-right: none;
+    margin-bottom: 16px;
+    padding: 0;
+    align-items: center;
+    justify-content: flex-start;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: inherit;
+    backdrop-filter: none;
+  }
+  .relax-search {
+    margin: 0 0 12px 0;
+    max-width: 520px;
+  }
+  .relax-group-tab {
+    width: auto;
+    text-align: center;
+    border-radius: 18px;
+    padding: 8px 16px;
+    font-size: 14px;
+    background: #f5f5f7;
+    color: #666;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .relax-group-tab.active {
+    background: #4285f4;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(66,133,244,0.08);
+  }
+  .relax-group-tab:hover:not(.active) {
+    background: #e3e8f0;
+    color: #4285f4;
+  }
+  .relax-main-content {
+    flex: 1 1 0%;
+    min-width: 0;
+    padding-top: 10px;
+    padding-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px 32px;
+    align-items: flex-start;
+  }
+  .relax-main-content > .medals-wall,
+  .relax-main-content > .points-display,
+  .relax-main-content > .lucky-wheel,
+  .relax-main-content > #horoscope-section,
+  .relax-main-content > .hot-section,
+  .relax-main-content > .history-section,
+  .relax-main-content > #water-reminder-panel {
+    flex: 1 1 320px;
+    max-width: 420px;
+    min-width: 280px;
+    box-sizing: border-box;
+  }
+}
+
+/* 移动端（<600px）横排小按钮 */
+@media (max-width: 599px) {
+  .relax-container {
+    display: block;
+    padding: 0 8px; /* 减少左右边距，让内容更宽 */
+  }
+  .relax-group-sidebar {
+    width: 100%;
+    border-right: none;
+    margin-right: 0;
+    padding: 0;
+  }
+  .relax-group-tabs {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 12px 0 8px 0;
+    border-bottom: 1px solid #ececec;
+    margin-bottom: 14px;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .relax-group-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .relax-group-tab {
+    border-radius: 18px;
+    padding: 8px 12px 6px 12px;
+    font-size: 10px;
+    width: auto;
+    min-width: 54px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    line-height: 1.1;
+    justify-content: center;
+  }
+  .relax-group-tab i {
+    font-size: 13px;
+    margin: 0 0 0.5px 0;
+    display: block;
+  }
+  .relax-group-tab span,
+  .relax-group-tab {
+    font-size: 10px;
+    margin: 0;
+    padding: 0;
+  }
+  .relax-main-content {
+    padding-top: 0;
+    padding-bottom: 0;
+    display: block;
+  }
+  .relax-main-content > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-bottom: 18px;
+    padding: 20px 16px; /* 减少卡片内边距，让内容更宽 */
+  }
+  /* 卡片内所有文字整体缩小 */
+  .relax-main-content,
+  .relax-main-content * {
+    font-size: 13px !important;
+  }
+  .relax-main-content h3,
+  .relax-main-content h4 {
+    font-size: 15px !important;
+  }
+}
+
+/* 统一卡片样式 */
+.relax-main-content > .medals-wall,
+.relax-main-content > .points-display,
+.relax-main-content > .lucky-wheel,
+.relax-main-content > #horoscope-section,
+.relax-main-content > .hot-section,
+.relax-main-content > .history-section,
+.relax-main-content > #water-reminder-panel {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(66,133,244,0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+  padding: 28px 28px 22px 28px;
+  margin: 0;
+  margin-bottom: 0;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.relax-main-content > .medals-wall:not(:last-child),
+.relax-main-content > .points-display:not(:last-child),
+.relax-main-content > .lucky-wheel:not(:last-child),
+.relax-main-content > #horoscope-section:not(:last-child),
+.relax-main-content > .hot-section:not(:last-child),
+.relax-main-content > .history-section:not(:last-child),
+.relax-main-content > #water-reminder-panel:not(:last-child) {
+  margin-bottom: 0;
+}
+
+/* 卡片标题统一样式 */
+.relax-main-content h3,
+.relax-main-content h4 {
+  font-size: 1.18em;
+  font-weight: 600;
+  color: #2d3a4a;
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+/* 卡片内容间距优化 */
+.relax-main-content .medals-container,
+.relax-main-content .points-value,
+.relax-main-content .tools-container,
+.relax-main-content .hot-list,
+.relax-main-content .history-list,
+.relax-main-content .focus-stats {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* 卡片hover效果 */
+@media (hover: hover) {
+  .relax-main-content > .medals-wall:hover,
+  .relax-main-content > .points-display:hover,
+  .relax-main-content > .lucky-wheel:hover,
+  .relax-main-content > #horoscope-section:hover,
+  .relax-main-content > .hot-section:hover,
+  .relax-main-content > .history-section:hover,
+  .relax-main-content > #water-reminder-panel:hover {
+    box-shadow: 0 4px 20px rgba(66,133,244,0.13), 0 2px 8px rgba(0,0,0,0.06);
+    transform: translateY(-2px) scale(1.012);
+  }
+}
+
+/* PC端卡片最大宽度限制，保证并排美观 */
+@media (min-width: 900px) {
+  .relax-main-content > * {
+    max-width: 420px;
+    min-width: 280px;
+  }
+}
+
+/* 移动端卡片全宽 */
+@media (max-width: 899px) {
+  .relax-main-content > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-bottom: 18px;
+  }
+}
+
+/* 深色模式适配 */
+body.dark-theme .relax-group-tabs {
+  background: #101014 !important;
+  color: #fff !important;
+}
+body.dark-theme .relax-group-tab {
+  background: #18181c !important;
+  color: #fff !important;
+  border: 1px solid #22222a !important;
+}
+body.dark-theme .relax-group-tab.active {
+  background: #40916c !important;
+  color: #fff !important;
+  border: 1px solid #40916c !important;
+}
+body.dark-theme .relax-group-tabs button:hover,
+body.dark-theme .relax-group-tab:hover {
+  background: #23232a !important;
+  color: #fff !important;
+}
+/* 深色模式：搜索栏适配 */
+body.dark-theme .relax-search {
+  background: #14141a;
+  border-color: #23232a;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+body.dark-theme .relax-search:focus-within {
+  border-color: #40916c;
+  box-shadow: 0 0 0 3px rgba(64,145,108,0.2);
+  background: #101014;
+}
+
+body.dark-theme .relax-search input {
+  color: #e5e7eb;
+}
+
+body.dark-theme .relax-search input::placeholder {
+  color: #9aa0a6;
+}
+
+body.dark-theme #relax-search-btn {
+  background: #1e293b;
+  border-color: #223045;
+}
+
+body.dark-theme #relax-search-btn:hover {
+  background: #253549;
+  border-color: #2a3d52;
+}
+
+body.dark-theme #relax-search-clear {
+  background: #18181c;
+  border-color: #22222a;
+}
+
+body.dark-theme #relax-search-clear:hover {
+  background: #202027;
+}
+body.dark-theme .relax-group-sidebar {
+  background: #101014 !important;
+  color: #fff !important;
+}
+body.dark-theme .relax-main-content {
+  background: #101014 !important;
+  color: #fff !important;
+} 
