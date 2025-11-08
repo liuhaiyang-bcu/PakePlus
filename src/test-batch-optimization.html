@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量优化测试工具</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .demo-section h3 {
+            margin-top: 0;
+            color: #4285f4;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .test-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .test-btn.primary {
+            background: #4285f4;
+            color: white;
+        }
+        .test-btn.primary:hover {
+            background: #3367d6;
+        }
+        .test-btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .test-btn.secondary:hover {
+            background: #e9ecef;
+        }
+        .test-btn.danger {
+            background: #ea4335;
+            color: white;
+        }
+        .test-btn.danger:hover {
+            background: #d33b2c;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .info-box h4 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4285f4;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .log-area {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .upload-demo {
+            border: 2px dashed #4285f4;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 16px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-demo:hover {
+            border-color: #3367d6;
+            background: #f8f9ff;
+        }
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 批量图片优化测试工具</h1>
+        
+        <div class="demo-section">
+            <h3>📊 当前存储统计</h3>
+            <div class="test-buttons">
+                <button class="test-btn primary" onclick="scanImages()">扫描图片</button>
+                <button class="test-btn secondary" onclick="showStats()">显示统计</button>
+                <button class="test-btn secondary" onclick="clearLog()">清除日志</button>
+            </div>
+            <div id="stats-container" class="stats-grid"></div>
+            <div id="log" class="log-area"></div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🖼️ 模拟数据测试</h3>
+            <div class="info-box">
+                <h4>测试说明</h4>
+                <p>这些按钮会创建模拟的打卡数据，包含不同大小的图片，用于测试批量优化功能。</p>
+            </div>
+            <div class="test-buttons">
+                <button class="test-btn primary" onclick="createTestData(5)">创建5个测试打卡</button>
+                <button class="test-btn primary" onclick="createTestData(10)">创建10个测试打卡</button>
+                <button class="test-btn secondary" onclick="addLargeImages()">添加大图片</button>
+                <button class="test-btn danger" onclick="clearTestData()">清除测试数据</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🚀 批量优化测试</h3>
+            <div class="test-buttons">
+                <button class="test-btn primary" onclick="startOptimization()">开始批量优化</button>
+                <button class="test-btn secondary" onclick="optimizeWithSettings()">自定义优化</button>
+                <button class="test-btn secondary" onclick="showOptimizationModal()">显示优化弹窗</button>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>📁 实际图片上传测试</h3>
+            <div class="upload-demo" onclick="document.getElementById('testFileInput').click()">
+                <div>📷 点击上传图片进行测试</div>
+                <div style="font-size: 12px; color: #666; margin-top: 8px;">
+                    上传的图片会被添加到测试打卡中，然后可以测试批量优化
+                </div>
+                <input type="file" id="testFileInput" class="file-input" multiple accept="image/*">
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🔄 数据管理</h3>
+            <div class="test-buttons">
+                <button class="test-btn secondary" onclick="exportData()">导出数据</button>
+                <button class="test-btn secondary" onclick="importData()">导入数据</button>
+                <button class="test-btn secondary" onclick="createBackup()">创建备份</button>
+                <button class="test-btn danger" onclick="resetAll()">重置所有数据</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="js/storage.js"></script>
+    <script src="js/image-compressor.js"></script>
+    <script src="js/image-optimizer.js"></script>
+    <script src="js/image-batch-optimizer.js"></script>
+
+    <script>
+        let testOptimizer;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            testOptimizer = new ImageBatchOptimizer();
+            log('批量优化测试工具已初始化');
+            scanImages();
+        });
+
+        // 日志函数
+        function log(message) {
+            const logArea = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logArea.textContent += `[${timestamp}] ${message}\n`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+
+        // 扫描图片
+        function scanImages() {
+            try {
+                const images = testOptimizer.scanAllDakaImages();
+                log(`扫描完成，找到 ${images.length} 张图片`);
+                
+                let totalSize = 0;
+                let optimizedCount = 0;
+                
+                images.forEach(img => {
+                    totalSize += img.originalSize;
+                    if (img.file.optimized) optimizedCount++;
+                });
+
+                log(`总大小: ${Math.round(totalSize / 1024)} KB`);
+                log(`已优化: ${optimizedCount} 张`);
+                
+                updateStats(images);
+            } catch (error) {
+                log(`扫描失败: ${error.message}`);
+            }
+        }
+
+        // 显示统计
+        function showStats() {
+            try {
+                const stats = testOptimizer.getOptimizationStats();
+                log('=== 详细统计 ===');
+                log(`总图片数: ${stats.totalImages}`);
+                log(`总大小: ${stats.totalSizeMB} MB`);
+                log(`已优化: ${stats.optimizedImages} 张`);
+                log(`可节省: ${stats.potentialSavings} KB`);
+                
+                updateStatsDisplay(stats);
+            } catch (error) {
+                log(`获取统计失败: ${error.message}`);
+            }
+        }
+
+        // 更新统计显示
+        function updateStats(images) {
+            const container = document.getElementById('stats-container');
+            
+            let totalSize = 0;
+            let optimizedCount = 0;
+            let totalOriginalSize = 0;
+            
+            images.forEach(img => {
+                totalSize += img.file.size || img.originalSize;
+                totalOriginalSize += img.originalSize;
+                if (img.file.optimized) optimizedCount++;
+            });
+
+            const savedSize = totalOriginalSize - totalSize;
+            const compressionRatio = totalOriginalSize > 0 ? (savedSize / totalOriginalSize * 100).toFixed(1) : 0;
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${images.length}</div>
+                    <div class="stat-label">总图片数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${Math.round(totalSize / 1024)}</div>
+                    <div class="stat-label">当前大小 (KB)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${optimizedCount}</div>
+                    <div class="stat-label">已优化</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${compressionRatio}%</div>
+                    <div class="stat-label">压缩率</div>
+                </div>
+            `;
+        }
+
+        function updateStatsDisplay(stats) {
+            const container = document.getElementById('stats-container');
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalImages}</div>
+                    <div class="stat-label">总图片数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalSizeMB}</div>
+                    <div class="stat-label">总大小 (MB)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.optimizedImages}</div>
+                    <div class="stat-label">已优化</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.potentialSavings}</div>
+                    <div class="stat-label">可节省 (KB)</div>
+                </div>
+            `;
+        }
+
+        // 创建测试数据
+        function createTestData(count) {
+            log(`开始创建 ${count} 个测试打卡...`);
+            
+            const data = StorageManager.getData();
+            if (!data.dakas) data.dakas = [];
+
+            for (let i = 0; i < count; i++) {
+                const daka = {
+                    id: `test_daka_${Date.now()}_${i}`,
+                    title: `测试打卡 ${i + 1}`,
+                    content: `这是第 ${i + 1} 个测试打卡内容`,
+                    tags: ['测试', '批量优化'],
+                    createTime: new Date().toISOString(),
+                    updateTime: new Date().toISOString(),
+                    punchRecords: [],
+                    starred: false
+                };
+
+                // 添加测试图片
+                const testImages = generateTestImages(2 + Math.floor(Math.random() * 3));
+                daka.punchRecords.push({
+                    date: new Date().toISOString().slice(0, 10),
+                    text: `测试打卡记录 ${i + 1}`,
+                    files: testImages
+                });
+
+                data.dakas.push(daka);
+            }
+
+            StorageManager.saveData(data);
+            log(`成功创建 ${count} 个测试打卡`);
+            scanImages();
+        }
+
+        // 生成测试图片
+        function generateTestImages(count) {
+            const images = [];
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'];
+            
+            for (let i = 0; i < count; i++) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // 随机大小，模拟不同质量的图片
+                const sizes = [
+                    { width: 1920, height: 1080, quality: 0.9 },
+                    { width: 1200, height: 800, quality: 0.8 },
+                    { width: 800, height: 600, quality: 0.7 },
+                    { width: 400, height: 300, quality: 0.6 }
+                ];
+                
+                const size = sizes[Math.floor(Math.random() * sizes.length)];
+                canvas.width = size.width;
+                canvas.height = size.height;
+                
+                // 绘制测试图片
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = `${Math.min(canvas.width, canvas.height) / 10}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.fillText(`测试图片 ${i + 1}`, canvas.width / 2, canvas.height / 2);
+                
+                const dataUrl = canvas.toDataURL('image/jpeg', size.quality);
+                const sizeBytes = Math.round((dataUrl.length * 3) / 4);
+                
+                images.push({
+                    name: `test_image_${i + 1}.jpg`,
+                    type: 'image/jpeg',
+                    size: sizeBytes,
+                    data: dataUrl
+                });
+            }
+            
+            return images;
+        }
+
+        // 添加大图片
+        function addLargeImages() {
+            log('添加大图片到现有打卡...');
+            
+            const data = StorageManager.getData();
+            if (!data.dakas || data.dakas.length === 0) {
+                log('没有找到打卡数据，请先创建测试数据');
+                return;
+            }
+
+            // 为每个打卡添加一张大图片
+            data.dakas.forEach((daka, index) => {
+                if (daka.punchRecords && daka.punchRecords.length > 0) {
+                    const largeImage = generateLargeTestImage(index);
+                    daka.punchRecords[0].files = daka.punchRecords[0].files || [];
+                    daka.punchRecords[0].files.push(largeImage);
+                }
+            });
+
+            StorageManager.saveData(data);
+            log('大图片添加完成');
+            scanImages();
+        }
+
+        // 生成大图片
+        function generateLargeTestImage(index) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 创建大尺寸图片
+            canvas.width = 2560;
+            canvas.height = 1440;
+            
+            // 创建渐变背景
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 添加文字
+            ctx.fillStyle = 'white';
+            ctx.font = '120px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`大图片 ${index + 1}`, canvas.width / 2, canvas.height / 2);
+            
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            const sizeBytes = Math.round((dataUrl.length * 3) / 4);
+            
+            return {
+                name: `large_image_${index + 1}.jpg`,
+                type: 'image/jpeg',
+                size: sizeBytes,
+                data: dataUrl
+            };
+        }
+
+        // 开始优化
+        async function startOptimization() {
+            log('开始批量优化...');
+            
+            try {
+                testOptimizer.onProgress = (progress) => {
+                    log(`进度: ${progress.current}/${progress.total} - ${progress.currentImage}`);
+                };
+                
+                testOptimizer.onComplete = (result) => {
+                    log('=== 优化完成 ===');
+                    log(`处理图片: ${result.processedImages}/${result.totalImages}`);
+                    log(`节省空间: ${result.savedSpaceMB} MB`);
+                    scanImages();
+                };
+                
+                const result = await testOptimizer.optimizeAllDakaImages({
+                    targetSizeKB: 60,
+                    skipIfSmaller: true,
+                    createBackup: false
+                });
+                
+                log('批量优化任务已完成');
+                
+            } catch (error) {
+                log(`优化失败: ${error.message}`);
+            }
+        }
+
+        // 自定义优化
+        async function optimizeWithSettings() {
+            const targetSize = prompt('请输入目标大小 (KB):', '40');
+            if (!targetSize) return;
+            
+            const skipSmall = confirm('是否跳过已经较小的图片？');
+            const createBackup = confirm('是否创建数据备份？');
+            
+            log(`开始自定义优化 (目标: ${targetSize}KB)...`);
+            
+            try {
+                testOptimizer.onProgress = (progress) => {
+                    log(`进度: ${progress.current}/${progress.total} - 已节省: ${Math.round(progress.savedSpace / 1024)}KB`);
+                };
+                
+                testOptimizer.onComplete = (result) => {
+                    log('=== 自定义优化完成 ===');
+                    log(`处理图片: ${result.processedImages}/${result.totalImages}`);
+                    log(`节省空间: ${result.savedSpaceMB} MB`);
+                    scanImages();
+                };
+                
+                await testOptimizer.optimizeAllDakaImages({
+                    targetSizeKB: parseInt(targetSize),
+                    skipIfSmaller: skipSmall,
+                    createBackup: createBackup
+                });
+                
+            } catch (error) {
+                log(`自定义优化失败: ${error.message}`);
+            }
+        }
+
+        // 显示优化弹窗
+        function showOptimizationModal() {
+            if (testOptimizer) {
+                testOptimizer.showOptimizationModal();
+            } else {
+                log('优化器未初始化');
+            }
+        }
+
+        // 清除测试数据
+        function clearTestData() {
+            if (!confirm('确定要清除所有测试数据吗？')) return;
+            
+            const data = StorageManager.getData();
+            data.dakas = (data.dakas || []).filter(daka => !daka.id.startsWith('test_daka_'));
+            StorageManager.saveData(data);
+            
+            log('测试数据已清除');
+            scanImages();
+        }
+
+        // 文件上传处理
+        document.getElementById('testFileInput').addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+            
+            log(`开始处理 ${files.length} 个上传的文件...`);
+            
+            try {
+                const compressedImages = [];
+                
+                for (const file of files) {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        const dataUrl = await new Promise((resolve) => {
+                            reader.onload = e => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                        
+                        compressedImages.push({
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            data: dataUrl
+                        });
+                    }
+                }
+                
+                if (compressedImages.length > 0) {
+                    // 创建一个新的测试打卡
+                    const data = StorageManager.getData();
+                    if (!data.dakas) data.dakas = [];
+                    
+                    const newDaka = {
+                        id: `uploaded_daka_${Date.now()}`,
+                        title: `上传测试 - ${new Date().toLocaleString()}`,
+                        content: `包含 ${compressedImages.length} 张上传的图片`,
+                        tags: ['上传测试'],
+                        createTime: new Date().toISOString(),
+                        updateTime: new Date().toISOString(),
+                        punchRecords: [{
+                            date: new Date().toISOString().slice(0, 10),
+                            text: '上传的图片测试',
+                            files: compressedImages
+                        }],
+                        starred: false
+                    };
+                    
+                    data.dakas.push(newDaka);
+                    StorageManager.saveData(data);
+                    
+                    log(`成功添加 ${compressedImages.length} 张图片到新打卡`);
+                    scanImages();
+                }
+                
+            } catch (error) {
+                log(`处理上传文件失败: ${error.message}`);
+            }
+            
+            e.target.value = '';
+        });
+
+        // 数据管理功能
+        function exportData() {
+            const data = StorageManager.getData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `daka_data_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            log('数据已导出');
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        StorageManager.saveData(data);
+                        log('数据导入成功');
+                        scanImages();
+                    } catch (error) {
+                        log(`数据导入失败: ${error.message}`);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function createBackup() {
+            const data = StorageManager.getData();
+            const backupKey = `backup_${Date.now()}`;
+            localStorage.setItem(backupKey, JSON.stringify(data));
+            log(`备份已创建: ${backupKey}`);
+        }
+
+        function resetAll() {
+            if (!confirm('确定要重置所有数据吗？此操作不可恢复！')) return;
+            
+            localStorage.clear();
+            log('所有数据已重置');
+            scanImages();
+        }
+    </script>
+</body>
+</html>
