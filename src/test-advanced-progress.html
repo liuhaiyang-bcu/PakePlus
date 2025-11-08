@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级进度条测试</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/advanced-progress-bar.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .test-section h2 {
+            color: #4285f4;
+            margin-top: 0;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .project-detail-progress {
+            background: #f1f8ff;
+            border: 1px solid #d1e7ff;
+        }
+        
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-chart-line"></i> 高级进度条功能测试</h1>
+        
+        <!-- 项目卡片测试 -->
+        <div class="test-section">
+            <h2>项目卡片中的进度条</h2>
+            <div class="project-card">
+                <h3>网站开发项目</h3>
+                <div class="advanced-progress-container">
+                    <div class="advanced-progress-header">
+                        <div class="advanced-progress-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span>项目进度</span>
+                        </div>
+                        <div class="advanced-progress-stats">15/20 完成</div>
+                    </div>
+                    <div class="advanced-progress-bar">
+                        <div class="advanced-progress-fill high" style="width: 75%"></div>
+                    </div>
+                    <div class="advanced-progress-text">75%</div>
+                </div>
+                <p>这是一个示例项目，展示高级进度条在项目卡片中的效果。</p>
+            </div>
+            
+            <div class="project-card">
+                <h3>产品设计项目</h3>
+                <div class="advanced-progress-container">
+                    <div class="advanced-progress-header">
+                        <div class="advanced-progress-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span>项目进度</span>
+                        </div>
+                        <div class="advanced-progress-stats">3/15 完成</div>
+                    </div>
+                    <div class="advanced-progress-bar">
+                        <div class="advanced-progress-fill low" style="width: 20%"></div>
+                    </div>
+                    <div class="advanced-progress-text">20%</div>
+                </div>
+                <p>低进度项目示例，展示不同颜色状态。</p>
+            </div>
+        </div>
+        
+        <!-- 项目详情窗口测试 -->
+        <div class="test-section">
+            <h2>项目详情窗口中的进度条</h2>
+            <div class="project-detail-progress">
+                <div class="advanced-progress-container">
+                    <div class="advanced-progress-header">
+                        <div class="advanced-progress-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span>项目总体进度</span>
+                        </div>
+                        <div class="advanced-progress-stats">25/30 完成</div>
+                    </div>
+                    <div class="advanced-progress-bar">
+                        <div class="advanced-progress-fill high" style="width: 83%"></div>
+                    </div>
+                    <div class="advanced-progress-text">83%</div>
+                </div>
+            </div>
+            <p>这是项目详情窗口中的高级进度条，具有更大的尺寸和更丰富的视觉效果。</p>
+        </div>
+        
+        <!-- 动态进度条测试 -->
+        <div class="test-section">
+            <h2>动态进度条测试</h2>
+            <div class="project-card">
+                <h3>动态进度演示</h3>
+                <div class="advanced-progress-container">
+                    <div class="advanced-progress-header">
+                        <div class="advanced-progress-title">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>动态进度</span>
+                        </div>
+                        <div class="advanced-progress-stats" id="dynamic-stats">0/100 完成</div>
+                    </div>
+                    <div class="advanced-progress-bar">
+                        <div class="advanced-progress-fill dynamic" id="dynamic-progress" style="width: 0%"></div>
+                    </div>
+                    <div class="advanced-progress-text" id="dynamic-text">0%</div>
+                </div>
+                <button id="start-dynamic">开始动态演示</button>
+                <button id="reset-dynamic">重置</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('start-dynamic').addEventListener('click', function() {
+            const progressBar = document.getElementById('dynamic-progress');
+            const progressText = document.getElementById('dynamic-text');
+            const progressStats = document.getElementById('dynamic-stats');
+            let width = 0;
+            const interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width++;
+                    progressBar.style.width = width + '%';
+                    progressText.textContent = width + '%';
+                    const completed = Math.floor(width / 100 * 100);
+                    progressStats.textContent = completed + '/100 完成';
+                    
+                    // 更新颜色状态
+                    progressBar.className = 'advanced-progress-fill dynamic';
+                    if (width < 30) {
+                        progressBar.classList.add('low');
+                    } else if (width < 70) {
+                        progressBar.classList.add('medium');
+                    } else if (width < 100) {
+                        progressBar.classList.add('high');
+                    } else {
+                        progressBar.classList.add('complete');
+                    }
+                }
+            }, 50);
+        });
+        
+        document.getElementById('reset-dynamic').addEventListener('click', function() {
+            const progressBar = document.getElementById('dynamic-progress');
+            const progressText = document.getElementById('dynamic-text');
+            const progressStats = document.getElementById('dynamic-stats');
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+            progressStats.textContent = '0/100 完成';
+            progressBar.className = 'advanced-progress-fill dynamic low';
+        });
+    </script>
+</body>
+</html>
