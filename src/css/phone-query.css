@@ -1,0 +1,355 @@
+/* 电话查询卡片样式 */
+.phone-query-section {
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.phone-query-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.phone-query-container h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.phone-query-container h3 i {
+    color: #4CAF50;
+    font-size: 1.2rem;
+}
+
+.phone-query-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 输入组样式 */
+.phone-input-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+#phone-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    background: #fff;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+#phone-input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+#phone-input::placeholder {
+    color: #999;
+    font-family: inherit;
+}
+
+.phone-query-btn {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.phone-query-btn:hover {
+    background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.phone-query-btn:active {
+    transform: translateY(0);
+}
+
+.phone-query-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 查询结果样式 */
+.phone-result {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.phone-info {
+    margin-bottom: 16px;
+}
+
+.phone-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 16px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.phone-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.phone-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.phone-detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+}
+
+/* 操作按钮样式 */
+.phone-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.phone-action-btn {
+    padding: 8px 16px;
+    border: 1px solid #dee2e6;
+    background: white;
+    color: #495057;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.phone-action-btn:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+}
+
+.phone-action-btn:active {
+    transform: translateY(0);
+}
+
+/* 错误状态样式 */
+.phone-error {
+    background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+    border: 1px solid #feb2b2;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    animation: slideInUp 0.3s ease-out;
+}
+
+.error-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.error-message {
+    color: #c53030;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .phone-query-section {
+        margin: 16px 0;
+        padding: 20px;
+    }
+    
+    .phone-input-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    #phone-input {
+        width: 100%;
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+    
+    .phone-query-btn {
+        width: 100%;
+        padding: 14px 20px;
+    }
+    
+    .phone-actions {
+        flex-direction: column;
+    }
+    
+    .phone-action-btn {
+        width: 100%;
+    }
+    
+    .phone-number {
+        font-size: 1.5rem;
+    }
+    
+    .phone-details {
+        gap: 12px;
+    }
+    
+    .phone-detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+
+/* 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+    .phone-query-section {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .phone-query-container h3 {
+        color: #e0e0e0;
+    }
+    
+    #phone-input {
+        background: #2a2a2a;
+        border-color: #444;
+        color: #e0e0e0;
+    }
+    
+    #phone-input:focus {
+        border-color: #4CAF50;
+    }
+    
+    #phone-input::placeholder {
+        color: #888;
+    }
+    
+    .phone-result {
+        background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+        border-color: #444;
+    }
+    
+    .phone-number {
+        color: #e0e0e0;
+    }
+    
+    .detail-label {
+        color: #aaa;
+    }
+    
+    .detail-value {
+        color: #e0e0e0;
+    }
+    
+    .phone-action-btn {
+        background: #333;
+        border-color: #555;
+        color: #e0e0e0;
+    }
+    
+    .phone-action-btn:hover {
+        background: #444;
+        border-color: #666;
+    }
+    
+    .phone-error {
+        background: linear-gradient(135deg, #2a1a1a 0%, #3a2222 100%);
+        border-color: #5a2a2a;
+    }
+    
+    .error-message {
+        color: #ff6b6b;
+    }
+}
+
+/* 加载状态 */
+.phone-query-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.phone-query-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+
+
+
