@@ -1,0 +1,602 @@
+/* 倒数日详情窗口样式 - 优化版 by CodeBuddy */
+
+.countdown-detail-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 降低背景遮罩不透明度 */
+    backdrop-filter: blur(12px) saturate(150%); /* 核心：背景模糊和饱和度 */
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.countdown-detail-modal.show {
+    display: flex;
+}
+
+.countdown-detail-content {
+    background: rgba(255, 255, 255, 0.7); /* 核心：半透明背景 */
+    border-radius: 24px; /* 更大的圆角 */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.95) translateY(10px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.countdown-detail-modal.show .countdown-detail-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* 背景图片容器 */
+.countdown-detail-background {
+    position: relative;
+    height: 250px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 当有背景图片时，确保图片完美居中 */
+.countdown-detail-background.has-image {
+    background-attachment: scroll;
+    background-size: cover;
+    background-position: center center;
+}
+
+/* 针对不同比例的图片进行优化 */
+.countdown-detail-background.has-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* 如果图片比例不适合cover，可以切换到contain模式 */
+.countdown-detail-background.has-image.contain-mode {
+    background-size: contain;
+}
+
+.countdown-detail-background.has-image.contain-mode::after {
+    opacity: 1;
+    background-size: contain;
+}
+
+.countdown-detail-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); /* 底部更暗的渐变 */
+    z-index: 1;
+}
+
+/* 关闭按钮 */
+.countdown-detail-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
+.countdown-detail-close:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* 背景上传/移除按钮 - 统一风格 */
+.countdown-background-upload,
+.countdown-background-remove {
+    position: absolute;
+    bottom: 16px;
+    background: rgba(255, 255, 255, 0.15); /* 统一基础背景 */
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(15px);
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.countdown-background-upload {
+    right: 98px; /* 调整位置，使其与移除按钮相邻 */
+}
+
+.countdown-background-remove {
+    right: 16px;
+}
+
+.countdown-background-upload:hover,
+.countdown-background-remove:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.countdown-background-upload:hover {
+    background: rgba(255, 255, 255, 0.25); /* 悬停时变亮 */
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.countdown-background-remove:hover {
+    background: rgba(220, 53, 69, 0.8); /* 悬停时显示危险色 */
+    border-color: rgba(220, 53, 69, 1);
+}
+
+.countdown-background-upload input[type="file"] { display: none; }
+.countdown-background-remove.show { display: flex; }
+
+
+/* 倒数日信息覆盖层 */
+.countdown-detail-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    color: white;
+    z-index: 5;
+    text-align: left;
+}
+
+.countdown-detail-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+    opacity: 0.9;
+}
+
+.countdown-detail-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.countdown-detail-date {
+    font-size: 15px;
+    opacity: 0.8;
+    margin-bottom: 12px;
+}
+
+.countdown-detail-days {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffc107; /* 更亮的金色 */
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+/* 详情内容区域 */
+.countdown-detail-body {
+    padding: 24px;
+}
+
+.countdown-detail-info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* 使用下划线分隔 */
+}
+.countdown-detail-info-item:last-child {
+    border-bottom: none;
+}
+
+.countdown-detail-info-label {
+    font-weight: 600;
+    color: #333;
+    min-width: 80px;
+    margin-right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.countdown-detail-info-value {
+    flex: 1;
+    color: #555;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.countdown-participant-tag {
+    background: rgba(0, 123, 255, 0.1);
+    color: #0056b3;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* 备注复制功能样式 */
+.countdown-notes-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.countdown-notes-text {
+    flex: 1;
+    word-break: break-word;
+}
+
+.countdown-notes-copy-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: #555;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.countdown-notes-copy-btn:hover {
+    background: #eee;
+    border-color: #aaa;
+    transform: scale(1.05);
+}
+
+.countdown-notes-copy-btn.copied {
+    background: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+/* 操作按钮区域 */
+.countdown-detail-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 0 0 24px 24px;
+}
+
+.countdown-detail-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px -5px rgba(0,0,0,0.1);
+}
+
+.countdown-detail-btn.edit {
+    background: linear-gradient(135deg, #5668f3, #4285f4);
+    color: white;
+}
+
+.countdown-detail-btn.share {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    color: white;
+}
+
+.countdown-detail-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px -5px rgba(0,0,0,0.2);
+}
+.countdown-detail-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px -5px rgba(0,0,0,0.15);
+}
+
+/* 深色模式适配 */
+body.dark-theme .countdown-detail-content {
+    background: rgba(42, 42, 42, 0.7); /* 核心：深色半透明背景 */
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-theme .countdown-detail-info-item {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .countdown-detail-info-label {
+    color: #e0e0e0;
+}
+
+body.dark-theme .countdown-detail-info-value {
+    color: #b0b0b0;
+}
+
+body.dark-theme .countdown-participant-tag {
+    background: rgba(92, 156, 230, 0.15);
+    color: #90caf9;
+}
+
+body.dark-theme .countdown-notes-copy-btn {
+    background: transparent;
+    border-color: #555;
+    color: #ccc;
+}
+body.dark-theme .countdown-notes-copy-btn:hover {
+    background: #333;
+    border-color: #777;
+}
+body.dark-theme .countdown-notes-copy-btn.copied {
+    background: rgba(102, 187, 106, 0.15);
+    border-color: rgba(102, 187, 106, 0.25);
+    color: #81c784;
+}
+
+body.dark-theme .countdown-detail-actions {
+    background: rgba(42, 42, 42, 0.5);
+    border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.countdown-detail-close .mobile-only {
+    display: none;
+}
+.countdown-detail-close .desktop-only {
+    display: inline-block;
+}
+
+/* 响应式设计 - 移动端详情页模式 */
+@media (max-width: 768px) {
+    .countdown-detail-close .mobile-only {
+        display: inline-block;
+    }
+    .countdown-detail-close .desktop-only {
+        display: none;
+    }
+    .countdown-detail-modal {
+        padding: 0;
+        background: var(--background-color, #fff);
+        backdrop-filter: none;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 2001; 
+    }
+
+    .countdown-detail-modal.show {
+        transform: translateX(0);
+    }
+    
+    body.dark-theme .countdown-detail-modal {
+        background: var(--dark-background-color, #1a1a1a);
+    }
+
+    .countdown-detail-content {
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        padding-top: 56px; /* 为固定头部留出空间 */
+    }
+
+    /* 详情页的固定头部 */
+    .countdown-detail-content::before {
+        content: '倒数日详情';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0,0,0,0.07);
+        z-index: 15;
+    }
+
+    body.dark-theme .countdown-detail-content::before {
+        background: rgba(28, 28, 28, 0.8);
+        border-bottom-color: rgba(255,255,255,0.1);
+        color: #fff;
+    }
+
+    /* 将关闭按钮重新定位为返回按钮 */
+    .countdown-detail-close {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        color: var(--text-color, #333);
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        z-index: 20; /* 置于头部之上 */
+    }
+    
+    body.dark-theme .countdown-detail-close {
+        color: #eee;
+    }
+
+    .countdown-detail-close:hover {
+        background: rgba(0,0,0,0.05);
+    }
+
+    .countdown-detail-background { 
+        height: 220px; 
+        border-radius: 0; 
+    }
+
+    .countdown-detail-overlay { padding: 20px; }
+    .countdown-detail-title { font-size: 24px; }
+    .countdown-detail-icon { font-size: 36px; }
+    .countdown-detail-days { font-size: 22px; }
+    .countdown-detail-body {
+        padding: 16px 20px;
+        /* 为固定的操作按钮栏留出底部空间 */
+        padding-bottom: 90px;
+    }
+
+    .countdown-detail-actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 12px;
+        /* 适配 iPhone X 等机型的底部安全区域 */
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        border-radius: 0;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px) saturate(150%);
+        border-top: 1px solid rgba(0,0,0,0.07);
+        z-index: 20;
+        justify-content: space-around; /* 让按钮均匀分布 */
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.05);
+    }
+
+    body.dark-theme .countdown-detail-actions {
+        background: rgba(28, 28, 28, 0.85);
+        border-top-color: rgba(255,255,255,0.1);
+    }
+
+    .countdown-detail-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        flex-grow: 1; /* 让按钮宽度自适应 */
+        max-width: 45%; /* 防止按钮过宽 */
+    }
+}
+
+/* 加载动画 */
+@keyframes countdownDetailFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.countdown-detail-modal.show .countdown-detail-content {
+    animation: countdownDetailFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 背景图片上传提示 */
+.countdown-background-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+    pointer-events: none;
+}
+.countdown-background-hint.hidden { display: none; }
+.countdown-background-hint i { font-size: 40px; margin-bottom: 8px; }
+.countdown-background-hint p { font-size: 14px; margin: 0; }
+
+.countdown-detail-time {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-value {
+    font-size: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 15px;
+    border-radius: 10px;
+    min-width: 70px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.time-label {
+    font-size: 14px;
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+.time-separator {
+    font-size: 28px;
+    align-self: center;
+    margin: 0 5px;
+}
+
+.countdown-toggle-btn {
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.countdown-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
