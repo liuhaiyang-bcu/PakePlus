@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片压缩功能测试</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-area {
+            border: 2px dashed #4285f4;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #3367d6;
+            background: #f0f4ff;
+        }
+        .upload-area.dragover {
+            border-color: #34a853;
+            background: #f0fff4;
+        }
+        .file-input {
+            display: none;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #4285f4;
+            margin-bottom: 16px;
+        }
+        .upload-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            font-size: 14px;
+            color: #999;
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .result-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .filename {
+            font-weight: 600;
+            color: #333;
+        }
+        .compression-badge {
+            background: #4caf50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .detail-item {
+            text-align: center;
+        }
+        .detail-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .image-preview {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .preview-image {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .progress {
+            background: #e9ecef;
+            border-radius: 4px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: #4285f4;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 16px 0;
+        }
+        .status.processing {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .settings {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .settings h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .setting-input {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100px;
+        }
+        .preset-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .preset-btn {
+            padding: 6px 12px;
+            border: 1px solid #4285f4;
+            background: white;
+            color: #4285f4;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .preset-btn.active {
+            background: #4285f4;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 图片压缩功能测试</h1>
+        
+        <div class="settings">
+            <h3>压缩设置</h3>
+            <div class="setting-row">
+                <label>最大宽度:</label>
+                <input type="number" id="maxWidth" class="setting-input" value="800">
+            </div>
+            <div class="setting-row">
+                <label>最大高度:</label>
+                <input type="number" id="maxHeight" class="setting-input" value="800">
+            </div>
+            <div class="setting-row">
+                <label>压缩质量:</label>
+                <input type="number" id="quality" class="setting-input" value="0.5" step="0.05" min="0.05" max="1">
+            </div>
+            <div class="setting-row">
+                <label>最大文件大小(KB):</label>
+                <input type="number" id="maxSize" class="setting-input" value="150">
+            </div>
+            <div class="preset-buttons">
+                <button class="preset-btn" data-preset="high">高质量</button>
+                <button class="preset-btn active" data-preset="medium">中等质量</button>
+                <button class="preset-btn" data-preset="low">低质量</button>
+                <button class="preset-btn" data-preset="ultra">超级压缩</button>
+                <button class="preset-btn" data-preset="thumbnail">缩略图</button>
+            </div>
+        </div>
+
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">点击选择图片或拖拽图片到此处</div>
+            <div class="upload-hint">支持 JPG、PNG、WebP 等格式，可同时选择多张图片</div>
+            <input type="file" id="fileInput" class="file-input" multiple accept="image/*">
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+        <div id="progress" class="progress" style="display: none;">
+            <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+        </div>
+
+        <div id="results" class="results"></div>
+    </div>
+
+    <script src="js/image-compressor.js"></script>
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const status = document.getElementById('status');
+        const progress = document.getElementById('progress');
+        const progressBar = document.getElementById('progressBar');
+        const results = document.getElementById('results');
+
+        // 设置控件
+        const maxWidthInput = document.getElementById('maxWidth');
+        const maxHeightInput = document.getElementById('maxHeight');
+        const qualityInput = document.getElementById('quality');
+        const maxSizeInput = document.getElementById('maxSize');
+
+        // 创建压缩器实例
+        let compressor = new ImageCompressor();
+
+        // 预设按钮事件
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const preset = ImageCompressor.presets[btn.dataset.preset];
+                maxWidthInput.value = preset.maxWidth;
+                maxHeightInput.value = preset.maxHeight;
+                qualityInput.value = preset.quality;
+                maxSizeInput.value = preset.maxSizeKB;
+                
+                updateCompressorSettings();
+            });
+        });
+
+        // 设置变更事件
+        [maxWidthInput, maxHeightInput, qualityInput, maxSizeInput].forEach(input => {
+            input.addEventListener('change', updateCompressorSettings);
+        });
+
+        function updateCompressorSettings() {
+            compressor.setOptions({
+                maxWidth: parseInt(maxWidthInput.value),
+                maxHeight: parseInt(maxHeightInput.value),
+                quality: parseFloat(qualityInput.value),
+                maxSizeKB: parseInt(maxSizeInput.value)
+            });
+        }
+
+        // 上传区域事件
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        async function handleFiles(files) {
+            const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length === 0) {
+                showStatus('请选择图片文件', 'error');
+                return;
+            }
+
+            showStatus(`正在处理 ${imageFiles.length} 张图片...`, 'processing');
+            showProgress(true);
+            results.innerHTML = '';
+
+            try {
+                for (let i = 0; i < imageFiles.length; i++) {
+                    const file = imageFiles[i];
+                    updateProgress((i / imageFiles.length) * 100);
+                    
+                    const compressed = await compressor.compressImage(file);
+                    displayResult(file, compressed);
+                }
+
+                updateProgress(100);
+                showStatus(`✅ 成功处理 ${imageFiles.length} 张图片`, 'success');
+                
+                setTimeout(() => {
+                    showProgress(false);
+                    hideStatus();
+                }, 2000);
+
+            } catch (error) {
+                console.error('压缩失败:', error);
+                showStatus(`❌ 压缩失败: ${error.message}`, 'error');
+                showProgress(false);
+            }
+
+            fileInput.value = '';
+        }
+
+        function displayResult(originalFile, compressed) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'result-item';
+
+            const compressionRatio = compressed.compressionRatio || 0;
+            const originalSizeKB = Math.round(originalFile.size / 1024);
+            const compressedSizeKB = Math.round(compressed.size / 1024);
+            const savedKB = originalSizeKB - compressedSizeKB;
+
+            resultDiv.innerHTML = `
+                <div class="result-header">
+                    <div class="filename">${originalFile.name}</div>
+                    ${compressionRatio > 0 ? `<div class="compression-badge">-${compressionRatio}%</div>` : ''}
+                </div>
+                <div class="result-details">
+                    <div class="detail-item">
+                        <div class="detail-label">原始大小</div>
+                        <div class="detail-value">${originalSizeKB} KB</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">压缩后大小</div>
+                        <div class="detail-value">${compressedSizeKB} KB</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">节省空间</div>
+                        <div class="detail-value">${savedKB} KB</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">尺寸变化</div>
+                        <div class="detail-value">${compressed.originalWidth}×${compressed.originalHeight} → ${compressed.compressedWidth}×${compressed.compressedHeight}</div>
+                    </div>
+                </div>
+                <div class="image-preview">
+                    <div>
+                        <div class="detail-label">原图预览</div>
+                        <img src="${URL.createObjectURL(originalFile)}" class="preview-image" alt="原图">
+                    </div>
+                    <div>
+                        <div class="detail-label">压缩后预览</div>
+                        <img src="${compressed.data}" class="preview-image" alt="压缩后">
+                    </div>
+                </div>
+            `;
+
+            results.appendChild(resultDiv);
+        }
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        function hideStatus() {
+            status.style.display = 'none';
+        }
+
+        function showProgress(show) {
+            progress.style.display = show ? 'block' : 'none';
+            if (!show) progressBar.style.width = '0%';
+        }
+
+        function updateProgress(percent) {
+            progressBar.style.width = `${percent}%`;
+        }
+
+        // 初始化设置
+        updateCompressorSettings();
+    </script>
+</body>
+</html>
