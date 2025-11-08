@@ -1,0 +1,15 @@
+/* 基础移动端网格布局 - 将被 project-mobile-optimized.css 覆盖 */
+@media (max-width: 600px) {
+  .projects-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    padding: 2px;
+  }
+  .project-card {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+  }
+} 
