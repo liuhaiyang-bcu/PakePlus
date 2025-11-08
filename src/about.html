@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>关于 - 有数规划</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/about.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="light-theme">
+    <!-- 返回设置浮球按钮 -->
+    <button class="back-float-btn" onclick="window.location.href='settings.html'" aria-label="返回设置">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="about-container">
+        <div class="about-card">
+            <div class="about-header">
+                <div class="logo-badge"><img src="img/logo.png" alt="logo"></div>
+                <div>
+                    <div class="about-title">有数规划</div>
+                    <div class="about-subtitle">规划轻松，日程无忧</div>
+                </div>
+            </div>
+
+            <div class="about-meta">
+                <span class="pill"><span class="dot"></span> 当前版本 3.1.0</span>
+                <span class="pill"><i class="fa-solid fa-wand-magic-sparkles"></i> 支持九天AI助手</span>
+                <span class="pill"><i class="fa-solid fa-bug-slash"></i> 多项体验优化与问题修复</span>
+            </div>
+
+            <div class="about-content">
+                <h3>功能概览</h3>
+                <ul class="about-list">
+                    <li>日程与任务：快速创建、搜索与分类，时间块管理更高效</li>
+                    <li>大项目规划：阶段拆解、里程碑、资源分配与进度追踪</li>
+                    <li>事件清单：子任务、优先级、共享清单，协作更轻松</li>
+                    <li>番茄专注：计时提醒、专注统计、干扰屏蔽，沉浸工作</li>
+                    <li>人文关怀：作息提醒、喝水提醒、饮食助手，贴心守护</li>
+                    <li>便捷工具：积分兑换使用，实用小工具解决日常痛点</li>
+                    <li>资讯与运势：今日热搜、星座运势、历史上的今天</li>
+                </ul>
+
+                <h3>开发者信息</h3>
+                <p>开发者：Robin刘（bilibili：布吉岛与我不造，抖音：Robin1，快手：布吉岛与我不造Robin）</p>
+                <p>编写时间：2025/9/3 - release</p>
+                <p>版权归属人：刘米洋</p>
+                <p>软著证书号：软著登字第16459079号</p>
+                <p>官网：<a href="#" class="copy-link" data-url="https://youshu3r.netlify.app/" onclick="copyToClipboard(event)">youshu3r.netlify.app</a></p>
+            </div>
+
+            <div class="about-actions">
+                <button class="btn privacy-btn" onclick="window.open('privacy1.html','_self')">
+                    <i class="fa-solid fa-shield-halved"></i> 
+                    <span>隐私协议</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+                <button class="btn privacy-btn" onclick="window.open('children-privacy1.html','_self')">
+                    <i class="fa-solid fa-child"></i> 
+                    <span>儿童隐私保护</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+                <button class="btn privacy-btn" onclick="window.open('terms.html','_self')">
+                    <i class="fa-solid fa-file-contract"></i> 
+                    <span>服务协议</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+            </div>
+
+            <div class="footer-note">© 2025 有数规划 • 保留所有权利</div>
+        </div>
+    </div>
+
+    <script>
+    (function initAutoTheme(){
+        try {
+            var hour = new Date().getHours();
+            var shouldDark = (hour >= 18 || hour < 6);
+            document.body.classList.toggle('dark-theme', shouldDark);
+            document.body.classList.toggle('light-theme', !shouldDark);
+            document.documentElement.setAttribute('data-theme', shouldDark ? 'dark' : 'light');
+        } catch(e) {}
+    })();
+
+    // 防止页面内容被随意复制
+    document.addEventListener('DOMContentLoaded', function() {
+        // 禁用文本选择
+        document.body.style.userSelect = 'none';
+        document.body.style.webkitUserSelect = 'none';
+        document.body.style.mozUserSelect = 'none';
+        document.body.style.msUserSelect = 'none';
+        
+        // 禁用触摸选择
+        document.body.style.webkitTouchCallout = 'none';
+        
+        // 阻止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 阻止复制操作
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 阻止剪切操作
+        document.addEventListener('cut', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 阻止拖拽选择
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 阻止键盘快捷键复制
+        document.addEventListener('keydown', function(e) {
+            // 阻止 Ctrl+C, Ctrl+X, Ctrl+A
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'a')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+
+    // 复制到粘贴板功能
+    function copyToClipboard(event) {
+        event.preventDefault();
+        const link = event.target;
+        const url = link.getAttribute('data-url');
+        
+        // 尝试使用现代Clipboard API
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(url).then(() => {
+                showCopySuccess(link);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                fallbackCopy(url, link);
+            });
+        } else {
+            // 降级方案
+            fallbackCopy(url, link);
+        }
+    }
+
+    // 降级复制方案
+    function fallbackCopy(text, link) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showCopySuccess(link);
+        } catch (err) {
+            console.error('降级复制失败:', err);
+            showCopyError(link);
+        }
+        
+        document.body.removeChild(textArea);
+    }
+
+    // 显示复制成功提示
+    function showCopySuccess(link) {
+        const originalText = link.textContent;
+        const originalClass = link.className;
+        
+        // 添加成功样式
+        link.textContent = '✓ 已复制';
+        link.className = 'copy-link copy-success';
+        
+        // 3秒后恢复原样
+        setTimeout(() => {
+            link.textContent = originalText;
+            link.className = originalClass;
+        }, 3000);
+    }
+
+    // 显示复制失败提示
+    function showCopyError(link) {
+        const originalText = link.textContent;
+        const originalClass = link.className;
+        
+        // 添加错误样式
+        link.textContent = '✗ 复制失败';
+        link.className = 'copy-link copy-error';
+        
+        // 3秒后恢复原样
+        setTimeout(() => {
+            link.textContent = originalText;
+            link.className = originalClass;
+        }, 3000);
+    }
+    </script>
+</body>
+</html>
+
+
