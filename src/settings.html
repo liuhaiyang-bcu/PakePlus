@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>软件设置 - 有数规划</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/settings-harmony.css"> <!-- 鸿蒙5风格设置页面样式 -->
+    <!-- <link rel="stylesheet" href="css/settings-desktop.css"> --> <!-- 电脑端优化样式 - 已禁用 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/clear-dialog.css">
+    <link rel="stylesheet" href="css/user-info-modal.css">
+    <link rel="stylesheet" href="css/points-info-modal.css">
+</head>
+<body class="light-theme">
+    <!-- 固定顶部返回按钮和标题 -->
+    <div class="settings-header">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="settings-title">软件设置</h1>
+    </div>
+    
+    <div class="settings-container">
+        
+        <!-- 电脑版双栏布局 -->
+        <div class="settings-layout">
+            <div class="settings-sidebar">
+                <button class="settings-tab active" data-tab="user-settings">
+                    <i class="fas fa-user"></i>
+                    用户管理
+                </button>
+                <button class="settings-tab" data-tab="theme-settings">
+                    <i class="fas fa-palette"></i>
+                    主题
+                </button>
+                <button class="settings-tab" data-tab="data-settings">
+                    <i class="fas fa-database"></i>
+                    数据管理
+                </button>
+                <button class="settings-tab" onclick="window.location.href='feedback.html'">
+                    <i class="fas fa-comment-dots"></i>
+                    反馈
+                </button>
+                <button class="settings-tab" onclick="window.location.href='about.html'">
+                    <i class="fas fa-info-circle"></i>
+                    关于
+                </button>
+            </div>
+            
+            <div class="settings-main">
+                <div class="settings-body">
+                    <!-- 用户管理 -->
+                    <div id="user-settings" class="settings-section active">
+                        <h2 class="section-title">用户管理</h2>
+                
+                <div class="settings-option">
+                    <label for="settings-nickname">昵称</label>
+                    <input type="text" id="settings-nickname" class="settings-input" placeholder="请输入昵称" maxlength="20">
+                    <p class="input-hint">必须在2-20个字符，目前仅支持中文、英文、数字和下划线</p>
+                </div>
+                
+                <div class="settings-option">
+                    <label for="settings-avatar">头像</label>
+                    <div class="avatar-upload-container">
+                        <div class="avatar-preview-wrapper" onclick="document.getElementById('settings-avatar').click()">
+                            <img id="avatar-preview" class="avatar-preview" src="" alt="头像预览">
+                            <div class="avatar-preview-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <input type="file" id="settings-avatar" accept="image/*" class="settings-input">
+                    </div>
+                    <p class="input-hint">支持JPG、PNG等常见图片格式，文件大小不超过20MB<br>可拍照或从文件管理器选择</p>
+                </div>
+                
+                <!-- 已移除保存设置按钮 -->
+            </div>
+            
+            <!-- 主题设置 -->
+            <div id="theme-settings" class="settings-section">
+                <h2 class="section-title">主题设置</h2>
+                
+                <div class="settings-option-group">
+                    <div class="settings-option">
+                        <label>
+                            <input type="radio" id="light-theme" name="theme" value="light" checked>
+                            浅色主题
+                        </label>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <label>
+                            <input type="radio" id="dark-theme" name="theme" value="dark">
+                            深色主题
+                        </label>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <label>
+                            <input type="radio" id="auto-theme" name="theme" value="auto">
+                            自动切换（18:00-6:00深色）
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- 已移除保存设置按钮 -->
+            </div>
+            
+            <!-- 数据管理 -->
+            <div id="data-settings" class="settings-section data-management-section">
+                <h2 class="section-title">数据管理</h2>
+                
+                <div class="settings-option">
+                    <label for="backup-data-display">备份数据下载</label>
+                    <button id="download-backup-data" class="settings-btn secondary">下载备份数据包</button>
+                    <p class="input-hint">下载包含所有数据的JSON文件</p>
+                </div>
+                
+                <div class="settings-option">
+                    <label for="import-data">导入数据</label>
+                    <input type="file" id="import-data" accept=".json,application/json" class="settings-input" style="display: none;">
+                    <button id="import-data-btn" class="settings-btn primary">选择文件</button>
+                    <p class="input-hint">从JSON文件导入数据<br>请通过文件管理器选择<br><span style='color:#e67e22;'>专注时钟部分内容也将被导入</span></p>
+                </div>
+                
+                <div class="settings-option danger-zone">
+                    <label for="clear-all-data">清除所有内容</label>
+                    <button id="clear-all-data" class="settings-btn danger" onclick="window.location.href='clear-all-data.html'">清除</button>
+                    <p class="input-hint warning">危险操作：将删除所有内容，此操作不可恢复</p>
+                </div>
+            </div>
+            
+            <!-- 关于 -->
+            <div id="about" class="settings-section">
+                <h2 class="section-title">关于</h2>
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- 移动端底部导航栏 -->
+    <div class="settings-bottom-nav">
+        <button class="bottom-nav-item active" data-tab="user-settings">
+            <i class="fas fa-user"></i>
+            <span>用户</span>
+        </button>
+        <button class="bottom-nav-item" data-tab="theme-settings">
+            <i class="fas fa-palette"></i>
+            <span>主题</span>
+        </button>
+        <button class="bottom-nav-item" data-tab="data-settings">
+            <i class="fas fa-database"></i>
+            <span>数据</span>
+        </button>
+        <button class="bottom-nav-item" onclick="window.location.href='feedback.html'">
+            <i class="fas fa-comment-dots"></i>
+            <span>反馈</span>
+        </button>
+        <button class="bottom-nav-item" onclick="window.location.href='about.html'">
+            <i class="fas fa-info-circle"></i>
+            <span>关于</span>
+        </button>
+    </div>
+    
+    <!-- 清除数据对话框 -->
+    <div class="clear-dialog-overlay" id="clear-dialog-overlay">
+        <div class="clear-dialog">
+            <div class="clear-dialog-header">
+                <h3>
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                    清除所有内容
+                </h3>
+                <button class="clear-dialog-close" id="clear-dialog-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="clear-dialog-body">
+                <div class="clear-dialog-icon">🗑️</div>
+                <div class="clear-dialog-title">确定要清除所有内容吗？</div>
+                <div class="clear-dialog-description">
+                    此操作将永久删除您的所有内容，包括：
+                    <br>• 所有事件和任务
+                    <br>• 项目信息
+                    <br>• 清单和倒数日
+                    <br>• 专注记录和积分
+                    <br>• 用户设置和偏好
+                </div>
+                <div class="clear-dialog-warning">
+                    <div class="warning-text">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>此操作不可恢复，请谨慎操作！</span>
+                    </div>
+                </div>
+                
+                <!-- 第一步确认 -->
+                <div class="clear-confirm-step" id="clear-step-1">
+                    <div class="clear-dialog-actions">
+                        <button class="clear-dialog-btn cancel" id="clear-cancel-btn">
+                            <i class="fas fa-times"></i>
+                            取消
+                        </button>
+                        <button class="clear-dialog-btn confirm" id="clear-confirm-btn">
+                            <i class="fas fa-trash"></i>
+                            确认清除
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 第二步确认 -->
+                <div class="clear-confirm-step" id="clear-step-2">
+                    <div class="clear-confirm-hint">
+                        请输入 <strong>"清除所有内容"</strong> 以确认操作
+                    </div>
+                    <input type="text" class="clear-confirm-input" id="clear-confirm-input" 
+                           placeholder="请输入：清除所有内容">
+                    <div class="clear-dialog-actions">
+                        <button class="clear-dialog-btn cancel" id="clear-back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            返回
+                        </button>
+                        <button class="clear-dialog-btn confirm" id="clear-final-btn" disabled>
+                            <i class="fas fa-trash"></i>
+                            最终确认
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 已移除保存提示 -->
+    
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/clear-dialog.js"></script>
+    <script>
+        // 移动端触摸优化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加触摸事件优化
+            const container = document.querySelector('.settings-container');
+            if (container) {
+                // 防止触摸时的默认行为
+                container.addEventListener('touchstart', function(e) {
+                    // 优化触摸响应
+                }, { passive: true });
+                
+                // 优化滚动性能
+                container.addEventListener('scroll', function(e) {
+                    // 滚动时的优化处理
+                }, { passive: true });
+            }
+            
+            // 为所有按钮添加触摸反馈（不影响滚动）
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                // 排除已经处理过的标签页按钮
+                if (button.classList.contains('settings-tab') || button.classList.contains('bottom-nav-item')) {
+                    return;
+                }
+                
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let hasMoved = false;
+                
+                button.addEventListener('touchstart', function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    hasMoved = false;
+                    this.classList.add('touch-active');
+                }, { passive: true });
+                
+                // 触摸移动 - 检测是否在滚动
+                button.addEventListener('touchmove', function(e) {
+                    if (e.touches.length > 0) {
+                        const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+                        const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+                        // 如果移动距离超过10px，认为是滚动，移除触摸反馈
+                        if (deltaX > 10 || deltaY > 10) {
+                            hasMoved = true;
+                            this.classList.remove('touch-active');
+                        }
+                    }
+                }, { passive: true });
+                
+                button.addEventListener('touchend', function(e) {
+                    // 如果移动过，不触发点击
+                    if (!hasMoved) {
+                        // 如果是真正的点击，保留触摸反馈一段时间
+                        setTimeout(() => {
+                            this.classList.remove('touch-active');
+                        }, 150);
+                    } else {
+                        // 如果是滚动，立即移除反馈
+                        this.classList.remove('touch-active');
+                    }
+                }, { passive: true });
+                
+                button.addEventListener('touchcancel', function() {
+                    this.classList.remove('touch-active');
+                }, { passive: true });
+            });
+        });
+    </script>
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化主题
+            initTheme();
+            
+            // 绑定标签页切换事件
+            bindTabEvents();
+            
+            // 绑定设置保存事件
+            bindSettingsEvents();
+            
+            // 加载用户设置
+            loadUserSettings();
+            
+            // 加载主题设置
+            loadThemeSettings();
+            
+            // 确保清除对话框管理器已初始化
+            if (!window.clearDialogManager) {
+                window.clearDialogManager = new ClearDialogManager();
+            }
+        });
+        
+        // 防止页面重复初始化
+        if (window.settingsPageInitialized) {
+            // 如果页面已经初始化过，只重新绑定事件
+            bindSettingsEvents();
+        } else {
+            window.settingsPageInitialized = true;
+        }
+        
+        // 初始化主题
+        function initTheme() {
+            const settings = StorageManager.getSettings();
+            const theme = settings.theme || 'system';
+            
+            // 移除所有主题类
+            document.body.classList.remove('light-theme', 'dark-theme', 'dark-mode');
+            
+            // 根据设置应用主题
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme', 'dark-mode');
+            } else if (theme === 'light') {
+                document.body.classList.add('light-theme');
+            } else if (theme === 'auto' || theme === 'system') {
+                // 自动模式：根据时间判断，立即应用
+                const currentHour = new Date().getHours();
+                const isDarkMode = currentHour >= 18 || currentHour < 6;
+                
+                // 立即应用主题
+                if (isDarkMode) {
+                    document.body.classList.add('dark-theme', 'dark-mode');
+                } else {
+                    document.body.classList.add('light-theme');
+                }
+            }
+            
+            // 设置HTML元素的data属性，便于CSS选择器使用
+            const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+        }
+        
+        // 绑定标签页切换事件
+        function bindTabEvents() {
+            // 获取所有标签页（包括侧边栏和底部导航栏）
+            const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+            const sidebarTabs = document.querySelectorAll('.settings-sidebar .settings-tab');
+            const allTabs = document.querySelectorAll('.settings-tab, .bottom-nav-item');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            // 处理标签页点击/触摸的函数
+            function handleTabClick(e) {
+                const tab = this;
+                
+                // 如果按钮有 onclick 属性（跳转链接），让 onclick 自然执行，不在这里处理
+                // 这样可以让浏览器默认处理跳转，避免重复触发
+                if (tab.onclick || tab.hasAttribute('onclick')) {
+                    // 不阻止默认行为，让 onclick 属性自然执行
+                    return;
+                }
+                
+                // 阻止默认行为和事件冒泡（如果已经有点击处理）
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
+                e.stopPropagation();
+                
+                // 移除所有活动状态
+                allTabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                // 添加当前标签页活动状态
+                tab.classList.add('active');
+                
+                // 同步侧边栏和顶部标签页的活动状态
+                const tabData = tab.getAttribute('data-tab');
+                if (tabData) {
+                    // 激活对应的侧边栏标签
+                    if (sidebarTabs.length > 0) {
+                        sidebarTabs.forEach(t => {
+                            if (t.getAttribute('data-tab') === tabData) {
+                                t.classList.add('active');
+                            }
+                        });
+                    }
+                    
+                    // 激活对应的底部导航项
+                    if (bottomNavItems.length > 0) {
+                        bottomNavItems.forEach(t => {
+                            const itemTabData = t.getAttribute('data-tab');
+                            if (itemTabData === tabData) {
+                                t.classList.add('active');
+                            } else if (itemTabData) {
+                                // 只处理有data-tab属性的按钮（排除链接按钮）
+                                t.classList.remove('active');
+                            }
+                        });
+                    }
+                    
+                    // 显示对应的内容区域
+                    const section = document.getElementById(tabData);
+                    if (section) {
+                        section.classList.add('active');
+                    }
+                }
+            }
+            
+            // 为所有标签页绑定事件（支持点击和触摸）
+            allTabs.forEach(tab => {
+                // 绑定点击事件
+                tab.addEventListener('click', handleTabClick, { passive: false });
+                
+                // 触摸事件处理：区分点击和滚动
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let touchStartTime = 0;
+                let hasMoved = false;
+                
+                // 触摸开始
+                tab.addEventListener('touchstart', function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    touchStartTime = Date.now();
+                    hasMoved = false;
+                }, { passive: true });
+                
+                // 触摸移动 - 如果移动距离超过阈值，认为是滚动而不是点击
+                tab.addEventListener('touchmove', function(e) {
+                    if (e.touches.length > 0) {
+                        const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+                        const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+                        // 如果移动距离超过10px，认为是滚动
+                        if (deltaX > 10 || deltaY > 10) {
+                            hasMoved = true;
+                        }
+                    }
+                }, { passive: true });
+                
+                // 触摸结束 - 只在确认是点击时才触发
+                tab.addEventListener('touchend', function(e) {
+                    // 如果移动距离较大或时间较长，认为是滚动，不触发点击
+                    if (hasMoved) {
+                        return;
+                    }
+                    
+                    const touchDuration = Date.now() - touchStartTime;
+                    // 如果触摸时间超过500ms，可能是长按，不触发点击
+                    if (touchDuration > 500) {
+                        return;
+                    }
+                    
+                    // 如果按钮有 onclick 属性（跳转链接），直接触发点击事件
+                    if (this.onclick || this.hasAttribute('onclick')) {
+                        // 对于跳转按钮，直接触发点击事件，让浏览器处理 onclick
+                        // 不阻止默认行为，这样 onclick 可以正常执行
+                        // 使用 setTimeout 确保触摸事件先完成，然后再触发点击
+                        setTimeout(() => {
+                            this.click();
+                        }, 0);
+                        return;
+                    }
+                    
+                    // 对于其他按钮（有 data-tab 的），阻止默认行为并处理标签切换
+                    // 只有在确认是点击时才阻止默认行为
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                    e.stopPropagation();
+                    handleTabClick.call(this, e);
+                }, { passive: false, once: false });
+            });
+        }
+        
+        // 绑定设置保存事件
+        function bindSettingsEvents() {
+            // 主题设置
+            const themeRadios = document.querySelectorAll('input[name="theme"]');
+            themeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const theme = this.value;
+                    
+                    // 保存主题设置
+                    const userData = StorageManager.getData();
+                    if (userData && userData.settings) {
+                        userData.settings.theme = theme;
+                        StorageManager.saveData(userData);
+                    }
+                    
+                    // 立即应用主题（特别是自动切换模式）
+                    initTheme();
+                    
+                    // 发送存储变化事件，通知其他页面更新主题
+                    const storageEvent = new StorageEvent('storage', {
+                        key: 'schedule_app_all_users',
+                        oldValue: localStorage.getItem('schedule_app_all_users'),
+                        newValue: localStorage.getItem('schedule_app_all_users')
+                    });
+                    window.dispatchEvent(storageEvent);
+                });
+            });
+            
+            // 昵称设置
+            const nicknameInput = document.getElementById('settings-nickname');
+            if (nicknameInput) {
+                nicknameInput.addEventListener('blur', function() {
+                    saveNicknameSetting(this.value);
+                });
+                
+                // 回车保存
+                nicknameInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        saveNicknameSetting(this.value);
+                    }
+                });
+            }
+            
+            // 头像设置
+            const avatarInput = document.getElementById('settings-avatar');
+            if (avatarInput) {
+                avatarInput.addEventListener('change', handleAvatarUpload);
+            }
+            
+            // 备份数据
+            const backupDataBtn = document.getElementById('backup-data');
+            if (backupDataBtn) {
+                backupDataBtn.addEventListener('click', backupData);
+            }
+            
+            // 下载备份数据
+            const downloadBackupDataBtn = document.getElementById('download-backup-data');
+            if (downloadBackupDataBtn) {
+                downloadBackupDataBtn.addEventListener('click', downloadBackupData);
+            }
+            
+            // 注意：导入数据功能的事件监听器已移至js/app.js中统一管理
+            // 避免在多个地方重复绑定导致触发两次的问题
+            
+            // 清除所有数据
+            const clearAllDataBtn = document.getElementById('clear-all-data');
+            if (clearAllDataBtn) {
+                clearAllDataBtn.addEventListener('click', function() {
+                    // 直接跳转到独立的清除页面
+                    window.location.href = 'clear-all-data.html';
+                });
+            }
+        }
+        
+        // 处理头像上传
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // 检查文件类型
+            if (!file.type.match('image.*')) {
+                showNotification('请选择图片文件（JPG、PNG格式）', 'error');
+                return;
+            }
+            
+            // 检查文件大小
+            const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+            if (file.size > MAX_FILE_SIZE) {
+                showNotification('文件大小不能超过20MB', 'error');
+                return;
+            }
+            
+            // 显示正在处理提示
+            showNotification('正在处理头像...', 'info');
+            
+            // 读取并处理图片
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // 创建canvas进行压缩
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // 设置最大尺寸
+                    const MAX_WIDTH = 300;
+                    const MAX_HEIGHT = 300;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // 按比例缩放
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // 转换为base64并保存
+                    const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+                    
+                    // 保存到localStorage
+                    localStorage.setItem('userAvatar', dataURL);
+                    
+                    // 同时保存到StorageManager（如果存在）
+                    if (typeof StorageManager !== 'undefined' && StorageManager.updateUserInfo) {
+                        try {
+                            StorageManager.updateUserInfo({
+                                avatar: dataURL
+                            });
+                        } catch (err) {
+                            console.warn('保存头像到StorageManager失败:', err);
+                        }
+                    }
+                    
+                    // 更新所有页面中的头像显示
+                    updateAvatarDisplay(dataURL);
+                    
+                    // 显示成功提示
+                    showNotification('头像已更新', 'success');
+                    
+                    // 触发自定义事件，通知其他页面更新
+                    window.dispatchEvent(new CustomEvent('userAvatarUpdated', { detail: { avatar: dataURL } }));
+                    
+                    // 发送存储变化事件（通知其他同源页面）
+                    try {
+                        window.dispatchEvent(new Event('storage'));
+                    } catch (err) {
+                        console.warn('触发存储事件失败:', err);
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // 更新所有页面中的头像显示
+        function updateAvatarDisplay(avatarData) {
+            // 更新设置页面中的头像预览
+            const avatarPreview = document.getElementById('avatar-preview');
+            const avatarPlaceholder = document.querySelector('.avatar-preview-placeholder');
+            
+            if (avatarPreview) {
+                if (avatarData && avatarData.trim() !== '') {
+                    avatarPreview.src = avatarData;
+                    avatarPreview.style.display = 'block';
+                    // 隐藏占位符
+                    if (avatarPlaceholder) {
+                        avatarPlaceholder.style.display = 'none';
+                    }
+                } else {
+                    avatarPreview.src = '';
+                    avatarPreview.style.display = 'none';
+                    // 显示占位符
+                    if (avatarPlaceholder) {
+                        avatarPlaceholder.style.display = 'flex';
+                    }
+                }
+            }
+            
+            // 更新主页中的头像
+            const userAvatar = document.getElementById('user-avatar');
+            if (userAvatar) {
+                userAvatar.src = avatarData || 'img/1.png';
+            }
+            
+            // 更新所有页面中class为user-avatar的元素
+            const allAvatars = document.querySelectorAll('.user-avatar');
+            allAvatars.forEach(avatar => {
+                avatar.src = avatarData || 'img/1.png';
+            });
+        }
+        
+        // 加载用户设置
+        function loadUserSettings() {
+            const userNickname = localStorage.getItem('userNickname') || '';
+            const userAvatar = localStorage.getItem('userAvatar') || '';
+            
+            const nicknameInput = document.getElementById('settings-nickname');
+            if (nicknameInput) {
+                nicknameInput.value = userNickname;
+            }
+            
+            // 更新头像预览显示
+            updateAvatarDisplay(userAvatar);
+        }
+        
+        // 加载主题设置
+        function loadThemeSettings() {
+            const settings = StorageManager.getSettings();
+            const theme = settings.theme || 'system';
+            
+            const lightThemeRadio = document.getElementById('light-theme');
+            const darkThemeRadio = document.getElementById('dark-theme');
+            const autoThemeRadio = document.getElementById('auto-theme');
+            
+            if (lightThemeRadio && darkThemeRadio && autoThemeRadio) {
+                lightThemeRadio.checked = theme === 'light';
+                darkThemeRadio.checked = theme === 'dark';
+                autoThemeRadio.checked = theme === 'auto' || theme === 'system';
+            }
+        }
+        
+        // 保存用户设置
+        function saveUserSettings() {
+            const nicknameInput = document.getElementById('settings-nickname');
+            
+            if (nicknameInput) {
+                const nickname = nicknameInput.value.trim();
+                if (nickname) {
+                    localStorage.setItem('userNickname', nickname);
+                }
+            }
+            
+            // 已移除保存提示
+        }
+        
+        // 保存主题设置
+        function saveThemeSettings() {
+            const lightThemeRadio = document.getElementById('light-theme');
+            const darkThemeRadio = document.getElementById('dark-theme');
+            const autoThemeRadio = document.getElementById('auto-theme');
+            
+            let theme = 'system';
+            if (lightThemeRadio && lightThemeRadio.checked) {
+                theme = 'light';
+            } else if (darkThemeRadio && darkThemeRadio.checked) {
+                theme = 'dark';
+            } else if (autoThemeRadio && autoThemeRadio.checked) {
+                theme = 'auto';
+            }
+            
+            // 保存到存储管理器
+            const settings = StorageManager.getSettings();
+            settings.theme = theme;
+            StorageManager.saveSettings(settings);
+            
+            // 应用主题
+            initTheme();
+            
+            // 已移除保存提示
+        }
+        
+        // 备份数据
+        function backupData() {
+            try {
+                // 获取主应用数据并过滤掉图片内容
+                const data = StorageManager.getData();
+                const filteredData = filterDataWithoutImages(data);
+                
+                // 获取心情日记数据
+                const moodDiaryData = localStorage.getItem('moodEntries');
+                if (moodDiaryData) {
+                    filteredData.moodDiary = JSON.parse(moodDiaryData);
+                }
+                
+                // 获取专注时钟数据
+                const pomodoroData = localStorage.getItem('pomodoroAppData');
+                if (pomodoroData) {
+                    filteredData.pomodoro = JSON.parse(pomodoroData);
+                }
+                
+                // 获取清单数据
+                if (filteredData.lists && Array.isArray(filteredData.lists)) {
+                    // 确保清单数据完整
+                } else {
+                    const listsData = localStorage.getItem('lists');
+                    if (listsData) {
+                        try {
+                            filteredData.lists = JSON.parse(listsData);
+                        } catch (e) {
+                            console.warn('解析清单数据失败:', e);
+                        }
+                    }
+                }
+                
+                // 获取倒数日数据
+                if (filteredData.countdowns && Array.isArray(filteredData.countdowns)) {
+                    // 确保倒数日数据完整
+                } else {
+                    const countdownsData = localStorage.getItem('countdowns');
+                    if (countdownsData) {
+                        try {
+                            filteredData.countdowns = JSON.parse(countdownsData);
+                        } catch (e) {
+                            console.warn('解析倒数日数据失败:', e);
+                        }
+                    }
+                }
+                
+                // 获取打卡数据
+                if (filteredData.dakas && Array.isArray(filteredData.dakas)) {
+                    // 确保打卡数据完整
+                } else {
+                    const dakasData = localStorage.getItem('dakas');
+                    if (dakasData) {
+                        try {
+                            filteredData.dakas = JSON.parse(dakasData);
+                        } catch (e) {
+                            console.warn('解析打卡数据失败:', e);
+                        }
+                    }
+                }
+                
+                const jsonString = JSON.stringify(filteredData, null, 2);
+                
+                // 系统分享优先
+                if (window.plus && plus.share && plus.share.sendWithSystem) {
+                    plus.share.sendWithSystem({content: jsonString}, function(){}, function(e){
+                        // 系统分享失败时自动复制到剪贴板
+                        copyTextToClipboard(jsonString);
+                        showNotification('系统分享失败，备份数据已复制到剪贴板，可粘贴分享！\n注意：图片内容不会被备份。', 'success');
+                    });
+                } else if (navigator.share) {
+                    try {
+                        navigator.share({title: '有数规划数据备份', text: jsonString});
+                    } catch (e) {
+                        // 用户取消或不支持时自动复制到剪贴板
+                        copyTextToClipboard(jsonString);
+                        showNotification('备份数据已复制到剪贴板，可粘贴分享！\n注意：图片内容不会被备份。', 'success');
+                    }
+                } else {
+                    // 不支持分享功能时自动复制到剪贴板
+                    copyTextToClipboard(jsonString);
+                    showNotification('备份数据已复制到剪贴板，可粘贴分享！\n注意：图片内容不会被备份。', 'success');
+                }
+            } catch (error) {
+                console.error('备份数据失败:', error);
+                showNotification('备份数据失败，请重试', 'error');
+            }
+        }
+        
+        // 下载备份数据
+        function downloadBackupData() {
+            try {
+                // 获取主应用数据并过滤掉图片内容
+                const data = StorageManager.getData();
+                const filteredData = filterDataWithoutImages(data);
+                
+                // 获取心情日记数据
+                const moodDiaryData = localStorage.getItem('moodEntries');
+                if (moodDiaryData) {
+                    filteredData.moodDiary = JSON.parse(moodDiaryData);
+                }
+                
+                // 获取专注时钟数据
+                const pomodoroData = localStorage.getItem('pomodoroAppData');
+                if (pomodoroData) {
+                    filteredData.pomodoro = JSON.parse(pomodoroData);
+                }
+                
+                // 获取清单数据
+                if (filteredData.lists && Array.isArray(filteredData.lists)) {
+                    // 确保清单数据完整
+                } else {
+                    const listsData = localStorage.getItem('lists');
+                    if (listsData) {
+                        try {
+                            filteredData.lists = JSON.parse(listsData);
+                        } catch (e) {
+                            console.warn('解析清单数据失败:', e);
+                        }
+                    }
+                }
+                
+                // 获取倒数日数据
+                if (filteredData.countdowns && Array.isArray(filteredData.countdowns)) {
+                    // 确保倒数日数据完整
+                } else {
+                    const countdownsData = localStorage.getItem('countdowns');
+                    if (countdownsData) {
+                        try {
+                            filteredData.countdowns = JSON.parse(countdownsData);
+                        } catch (e) {
+                            console.warn('解析倒数日数据失败:', e);
+                        }
+                    }
+                }
+                
+                // 获取打卡数据
+                if (filteredData.dakas && Array.isArray(filteredData.dakas)) {
+                    // 确保打卡数据完整
+                } else {
+                    const dakasData = localStorage.getItem('dakas');
+                    if (dakasData) {
+                        try {
+                            filteredData.dakas = JSON.parse(dakasData);
+                        } catch (e) {
+                            console.warn('解析打卡数据失败:', e);
+                        }
+                    }
+                }
+                
+                const jsonString = JSON.stringify(filteredData, null, 2);
+                
+                // 创建下载链接
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '有数规划数据备份.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('备份数据包已下载', 'success');
+            } catch (error) {
+                console.error('下载备份数据失败:', error);
+                showNotification('下载备份数据失败，请重试', 'error');
+            }
+        }
+        
+        // 导入数据
+        function importData(event) {
+            // 防止重复触发
+            if (importData.isProcessing) {
+                // 清除文件输入，防止重复选择
+                if (event && event.target) {
+                    event.target.value = '';
+                }
+                return;
+            }
+            
+            importData.isProcessing = true;
+            
+            const file = event.target.files[0];
+            if (!file) {
+                importData.isProcessing = false;
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const text = e.target.result;
+                    const jsonData = JSON.parse(text);
+                    
+                    // 处理心情日记数据
+                    if (jsonData.moodDiary) {
+                        localStorage.setItem('moodEntries', JSON.stringify(jsonData.moodDiary));
+                        delete jsonData.moodDiary;
+                    }
+                    
+                    // 处理专注时钟数据
+                    if (jsonData.pomodoro) {
+                        localStorage.setItem('pomodoroAppData', JSON.stringify(jsonData.pomodoro));
+                        delete jsonData.pomodoro;
+                    }
+                    
+                    // 处理清单数据
+                    if (jsonData.lists) {
+                        localStorage.setItem('lists', JSON.stringify(jsonData.lists));
+                        delete jsonData.lists;
+                    }
+                    
+                    // 处理倒数日数据
+                    if (jsonData.countdowns) {
+                        localStorage.setItem('countdowns', JSON.stringify(jsonData.countdowns));
+                        delete jsonData.countdowns;
+                    }
+                    
+                    // 处理打卡数据
+                    if (jsonData.dakas) {
+                        localStorage.setItem('dakas', JSON.stringify(jsonData.dakas));
+                        delete jsonData.dakas;
+                    }
+                    
+                    // 获取默认数据结构
+                    const DEFAULT_DATA = StorageManager.getData && StorageManager.getData.call({getData: () => window.DEFAULT_DATA || {}}) || {};
+                    // 兼容：如未挂载全局DEFAULT_DATA，则用当前数据字段
+                    const defaultKeys = Object.keys(DEFAULT_DATA).length ? Object.keys(DEFAULT_DATA) : Object.keys(StorageManager.getData());
+                    // 验证数据结构
+                    const jsonKeys = Object.keys(jsonData);
+                    const missingKeys = defaultKeys.filter(key => !jsonKeys.includes(key));
+                    // 用默认数据补全导入数据
+                    missingKeys.forEach(key => {
+                        jsonData[key] = DEFAULT_DATA[key] !== undefined ? JSON.parse(JSON.stringify(DEFAULT_DATA[key])) : null;
+                    });
+                    
+                    // 询问用户合并还是覆盖
+                    let keepOld = confirm('是否保留原有内容？\n选择"确定"将合并数据，选择"取消"将覆盖原有内容。');
+                    if (!keepOld) {
+                        // 覆盖模式：用默认数据补全后直接保存
+                        StorageManager.saveData(jsonData);
+                    } else {
+                        // 合并模式，先深拷贝原数据，避免引用问题
+                        const oldData = JSON.parse(JSON.stringify(StorageManager.getData()));
+                        const merged = {};
+                        for (const key of defaultKeys) {
+                            const oldVal = oldData[key];
+                            const newVal = jsonData[key];
+                            if (Array.isArray(oldVal) && Array.isArray(newVal)) {
+                                // 合并数组，按id去重
+                                const oldIds = new Set(oldVal.map(e => e && e.id));
+                                merged[key] = [...oldVal, ...newVal.filter(e => e && !oldIds.has(e.id))];
+                            } else if (typeof oldVal === 'object' && oldVal !== null && typeof newVal === 'object' && newVal !== null) {
+                                // 合并对象，后者优先
+                                merged[key] = { ...oldVal, ...newVal };
+                            } else if (typeof oldVal === 'number' && typeof newVal === 'number') {
+                                // 数值型（如积分）累加
+                                merged[key] = oldVal + newVal;
+                            } else if (newVal !== undefined) {
+                                // 其他类型用新值
+                                merged[key] = newVal;
+                            } else {
+                                merged[key] = oldVal;
+                            }
+                        }
+                        StorageManager.saveData(merged);
+                    }
+                    
+                    showNotification('数据导入成功！');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } catch (error) {
+                    console.error('导入数据失败:', error);
+                    showNotification(`导入数据失败：${error.message}`, 'error');
+                } finally {
+                    // 清除文件输入，允许重复选择同一文件
+                    event.target.value = '';
+                    importData.isProcessing = false;
+                    
+                    // 重置处理点击事件的状态
+                    if (typeof handleImportDataClick !== 'undefined') {
+                        handleImportDataClick.isProcessing = false;
+                    }
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // 确保导入函数有处理状态标识
+        importData.isProcessing = false;
+        
+        // 已移除保存提示功能
+        
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            if (window.UIManager && typeof UIManager.showNotification === 'function') {
+                UIManager.showNotification(message, type);
+            } else {
+                alert(message);
+            }
+        }
+        
+        // 过滤数据，移除图片内容
+        function filterDataWithoutImages(data) {
+            // 深拷贝数据以避免修改原始数据
+            const filteredData = JSON.parse(JSON.stringify(data));
+            
+            // 如果存在打卡数据，过滤掉其中的图片内容
+            if (filteredData.dakas && Array.isArray(filteredData.dakas)) {
+                filteredData.dakas.forEach(daka => {
+                    if (daka.punchRecords && Array.isArray(daka.punchRecords)) {
+                        daka.punchRecords.forEach(record => {
+                            // 移除记录中的文件信息（主要是图片）
+                            if (record.files) {
+                                delete record.files;
+                            }
+                        });
+                    }
+                });
+            }
+            
+            // 确保包含所有必要的数据字段
+            if (!filteredData.lists) {
+                filteredData.lists = [];
+            }
+            
+            if (!filteredData.countdowns) {
+                filteredData.countdowns = [];
+            }
+            
+            if (!filteredData.dakas) {
+                filteredData.dakas = [];
+            }
+            
+            return filteredData;
+        }
+        
+        // 复制文本到剪贴板
+        function copyTextToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).catch(err => {
+                    console.error('复制到剪贴板失败:', err);
+                    // 使用备选方案
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                // 使用备选方案
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+        
+        // 备选复制方案
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // 避免滚动到底部
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (!successful) {
+                    throw new Error('复制命令返回失败');
+                }
+            } catch (err) {
+                console.error('复制失败: ', err);
+                throw err;
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 确保导入函数有处理状态标识
+        importData.isProcessing = false;
+        
+        // 防止页面内容被随意复制
+        (function preventCopy() {
+            function initPreventCopy() {
+                // 禁用文本选择
+                document.body.style.userSelect = 'none';
+                document.body.style.webkitUserSelect = 'none';
+                document.body.style.mozUserSelect = 'none';
+                document.body.style.msUserSelect = 'none';
+                
+                // 禁用触摸选择
+                document.body.style.webkitTouchCallout = 'none';
+                
+                // 允许输入框和文本域正常选择和复制
+                const allowSelect = function(e) {
+                    const target = e.target;
+                    const tagName = target.tagName.toLowerCase();
+                    const isInput = tagName === 'input' || tagName === 'textarea';
+                    const isEditable = target.isContentEditable || target.contentEditable === 'true';
+                    return isInput || isEditable;
+                };
+                
+                // 阻止右键菜单（输入框除外）
+                document.addEventListener('contextmenu', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止复制操作（输入框除外）
+                document.addEventListener('copy', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止剪切操作（输入框除外）
+                document.addEventListener('cut', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止拖拽选择（输入框除外）
+                document.addEventListener('selectstart', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止键盘快捷键复制（输入框除外）
+                document.addEventListener('keydown', function(e) {
+                    if (!allowSelect(e)) {
+                        // 阻止 Ctrl+C, Ctrl+X, Ctrl+A
+                        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'a')) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                }, { passive: false });
+                
+                // 为输入框和文本域启用文本选择
+                const inputs = document.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    input.style.userSelect = 'text';
+                    input.style.webkitUserSelect = 'text';
+                    input.style.mozUserSelect = 'text';
+                    input.style.msUserSelect = 'text';
+                });
+            }
+            
+            // 如果DOM已加载，直接执行；否则等待DOM加载
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initPreventCopy);
+            } else {
+                initPreventCopy();
+            }
+        })();
+    </script>
+</body>
+</html>
