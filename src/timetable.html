@@ -1,0 +1,3495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>课程表 - 有数规划</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Page transition animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        body.page-fade-in {
+            opacity: 0; /* Start with invisible body */
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        /* Tailwind CSS CDN */
+        @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+        
+        /* 课程表专用样式 */
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --accent-color: #fbbc05;
+            --danger-color: #ea4335;
+            --surface-color: #ffffff;
+            --background-color: #f8f9fa;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --border-color: #dadce0;
+            --shadow-light: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-medium: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+
+        .dark-theme {
+            --primary-color: #5a9fd4;
+            --secondary-color: #48bb78;
+            --accent-color: #fbd38d;
+            --danger-color: #fc8181;
+            --surface-color: #2d3748;
+            --background-color: #1a202c;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --shadow-light: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.4);
+            --shadow-medium: 0 3px 6px rgba(0,0,0,0.4), 0 3px 6px rgba(0,0,0,0.5);
+            --hover-color: #4a5568;
+        }
+
+        .light-theme {
+            --hover-color: #f1f3f4;
+        }
+
+        html {
+            /* 启用平滑滚动 */
+            scroll-behavior: smooth;
+            /* 优化滚轮滚动 */
+            scroll-padding-top: 20px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /* 优化触摸滚动 */
+            -webkit-overflow-scrolling: touch;
+            /* 启用硬件加速 */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            /* 优化滚动性能 */
+            overscroll-behavior: contain;
+        }
+
+        .timetable-container {
+            max-width: 1200px; /* 增加电脑端最大宽度 */
+            margin: 0 auto;
+            padding: 16px; /* 增加内边距 */
+        }
+
+        .timetable-header {
+            background: var(--surface-color);
+            border-radius: 6px; /* 进一步减小圆角 */
+            padding: 12px; /* 进一步减小内边距 */
+            margin-bottom: 12px; /* 进一步减小外边距 */
+            box-shadow: var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px; /* 进一步减小间距 */
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* 减小间距 */
+        }
+
+        .back-btn {
+            padding: 6px 10px;
+            font-size: 13px;
+            background: var(--surface-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .back-btn:hover {
+            background: var(--hover-color);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .back-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .timetable-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .week-navigation {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn {
+            padding: 6px 10px;
+            font-size: 13px;
+            background: var(--surface-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .back-btn:hover {
+            background: var(--hover-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .back-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .filter-btn {
+            padding: 5px 10px;
+            font-size: 13px;
+            background: var(--surface-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .filter-btn:hover {
+            background: var(--hover-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .week-nav-btn {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .filter-btn, .filter-btn-status {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--surface-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .filter-btn.active, .filter-btn-status.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-btn:hover, .filter-btn-status:hover {
+            background: var(--hover-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-btn:active, .filter-btn-status:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .week-nav-btn:hover {
+            background: var(--hover-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .week-nav-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .current-week {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .timetable-grid {
+            background: var(--surface-color);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            max-height: 75vh; /* 增加高度，让页面更充实 */
+            overflow-y: auto;
+        }
+
+        .timetable-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .timetable-grid::-webkit-scrollbar-track {
+            background: var(--background-color);
+            border-radius: 4px;
+        }
+
+        .timetable-grid::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .timetable-grid::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        .time-header {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr); /* 增加时间列宽度 */
+            background: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .time-cell, .day-header {
+            padding: 8px 4px; /* 进一步减小内边距 */
+            text-align: center;
+            font-weight: 600;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            font-size: 12px; /* 添加小字体 */
+        }
+
+        .day-header {
+            display: flex;
+            flex-direction: column;
+            gap: 2px; /* 减小间距 */
+        }
+
+        .day-name {
+            font-size: 11px; /* 减小字体 */
+        }
+
+        .day-date {
+            font-size: 10px; /* 减小字体 */
+            opacity: 0.8;
+        }
+
+        .timetable-body {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr); /* 增加时间列宽度 */
+        }
+
+        .time-slot {
+            position: relative;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--background-color); /* Match page background */
+            height: 40px; /* 与课程格子高度保持一致 */
+            box-sizing: border-box;
+        }
+
+        .time-slot::after {
+            content: attr(data-time);
+            position: absolute;
+            top: -8px;
+            right: 5px;
+            background: var(--background-color);
+            padding: 0 5px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .course-item {
+            position: absolute;
+            left: 2px; /* 增加左边距 */
+            right: 2px; /* 增加右边距 */
+            border-radius: 6px; /* 增加圆角 */
+            padding: 6px; /* 增加内边距 */
+            font-size: 11px; /* 增加字体 */
+            line-height: 1.2; /* 增加行高 */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: visible;
+            border-left: 3px solid rgba(255,255,255,0.3); /* 增加左边框 */
+            z-index: 10;
+            min-height: 25px; /* 增加最小高度 */
+            word-wrap: break-word;
+        }
+
+        .course-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000 !important; /* 悬停时提升到最高层级 */
+            overflow: visible; /* 悬停时确保完全可见 */
+        }
+
+        .course-favorite-icon {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 20;
+            display: none; /* 默认隐藏 */
+        }
+
+        .course-item.favorited .course-favorite-icon {
+            display: block; /* 收藏后显示 */
+            color: #fbbc05;
+        }
+
+        .course-item.favorited {
+            border-left-width: 3px;
+            border-left-color: var(--accent-color);
+        }
+
+        .past-course {
+            filter: grayscale(80%);
+            opacity: 0.6;
+        }
+
+        .completed-course {
+            border: 2px solid var(--text-secondary);
+            background-color: var(--background-color) !important;
+            opacity: 0.7;
+        }
+
+        .completed-course .course-name {
+            text-decoration: line-through;
+        }
+
+        .course-item.ongoing {
+            border: 2px solid var(--accent-color); /* Yellow border */
+            box-shadow: 0 0 10px rgba(251, 188, 5, 0.7);
+            position: relative;
+            z-index: 999 !important;
+        }
+
+        .course-item.ongoing::after {
+            content: '正在进行';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        /* 确保课程卡片在容器边界内完整显示 */
+        .course-cell {
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            height: 40px; /* 进一步减小高度 */
+            position: relative;
+            background: var(--surface-color);
+            box-sizing: border-box;
+            overflow: visible;
+        }
+
+        /* 课程卡片文字优化 */
+        .course-name {
+            font-weight: 600;
+            margin-bottom: 2px; /* 增加间距 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+            font-size: 11px; /* 增加字体大小 */
+        }
+
+        .course-location {
+            font-size: 10px; /* 增加字体 */
+            opacity: 0.8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+            margin-bottom: 2px;
+        }
+
+        .course-time {
+            font-size: 9px; /* 增加字体 */
+            opacity: 0.7;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+
+        /* 时间轴辅助线 */
+        .course-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(0,0,0,0.05);
+            pointer-events: none;
+        }
+
+        .course-cell:nth-child(8n+1)::before {
+            background: rgba(0,0,0,0.1);
+            height: 2px;
+        }
+
+        .course-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .course-location {
+            font-size: 10px;
+            opacity: 0.8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .course-time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        /* 课程类型颜色 */
+        .course-required {
+            background: linear-gradient(135deg, #4285f4, #5a9fd4);
+            color: white;
+        }
+
+        .course-elective {
+            background: linear-gradient(135deg, #34a853, #5cbf60);
+            color: white;
+        }
+
+        .course-public {
+            background: linear-gradient(135deg, #fbbc05, #fdd835);
+            color: #333;
+        }
+
+        .course-other {
+            background: linear-gradient(135deg, #9c27b0, #ba68c8);
+            color: white;
+        }
+
+        .filter-section {
+            background: var(--surface-color);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 0;
+            padding: 4px 0;
+        }
+
+        .filter-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .filter-toggle {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 2px;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+        }
+
+        .filter-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        .filter-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+            padding-top: 0;
+        }
+
+        .filter-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+        }
+
+        .filter-content.expanded {
+            max-height: 300px;
+            opacity: 1;
+            padding-top: 10px;
+        }
+
+        .filter-toggle i {
+            transition: transform 0.3s ease;
+        }
+
+        .filter-content.expanded + .filter-header .filter-toggle i,
+        .filter-header.expanded .filter-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 8px; /* 减小间距 */
+            flex-wrap: wrap;
+        }
+
+        .filter-btn, .filter-btn-status {
+            padding: 6px 12px; /* 减小内边距 */
+            border: 1px solid var(--border-color); /* 减细边框 */
+            border-radius: 16px; /* 减小圆角 */
+            background: var(--surface-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px; /* 减小字体 */
+        }
+
+        .filter-btn.active, .filter-btn-status.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-btn:hover, .filter-btn-status:hover {
+            border-color: var(--primary-color);
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px; /* 减小间距 */
+            flex-wrap: wrap;
+            margin-top: 10px; /* 减小间距 */
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px; /* 减小间距 */
+            font-size: 11px; /* 减小字体 */
+        }
+
+        .legend-color {
+            width: 12px; /* 减小尺寸 */
+            height: 12px; /* 减小尺寸 */
+            border-radius: 3px; /* 减小圆角 */
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 16px; /* 减小内边距 */
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 36px; /* 减小字体 */
+            margin-bottom: 12px; /* 减小间距 */
+        }
+
+        .stats-section {
+            background: var(--surface-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            border-radius: 8px;
+            background: var(--background-color);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* 响应式设计 - 电脑端优化 */
+        @media (min-width: 1024px) {
+            .timetable-container {
+                max-width: 1400px; /* 大屏幕下进一步增加宽度 */
+                padding: 20px;
+            }
+            
+            .time-header {
+                grid-template-columns: 100px repeat(7, 1fr); /* 大屏幕下进一步增加时间列宽度 */
+            }
+            
+            .timetable-body {
+                grid-template-columns: 100px repeat(7, 1fr);
+            }
+            
+            .time-slot {
+                height: 55px; /* 适中的高度，让页面更充实 */
+                font-size: 14px;
+                padding: 10px 8px;
+            }
+
+            .time-slot::after {
+                font-size: 13px;
+                top: -9px; /* Adjust position slightly */
+            }
+            
+            .course-cell {
+                height: 55px;
+            }
+            
+            .course-item {
+                font-size: 12px;
+                padding: 8px;
+                min-height: 30px;
+            }
+            
+            .course-name {
+                font-size: 12px;
+                margin-bottom: 3px;
+            }
+            
+            .course-location {
+                font-size: 11px;
+                margin-bottom: 3px;
+            }
+            
+            .course-time {
+                font-size: 10px;
+            }
+            
+            .hide-weekend .time-header {
+                grid-template-columns: 100px repeat(5, 1fr) !important;
+            }
+            
+            .hide-weekend .timetable-body {
+                grid-template-columns: 100px repeat(5, 1fr) !important;
+            }
+        }
+
+        /* 响应式设计 - 移动端优化 */
+        @media (max-width: 768px) {
+            .timetable-container {
+                padding: 6px;
+            }
+
+            .timetable-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .header-left {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .week-navigation {
+                justify-content: center;
+            }
+
+            .timetable-title {
+                font-size: 18px; /* 增大字体 */
+                text-align: center;
+            }
+
+            .back-btn {
+                padding: 6px 10px;
+                font-size: 13px; /* 增大字体 */
+            }
+
+            /* 移动端网格优化 */
+            .time-header {
+                grid-template-columns: 40px repeat(7, 1fr);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+
+            .timetable-body {
+                grid-template-columns: 40px repeat(7, 1fr);
+            }
+
+            .time-cell {
+                padding: 6px 2px;
+                font-size: 11px; /* 增大字体 */
+                height: 40px; /* 稍微增加移动端高度 */
+            }
+
+            .day-header {
+                padding: 6px 2px;
+                font-size: 11px; /* 增大字体 */
+            }
+
+            .day-name {
+                font-size: 11px; /* 增大字体 */
+            }
+
+            .day-date {
+                font-size: 9px; /* 增大字体 */
+            }
+
+            .time-slot::after {
+                font-size: 8px; /* Further reduce font size */
+                top: -6px;
+            }
+
+            /* 移动端课程格子优化 */
+            .course-cell {
+                height: 40px; /* 稍微增加移动端课程格子高度 */
+                min-width: 0;
+            }
+
+            /* 移动端课程卡片优化 */
+            .course-item {
+                font-size: 10px; /* 增大字体 */
+                padding: 3px;
+                left: 1px;
+                right: 1px;
+                border-radius: 3px;
+                min-height: 18px;
+                line-height: 1.1; /* 稍微增大行高 */
+            }
+
+            .course-name {
+                font-size: 10px; /* 增大字体 */
+                margin-bottom: 1px;
+                font-weight: 600;
+            }
+
+            .course-location {
+                font-size: 9px; /* 增大字体 */
+                margin-bottom: 1px;
+            }
+
+            .course-time {
+                font-size: 8px; /* 增大字体 */
+            }
+
+            /* 移动端筛选区域优化 */
+            .filter-section {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+
+            .filter-title {
+                font-size: 15px; /* 增大字体 */
+                margin-bottom: 8px;
+            }
+
+            .filter-options {
+                justify-content: center;
+                gap: 6px;
+            }
+
+            .filter-btn {
+                padding: 5px 10px;
+                font-size: 13px; /* 增大字体 */
+            }
+
+            .legend {
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .legend-item {
+                font-size: 12px; /* 增大字体 */
+            }
+
+            /* 移动端空状态优化 */
+            .empty-state {
+                padding: 30px 12px;
+            }
+
+            .empty-state ul {
+                max-width: 100%;
+                font-size: 14px; /* 增大字体 */
+            }
+
+            .empty-state li {
+                margin-bottom: 6px;
+            }
+
+            .course-item.ongoing::after {
+                font-size: 8px;
+                padding: 1px 4px;
+                top: -8px;
+            }
+        }
+
+        /* 超小屏幕设备优化 */
+        @media (max-width: 480px) {
+            .timetable-container {
+                padding: 3px;
+            }
+
+            .time-header {
+                grid-template-columns: 30px repeat(7, 1fr);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            }
+
+            .timetable-body {
+                grid-template-columns: 30px repeat(7, 1fr);
+            }
+
+            .time-cell {
+                padding: 4px 1px;
+                font-size: 9px; /* 增大字体 */
+                height: 35px; /* 稍微增加超小屏幕高度 */
+            }
+
+            .time-slot {
+                height: 35px;
+            }
+
+            .time-slot::after {
+                font-size: 7px; /* Further reduce font size for very small screens */
+                top: -5px; /* Adjust position slightly */
+                right: 2px; /* Adjust for smaller screens */
+            }
+
+            .course-cell {
+                height: 35px; /* 稍微增加超小屏幕课程格子高度 */
+            }
+
+            .course-item {
+                font-size: 9px; /* 增大字体 */
+                padding: 2px;
+                min-height: 15px;
+            }
+
+            .course-name {
+                font-size: 9px; /* 增大字体 */
+            }
+
+            .course-location {
+                font-size: 8px; /* 增大字体 */
+            }
+
+            .course-time {
+                font-size: 7px; /* 增大字体 */
+            }
+
+            .day-name {
+                font-size: 9px; /* 增大字体 */
+            }
+
+            .day-date {
+                font-size: 7px; /* 增大字体 */
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 横屏模式优化 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .timetable-header {
+                flex-direction: row;
+                align-items: center;
+                padding: 12px;
+            }
+
+            .header-left {
+                flex-direction: row;
+                gap: 12px;
+            }
+
+            .timetable-title {
+                font-size: 18px;
+            }
+
+            .time-cell {
+                height: 45px;
+            }
+
+            .course-cell {
+                height: 45px;
+            }
+        }
+
+        /* 课程详情弹窗 */
+        .course-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .course-modal.show {
+            display: flex;
+        }
+
+        .course-modal-content {
+            background: var(--surface-color);
+            border-radius: 8px; /* 减小圆角 */
+            padding: 16px; /* 减小内边距 */
+            max-width: 400px; /* 减小最大宽度 */
+            width: 85%; /* 减小宽度 */
+            max-height: 75vh; /* 减小最大高度 */
+            overflow-y: auto;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .course-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px; /* 减小间距 */
+        }
+
+        .course-modal-title {
+            font-size: 16px; /* 减小字体 */
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .favorite-btn-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            margin-left: auto;
+            margin-right: 8px;
+        }
+
+        .favorite-btn-modal:hover {
+            background: var(--border-color);
+        }
+
+        .favorite-btn-modal .fas.fa-star { /* Solid star for favorited */
+            color: var(--accent-color);
+        }
+
+        .share-btn-modal {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            margin-right: 8px;
+        }
+
+        .share-btn-modal:hover {
+            background: var(--border-color);
+            color: var(--primary-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 18px; /* 减小字体 */
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 26px; /* 减小尺寸 */
+            height: 26px; /* 减小尺寸 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-modal:hover {
+            background: var(--border-color);
+        }
+
+        .course-detail-item {
+            margin-bottom: 12px; /* 减小间距 */
+        }
+
+        .course-detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px; /* 减小字体 */
+            margin-bottom: 3px; /* 减小间距 */
+        }
+
+        .course-detail-value {
+            color: var(--text-primary);
+            font-size: 13px; /* 减小字体 */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 6px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 11px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .copy-btn i {
+            font-size: 10px;
+        }
+
+        .course-detail-text {
+            flex: 1;
+            word-break: break-all;
+        }
+
+        .completion-toggle-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .completion-toggle-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .completion-toggle-btn.completed {
+            background: var(--secondary-color);
+        }
+
+        .completion-toggle-btn.completed i {
+            color: #fbbc05;
+        }
+
+        /* 隐藏周末功能 - 精确选择器 */
+        .hide-weekend .time-header > .day-header:nth-child(7),
+        .hide-weekend .time-header > .day-header:nth-child(8) {
+            display: none;
+        }
+
+        /* 隐藏周末的课程格子 - 更精确的选择 */
+        .hide-weekend .timetable-body > .course-cell:nth-child(8n-1),
+        .hide-weekend .timetable-body > .course-cell:nth-child(8n) {
+            display: none;
+        }
+
+        /* 调整网格布局 - 只在隐藏周末时生效 */
+        .hide-weekend .time-header {
+            grid-template-columns: 80px repeat(5, 1fr) !important; /* 更新时间列宽度 */
+        }
+
+        .hide-weekend .timetable-body {
+            grid-template-columns: 80px repeat(5, 1fr) !important; /* 更新时间列宽度 */
+        }
+
+        /* 移动端隐藏周末 - 确保不影响其他元素 */
+        @media (max-width: 768px) {
+            .hide-weekend .time-header {
+                grid-template-columns: 40px repeat(5, 1fr) !important; /* 减小时间列宽度 */
+            }
+
+            .hide-weekend .timetable-body {
+                grid-template-columns: 40px repeat(5, 1fr) !important; /* 减小时间列宽度 */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hide-weekend .time-header {
+                grid-template-columns: 30px repeat(5, 1fr) !important; /* 进一步减小时间列宽度 */
+            }
+
+            .hide-weekend .timetable-body {
+                grid-template-columns: 30px repeat(5, 1fr) !important; /* 进一步减小时间列宽度 */
+            }
+        }
+
+        /* 统计卡片样式 - 简约设计 */
+        .stats-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--surface-color);
+            border-radius: 8px; /* 进一步减小圆角 */
+            padding: 14px; /* 进一步减小内边距 */
+            box-shadow: 0 3px 15px rgba(0,0,0,0.12); /* 进一步减轻阴影 */
+            z-index: 1000;
+            min-width: 240px; /* 进一步减小最小宽度 */
+            max-width: 80vw; /* 进一步减小最大宽度 */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stats-card.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .stats-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px; /* 进一步减小间距 */
+            padding-bottom: 8px; /* 进一步减小内边距 */
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stats-card-title {
+            font-size: 15px; /* 进一步减小字体 */
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .stats-card-close {
+            background: none;
+            border: none;
+            font-size: 16px; /* 减小字体 */
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 3px; /* 减小内边距 */
+            border-radius: 3px; /* 减小圆角 */
+            transition: all 0.2s ease;
+        }
+
+        .stats-card-close:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px; /* 进一步减小间距 */
+        }
+
+        .stat-item {
+            background: var(--surface-color);
+            color: var(--text-primary);
+            padding: 12px; /* 进一步减小内边距 */
+            border-radius: 6px; /* 进一步减小圆角 */
+            text-align: center;
+            transition: transform 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 20px; /* 进一步减小字体 */
+            font-weight: 600;
+            margin-bottom: 4px; /* 进一步减小间距 */
+            display: block;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 11px; /* 进一步减小字体 */
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* 统计卡片遮罩 */
+        .stats-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stats-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 移动端统计卡片优化 */
+        @media (max-width: 768px) {
+            .stats-card {
+                min-width: 220px;
+                padding: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .stat-item {
+                padding: 10px;
+            }
+
+            .stat-number {
+                font-size: 20px; /* 增大字体 */
+            }
+
+            .stat-label {
+                font-size: 12px; /* 增大字体 */
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="timetable-container">
+        <!-- 头部 -->
+        <div class="timetable-header">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                    返回
+                </button>
+                <h1 class="timetable-title"><i class="fas fa-calendar-alt"></i> <span id="view-title">课程表</span></h1>
+                <button class="back-btn" id="toggle-view-btn" onclick="toggleView()">
+                    <i class="fas fa-list"></i>
+                    <span id="toggle-view-text">显示所有事件</span>
+                </button>
+                <button class="back-btn" onclick="refreshTimetable()" style="background: var(--secondary-color);">
+                    <i class="fas fa-sync-alt"></i>
+                    刷新
+                </button>
+                <button class="back-btn" onclick="toggleStatsCard()" style="background: var(--accent-color); color: #333;">
+                    <i class="fas fa-chart-bar"></i>
+                    统计
+                </button>
+            </div>
+            <div class="week-navigation">
+                <button class="week-nav-btn" id="prev-week">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="week-nav-btn" id="back-to-current-week">回到本周</button>
+                <span class="current-week" id="current-week"></span>
+                <button class="week-nav-btn" id="next-week">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 筛选区域 -->
+        <div class="filter-section">
+            <div class="filter-header" onclick="toggleFilterSection()">
+                <div class="filter-title">课程筛选</div>
+                <button class="filter-toggle" type="button">
+                    <i class="fas fa-chevron-down" id="filter-toggle-icon"></i>
+                </button>
+            </div>
+            <div class="filter-content collapsed" id="filter-content">
+                <div class="filter-options" id="course-filters">
+                    <button class="filter-btn active" data-type="all">全部课程</button>
+                    <button class="filter-btn" data-type="favorited">已收藏</button>
+                    <button class="filter-btn" data-type="required">必修课</button>
+                    <button class="filter-btn" data-type="elective">选修课</button>
+                    <button class="filter-btn" data-type="public">公开课</button>
+                </div>
+                <div class="filter-options" id="event-filters" style="display: none;">
+                    <button class="filter-btn active" data-type="all">全部事件</button>
+                    <button class="filter-btn" data-type="favorited">已收藏</button>
+                    <button class="filter-btn" data-type="today">今日事件</button>
+                    <button class="filter-btn" data-type="upcoming">即将到来</button>
+                </div>
+                <div class="filter-options" style="margin-top: 12px;">
+                    <button class="filter-btn-status active" data-status="all">所有状态</button>
+                    <button class="filter-btn-status" data-status="uncompleted">未完成</button>
+                    <button class="filter-btn-status" data-status="completed">已完成</button>
+                </div>
+                <div class="filter-options" style="margin-top: 12px;">
+                    <button class="filter-btn active" id="show-weekend-btn" onclick="toggleWeekend()">
+                        <i class="fas fa-calendar-week"></i> 显示周末
+                    </button>
+                </div>
+                <div class="legend">
+                    <div class="legend-item course-type">
+                        <div class="legend-color course-required"></div>
+                        <span>必修课</span>
+                    </div>
+                    <div class="legend-item course-type">
+                        <div class="legend-color course-elective"></div>
+                        <span>选修课</span>
+                    </div>
+                    <div class="legend-item course-type">
+                        <div class="legend-color course-public"></div>
+                        <span>公开课</span>
+                    </div>
+                    <div class="legend-item course-type">
+                        <div class="legend-color course-other"></div>
+                        <span>其他课程</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课程表主体 -->
+        <div class="timetable-grid">
+            <div class="time-header">
+                <div class="time-cell">时间</div>
+                <div class="day-header">
+                    <span class="day-name">周一</span>
+                    <span class="day-date" id="date-1"></span>
+                </div>
+                <div class="day-header">
+                    <span class="day-name">周二</span>
+                    <span class="day-date" id="date-2"></span>
+                </div>
+                <div class="day-header">
+                    <span class="day-name">周三</span>
+                    <span class="day-date" id="date-3"></span>
+                </div>
+                <div class="day-header">
+                    <span class="day-name">周四</span>
+                    <span class="day-date" id="date-4"></span>
+                </div>
+                <div class="day-header">
+                    <span class="day-name">周五</span>
+                    <span class="day-date" id="date-5"></span>
+                </div>
+                <div class="day-header">
+                    <span class="day-name">周六</span>
+                    <span class="day-date" id="date-6"></span>
+                </div>
+                <div class="day-header">
+                    <span class="day-name">周日</span>
+                    <span class="day-date" id="date-7"></span>
+                </div>
+            </div>
+            <div class="timetable-body" id="timetable-body">
+                <!-- 课程表内容将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-icon"><i class="fas fa-book-open" style="font-size: 48px; color: var(--text-secondary);"></i></div>
+            <h3>暂无课程安排</h3>
+            <p>当前时间段没有找到相关课程</p>
+            <p>请检查以下内容：</p>
+            <ul style="text-align: left; max-width: 450px; margin: 0 auto;">
+                <li>事件标签中是否包含"必修课"、"选修课"、"公开课"等课程类型标签</li>
+                <li>事件名称、标签、项目名称或备注中是否包含"课"、"课程"、"上课"、"教学"等关键词</li>
+                <li>事件是否设置了开始时间和结束时间</li>
+                <li>事件是否为未完成状态或在最近7天内</li>
+                <li>事件时间是否在合理范围内（未来30天内）</li>
+            </ul>
+            <p style="margin-top: 16px;">
+                <button onclick="refreshTimetable()" style="background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                    <i class="fas fa-sync-alt"></i> 刷新课程表
+                </button>
+            </p>
+        </div>
+
+
+    </div>
+
+    <!-- 统计卡片遮罩 -->
+    <div class="stats-overlay" id="stats-overlay" onclick="hideStatsCard()"></div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-card" id="stats-card">
+        <div class="stats-card-header">
+            <h3 class="stats-card-title"><i class="fas fa-chart-bar"></i> <span id="stats-title">本周课程统计</span></h3>
+            <button class="stats-card-close" onclick="hideStatsCard()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number" id="total-courses">0</span>
+                <div class="stat-label" id="label-total">总课程数</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="required-courses">0</span>
+                <div class="stat-label" id="label-required">必修课</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="elective-courses">0</span>
+                <div class="stat-label" id="label-elective">选修课</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="public-courses">0</span>
+                <div class="stat-label" id="label-public">公开课</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 课程详情弹窗 -->
+    <div class="course-modal" id="course-modal">
+        <div class="course-modal-content">
+            <div class="course-modal-header">
+                <h3 class="course-modal-title" id="modal-course-name">课程详情</h3>
+                <button class="favorite-btn-modal" id="modal-favorite-btn">
+                    <i class="far fa-star"></i>
+                </button>
+                <button class="share-btn-modal" id="modal-share-btn">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="close-modal" onclick="closeCourseModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="course-modal-body">
+                <div class="course-detail-item">
+                    <div class="course-detail-label" id="modal-name-label">课程名称</div>
+                    <div class="course-detail-value">
+                        <span class="course-detail-text" id="modal-course-name-text"></span>
+                        <button class="copy-btn" onclick="copyToClipboard('modal-course-name-text', '课程名称')">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
+                </div>
+                <div class="course-detail-item course-type-related">
+                    <div class="course-detail-label">课程类型</div>
+                    <div class="course-detail-value">
+                        <span class="course-detail-text" id="modal-course-type"></span>
+                    </div>
+                </div>
+                <div class="course-detail-item">
+                    <div class="course-detail-label" id="modal-time-label">上课时间</div>
+                    <div class="course-detail-value">
+                        <span class="course-detail-text" id="modal-course-time"></span>
+                    </div>
+                </div>
+                <div class="course-detail-item">
+                    <div class="course-detail-label" id="modal-location-label">上课地点</div>
+                    <div class="course-detail-value">
+                        <span class="course-detail-text" id="modal-course-location"></span>
+                        <button class="copy-btn" onclick="copyToClipboard('modal-course-location', '上课地点')">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
+                </div>
+                <div class="course-detail-item">
+                    <div class="course-detail-label">参与人员</div>
+                    <div class="course-detail-value">
+                        <span class="course-detail-text" id="modal-course-participants"></span>
+                        <button class="copy-btn" onclick="copyToClipboard('modal-course-participants', '参与人员')">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                    </div>
+                </div>
+                <div class="course-detail-item">
+                    <div class="course-detail-label" id="modal-tags-label">课程标签</div>
+                    <div class="course-detail-value">
+                        <span class="course-detail-text" id="modal-course-tags"></span>
+                    </div>
+                </div>
+                <div class="course-detail-item">
+                    <div class="course-detail-label">备注</div>
+                    <div class="course-detail-value">
+                        <span class="course-detail-text" id="modal-course-notes"></span>
+                    </div>
+                </div>
+                <div class="course-detail-item">
+                    <div class="course-detail-label">完成状态</div>
+                    <div class="course-detail-value">
+                        <button class="completion-toggle-btn" id="modal-course-completion">
+                            <i class="fas fa-square"></i> 标记为已完成
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入存储管理器 -->
+    <script src="js/storage.js"></script>
+    
+    <script>
+        // 课程表管理类
+        class TimetableManager {
+            constructor() {
+                this.currentWeekStart = this.getWeekStart(new Date());
+                this.currentFilter = 'all';
+                this.completionFilter = 'all'; // all, completed, uncompleted
+                this.courses = [];
+                this.favoritedCourses = new Set(); // 用于存储收藏的课程ID
+                this.timeSlots = this.generateTimeSlots();
+                this.storageManager = null;
+                this.init();
+            }
+
+            init() {
+                // 初始化存储管理器
+                this.initStorageManager();
+                this.loadFavorites(); // 加载收藏
+                this.loadCourses();
+                this.setupEventListeners();
+                this.updateWeekDisplay();
+                this.renderTimetable();
+
+                this.updateOngoingCourses(); // 初始检查
+                setInterval(() => this.updateOngoingCourses(), 60000); // 每分钟检查一次
+            }
+
+            // 更新正在进行的课程状态
+            updateOngoingCourses() {
+                const now = new Date();
+                this.courses.forEach(course => {
+                    const courseElement = document.querySelector(`.course-item[data-course-id='${course.id}']`);
+                    if (courseElement) {
+                        const startDate = new Date(course.startTime);
+                        const endDate = new Date(course.endTime);
+                        if (now >= startDate && now <= endDate && !course.completed) {
+                            courseElement.classList.add('ongoing');
+                        } else {
+                            courseElement.classList.remove('ongoing');
+                        }
+                    }
+                });
+            }
+
+            // 初始化存储管理器
+            initStorageManager() {
+                if (typeof StorageManager !== 'undefined') {
+                    this.storageManager = StorageManager;
+                    console.log('存储管理器初始化成功');
+                } else {
+                    console.warn('存储管理器未找到，使用localStorage');
+                }
+            }
+
+            // 生成时间段
+            generateTimeSlots() {
+                const slots = [];
+                for (let hour = 6; hour <= 24; hour++) {
+                    slots.push(`${hour.toString().padStart(2, '0')}:00`);
+                }
+                return slots;
+            }
+
+            // 获取周一日期
+            getWeekStart(date) {
+                const d = new Date(date);
+                const day = d.getDay(); // 0=周日, 1=周一, 2=周二, ..., 6=周六
+                
+                // 计算到周一的天数差
+                // 如果是周日(0)，需要回退6天到周一
+                // 如果是周一(1)，差值为0
+                // 如果是周二(2)，需要回退1天到周一
+                const diff = day === 0 ? -6 : 1 - day;
+                
+                const weekStart = new Date(d);
+                weekStart.setDate(d.getDate() + diff);
+                weekStart.setHours(0, 0, 0, 0); // 设置为当天的开始时间
+                
+                console.log('计算周一日期:', {
+                    输入日期: date.toString(),
+                    星期几: day,
+                    天数差: diff,
+                    周一日期: weekStart.toString()
+                });
+                
+                return weekStart;
+            }
+
+            getWeekNumber(d) {
+                d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+                d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+                const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+                return weekNo;
+            }
+
+            // 从存储管理器加载课程数据
+            loadCourses() {
+                try {
+                    let events = [];
+                    
+                    // 优先使用存储管理器
+                    if (this.storageManager) {
+                        // 获取所有事件，以便显示已完成的课程
+                        events = this.storageManager.getEvents() || [];
+                        console.log('从存储管理器加载所有事件:', events.length);
+                    } else {
+                        // 降级使用localStorage
+                        const data = JSON.parse(localStorage.getItem('schedule_app_all_users') || '{}');
+                        const userId = localStorage.getItem('schedule_app_user_id');
+                        if (userId && data[userId] && data[userId].events) {
+                            events = data[userId].events;
+                        } else {
+                            events = JSON.parse(localStorage.getItem('events') || '[]');
+                        }
+                        console.log('从localStorage加载事件:', events.length);
+                    }
+                    
+                    console.log('所有事件详情:', events.map(e => ({
+                        name: e.name,
+                        tags: e.tags,
+                        notes: e.notes,
+                        project: e.project,
+                        projectId: e.projectId,
+                        startTime: e.startTime,
+                        endTime: e.endTime,
+                        completed: e.completed
+                    })));
+                    
+                    // 扩展筛选课程相关事件的逻辑
+                    this.courses = events.filter(event => {
+                        const tags = event.tags || [];
+                        const name = event.name || '';
+                        const description = event.notes || '';
+                        const projectName = event.project || '';
+                        
+                        // 获取项目名称（如果有projectId）
+                        let actualProjectName = projectName;
+                        if (event.projectId && this.storageManager) {
+                            const projects = this.storageManager.getProjects() || [];
+                            const project = projects.find(p => p.id === event.projectId);
+                            if (project) {
+                                actualProjectName = project.name;
+                            }
+                        }
+                        
+                        // 扩展关键词匹配
+                        const courseKeywords = ['课', '课程', '上课', '授课', '讲课', '听课', '课堂', '教学', '学习'];
+                        const courseTypeKeywords = ['必修课', '选修课', '公开课', '专业课', '基础课', '实验课', '实践课'];
+                        
+                        // 检查是否包含课程相关关键词
+                        const hasCourseKeyword = 
+                            // 检查标签中是否包含课程类型关键词（如"必修课"等）
+                            tags.some(tag => courseTypeKeywords.some(keyword => tag.includes(keyword))) ||
+                            // 检查标签中是否包含一般课程关键词
+                            tags.some(tag => courseKeywords.some(keyword => tag.includes(keyword))) ||
+                            // 检查事件名称
+                            courseKeywords.some(keyword => name.includes(keyword)) ||
+                            courseTypeKeywords.some(keyword => name.includes(keyword)) ||
+                            // 检查描述/备注
+                            courseKeywords.some(keyword => description.includes(keyword)) ||
+                            courseTypeKeywords.some(keyword => description.includes(keyword)) ||
+                            // 检查项目名称
+                            courseKeywords.some(keyword => actualProjectName.includes(keyword)) ||
+                            courseTypeKeywords.some(keyword => actualProjectName.includes(keyword));
+                        
+                        // 检查事件是否有有效的时间
+                        const hasValidTime = event.startTime && event.endTime;
+                        
+                        // 不再按时间过滤，以便在周视图切换时能显示所有时间的课程
+                        console.log(`事件 "${name}" 筛选结果:`, {
+                            hasCourseKeyword,
+                            hasValidTime,
+                            completed: event.completed,
+                        });
+                        
+                        return hasCourseKeyword && hasValidTime;
+                    });
+                    
+                    console.log('筛选后的课程数量:', this.courses.length);
+                    console.log('筛选后的课程详情:', this.courses.map(c => ({
+                        name: c.name,
+                        startTime: c.startTime,
+                        endTime: c.endTime,
+                        tags: c.tags,
+                        completed: c.completed
+                    })));
+                } catch (error) {
+                    console.error('加载课程数据失败:', error);
+                    this.courses = [];
+                }
+            }
+
+            // 加载收藏的课程
+            loadFavorites() {
+                const favorites = localStorage.getItem('favorited_courses');
+                if (favorites) {
+                    this.favoritedCourses = new Set(JSON.parse(favorites));
+                }
+                console.log(`加载了 ${this.favoritedCourses.size} 个收藏课程`);
+            }
+
+            // 保存收藏的课程
+            saveFavorites() {
+                localStorage.setItem('favorited_courses', JSON.stringify(Array.from(this.favoritedCourses)));
+            }
+
+            // 加载所有事件（不仅仅是课程）
+            loadAllEvents() {
+                try {
+                    let events = [];
+                    
+                    // 优先使用存储管理器
+                    if (this.storageManager) {
+                        // 获取所有事件
+                        events = this.storageManager.getEvents() || [];
+                        console.log('从存储管理器加载所有事件:', events.length);
+                    } else {
+                        // 降级使用localStorage
+                        const data = JSON.parse(localStorage.getItem('schedule_app_all_users') || '{}');
+                        const userId = localStorage.getItem('schedule_app_user_id');
+                        if (userId && data[userId] && data[userId].events) {
+                            events = data[userId].events;
+                        } else {
+                            events = JSON.parse(localStorage.getItem('events') || '[]');
+                        }
+                        console.log('从localStorage加载事件:', events.length);
+                    }
+                    
+                    // 过滤掉没有有效时间的事件
+                    this.courses = events.filter(event => {
+                        return event.startTime && event.endTime;
+                    });
+                    
+                    console.log('加载的所有事件数量:', this.courses.length);
+                } catch (error) {
+                    console.error('加载所有事件失败:', error);
+                    this.courses = [];
+                }
+            }
+
+            // 重写渲染课程表方法以支持显示所有事件
+            renderTimetable() {
+                const tbody = document.getElementById('timetable-body');
+                tbody.innerHTML = '';
+
+                console.log('开始渲染时间表网格...');
+
+                // 创建网格
+                this.timeSlots.forEach((timeSlot, timeIndex) => {
+                    // 时间列
+                    const timeCell = document.createElement('div');
+                    timeCell.className = 'time-slot';
+                    timeCell.dataset.time = timeSlot;
+                    tbody.appendChild(timeCell);
+
+                    // 7天的课程格子 (0=周一, 1=周二, ..., 6=周日)
+                    for (let day = 0; day < 7; day++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'course-cell';
+                        cell.dataset.day = day;
+                        cell.dataset.time = timeSlot;
+                        
+                        // 添加调试属性
+                        cell.title = `${['周一', '周二', '周三', '周四', '周五', '周六', '周日'][day]} ${timeSlot}`;
+                        
+                        tbody.appendChild(cell);
+                    }
+                });
+
+                console.log('网格创建完成，开始填充事件...');
+
+                // 填充事件
+                this.fillCourses();
+                this.updateStats();
+                this.updateOngoingCourses();
+            }
+
+            // 获取筛选后的课程
+            getFilteredCourses() {
+                // 检查当前视图模式
+                if (!isTimetableView) {
+                    // 显示所有事件模式
+                    let filtered = this.courses;
+
+                    // 根据当前筛选条件过滤事件
+                    if (this.currentFilter === 'favorited') {
+                        filtered = filtered.filter(course => this.favoritedCourses.has(course.id));
+                    } else if (this.currentFilter === 'today') {
+                        const today = new Date();
+                        filtered = filtered.filter(course => {
+                            const eventDate = new Date(course.startTime);
+                            return eventDate.getDate() === today.getDate() &&
+                                   eventDate.getMonth() === today.getMonth() &&
+                                   eventDate.getFullYear() === today.getFullYear();
+                        });
+                    } else if (this.currentFilter === 'upcoming') {
+                        const now = new Date();
+                        filtered = filtered.filter(course => {
+                            const eventDate = new Date(course.startTime);
+                            return eventDate > now;
+                        });
+                    } else if (this.currentFilter !== 'all') {
+                        // 其他筛选条件
+                        filtered = filtered.filter(course => course.type === this.currentFilter);
+                    }
+
+                    // 按完成状态筛选
+                    if (this.completionFilter === 'completed') {
+                        filtered = filtered.filter(course => course.completed);
+                    } else if (this.completionFilter === 'uncompleted') {
+                        filtered = filtered.filter(course => !course.completed);
+                    }
+
+                    return filtered;
+                }
+                
+                // 课程表模式，使用原有筛选逻辑
+                let filtered = this.courses;
+
+                // 1. 按类型筛选 (必修, 选修, 收藏等)
+                if (this.currentFilter === 'favorited') {
+                    filtered = filtered.filter(course => this.favoritedCourses.has(course.id));
+                } else if (this.currentFilter !== 'all') {
+                    filtered = filtered.filter(course => this.getCourseType(course) === this.currentFilter);
+                }
+
+                // 2. 按完成状态筛选
+                if (this.completionFilter === 'completed') {
+                    filtered = filtered.filter(course => course.completed);
+                } else if (this.completionFilter === 'uncompleted') {
+                    filtered = filtered.filter(course => !course.completed);
+                }
+
+                return filtered;
+            }
+
+            // 切换课程的收藏状态
+            toggleFavorite(courseId) {
+                if (this.favoritedCourses.has(courseId)) {
+                    this.favoritedCourses.delete(courseId);
+                    console.log(`取消收藏课程: ${courseId}`);
+                } else {
+                    this.favoritedCourses.add(courseId);
+                    console.log(`收藏课程: ${courseId}`);
+                }
+                this.saveFavorites();
+                this.renderTimetable(); // 重新渲染以更新UI
+                // 更新弹窗中的收藏按钮状态
+                this.updateModalFavoriteButton(courseId);
+            }
+            
+            // 更新弹窗中的收藏按钮状态
+            updateModalFavoriteButton(courseId) {
+                const favoriteBtn = document.getElementById('modal-favorite-btn');
+                if (favoriteBtn) {
+                    const icon = favoriteBtn.querySelector('i');
+                    if (this.favoritedCourses.has(courseId)) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                    }
+                }
+            }
+
+            // 分享课程
+            async shareCourse(course) {
+                const courseTypeText = this.getCourseTypeText(course);
+                const startDate = new Date(course.startTime);
+                const endDate = new Date(course.endTime);
+                const timeText = `${this.formatDateTime(startDate)} - ${this.formatDateTime(endDate)}`;
+                const locationText = course.location || '未指定';
+
+                const shareData = {
+                    title: `课程分享: ${course.name}`,
+                    text: `课程: ${course.name}
+类型: ${courseTypeText}
+时间: ${timeText}
+地点: ${locationText}
+
+- 来自有数规划`,
+                    url: window.location.href
+                };
+
+                try {
+                    if (navigator.share) {
+                        await navigator.share(shareData);
+                        console.log('课程分享成功');
+                    } else {
+                        // Fallback: copy to clipboard
+                        await navigator.clipboard.writeText(shareData.text);
+                        this.showRefreshNotification('课程信息已复制到剪贴板', 'success');
+                    }
+                } catch (err) {
+                    console.error('分享失败:', err);
+                    if (err.name !== 'AbortError') {
+                        this.showRefreshNotification('分享失败', 'error');
+                    }
+                }
+            }
+
+            // 设置事件监听器
+            setupEventListeners() {
+                // 周导航
+                document.getElementById('prev-week').addEventListener('click', () => {
+                    this.currentWeekStart.setDate(this.currentWeekStart.getDate() - 7);
+                    this.updateWeekDisplay();
+                    this.renderTimetable();
+                });
+
+                document.getElementById('next-week').addEventListener('click', () => {
+                    this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
+                    this.updateWeekDisplay();
+                    this.renderTimetable();
+                });
+
+                document.getElementById('back-to-current-week').addEventListener('click', () => {
+                    this.currentWeekStart = this.getWeekStart(new Date());
+                    this.updateWeekDisplay();
+                    this.renderTimetable();
+                });
+
+                // 课程筛选按钮（仅选择课程筛选器中的按钮）
+                document.querySelectorAll('#course-filters .filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('#course-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentFilter = e.target.dataset.type;
+                        this.renderTimetable();
+                    });
+                });
+
+                // 主题切换
+                this.applyTheme();
+
+                // 完成状态筛选按钮
+                document.querySelectorAll('.filter-btn-status').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        // 使用 currentTarget 以确保事件委托时也能正确工作
+                        const target = e.currentTarget;
+                        document.querySelectorAll('.filter-btn-status').forEach(b => b.classList.remove('active'));
+                        target.classList.add('active');
+                        this.completionFilter = target.dataset.status;
+                        this.renderTimetable();
+                    });
+                });
+            }
+
+            // 更新周显示
+            updateWeekDisplay() {
+                const weekStart = new Date(this.currentWeekStart);
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+
+                const formatDate = (date) => {
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                };
+
+                const weekNumber = this.getWeekNumber(weekStart);
+
+                document.getElementById('current-week').textContent = 
+                    `${formatDate(weekStart)} - ${formatDate(weekEnd)} (第${weekNumber}周)`;
+
+                // 更新日期显示
+                for (let i = 1; i <= 7; i++) {
+                    const date = new Date(weekStart);
+                    date.setDate(date.getDate() + i - 1);
+                    document.getElementById(`date-${i}`).textContent = formatDate(date);
+                }
+            }
+
+            getCourseCellHeight() {
+                // Replicate CSS media query logic in JS for consistency.
+                // This avoids race conditions with DOM rendering and ensures accuracy.
+                if (window.innerWidth >= 1024) return 55;
+                if (window.innerWidth <= 480) return 35;
+                if (window.innerWidth <= 768) return 40;
+                return 40; // Base height for screens between 768px and 1024px.
+            }
+
+            // 填充课程到格子中
+            fillCourses() {
+                const filteredCourses = this.getFilteredCourses();
+                
+                console.log('开始填充事件，筛选后的事件数量:', filteredCourses.length);
+                
+                if (filteredCourses.length === 0) {
+                    document.getElementById('empty-state').style.display = 'block';
+                    document.querySelector('#empty-state h3').textContent = isTimetableView ? '暂无课程安排' : '暂无事件安排';
+                    document.querySelector('#empty-state p').textContent = isTimetableView ? '当前时间段没有找到相关课程' : '当前时间段没有找到相关事件';
+                    console.log('没有找到事件，显示空状态');
+                    return;
+                } else {
+                    document.getElementById('empty-state').style.display = 'none';
+                }
+
+                const weekStart = new Date(this.currentWeekStart);
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                weekEnd.setHours(23, 59, 59, 999);
+                
+                console.log('当前周时间范围:', {
+                    weekStart: weekStart.toISOString(),
+                    weekEnd: weekEnd.toISOString()
+                });
+
+                // 获取一次格子高度，用于所有课程的计算
+                const cellHeight = this.getCourseCellHeight();
+                console.log(`获取到课程格子高度: ${cellHeight}px`);
+
+                filteredCourses.forEach(course => {
+                    const startDate = new Date(course.startTime);
+                    const endDate = new Date(course.endTime);
+                    const dayOfWeek = startDate.getDay();
+                    
+                    console.log(`检查事件 "${course.name}" 时间:`, {
+                        startTime: startDate.toISOString(),
+                        endTime: endDate.toISOString(),
+                        dayOfWeek: dayOfWeek,
+                        星期: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][dayOfWeek],
+                        inCurrentWeek: startDate >= weekStart && startDate <= weekEnd
+                    });
+                    
+                    // 放宽时间范围检查，包含跨周的事件
+                    const courseInWeek = (startDate >= weekStart && startDate <= weekEnd) ||
+                                        (endDate >= weekStart && endDate <= weekEnd) ||
+                                        (startDate <= weekStart && endDate >= weekEnd);
+
+                    if (courseInWeek) {
+                        console.log(`事件 "${course.name}" 在当前周范围内，开始放置到网格`);
+                        this.placeCourseInGrid(course, startDate, endDate, cellHeight);
+                    } else {
+                        console.log(`事件 "${course.name}" 不在当前周范围内，跳过`);
+                    }
+                });
+            }
+
+            // 将课程放置到网格中
+            placeCourseInGrid(course, startDate, endDate, cellHeight) {
+                const dayOfWeek = startDate.getDay(); // 0=周日, 1=周一, 2=周二, ..., 6=周六
+                // 修复日期转换逻辑：周一=0, 周二=1, ..., 周日=6
+                const day = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                
+                const startHour = startDate.getHours();
+                const endHour = endDate.getHours();
+                const startMinute = startDate.getMinutes();
+                const endMinute = endDate.getMinutes();
+
+                console.log(`放置课程 "${course.name}":`, {
+                    原始dayOfWeek: dayOfWeek,
+                    转换后day: day,
+                    日期: startDate.toLocaleDateString(),
+                    星期: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][dayOfWeek],
+                    网格位置: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'][day],
+                    startHour,
+                    startMinute,
+                    endHour,
+                    endMinute
+                });
+
+                // 验证day值是否正确
+                if (day < 0 || day > 6) {
+                    console.error(`日期转换错误: dayOfWeek=${dayOfWeek}, day=${day}`);
+                    return;
+                }
+
+                // 找到对应的时间段 - 精确匹配时间轴
+                let targetCell = null;
+                
+                // 找到课程应该放置的时间段（使用课程开始时间的整点）
+                const startTimeSlot = `${startHour.toString().padStart(2, '0')}:00`;
+                const selector = `[data-day="${day}"][data-time="${startTimeSlot}"]`;
+                targetCell = document.querySelector(selector);
+                
+                console.log(`查找网格格子:`, {
+                    课程时间: `${startHour}:${startMinute.toString().padStart(2, '0')}`,
+                    匹配时间轴: startTimeSlot,
+                    selector,
+                    找到格子: !!targetCell
+                });
+                
+                // 如果没找到对应的时间段，尝试找最近的时间段
+                if (!targetCell) {
+                    console.log(`时间段 ${startTimeSlot} 未找到，寻找最近的时间段`);
+                    
+                    // 向前寻找最近的时间段
+                    for (let hour = startHour; hour >= 6; hour--) {
+                        const timeSlot = `${hour.toString().padStart(2, '0')}:00`;
+                        targetCell = document.querySelector(`[data-day="${day}"][data-time="${timeSlot}"]`);
+                        if (targetCell) {
+                            console.log(`找到最近的时间段: ${timeSlot}`);
+                            break;
+                        }
+                    }
+                }
+                
+                if (targetCell) {
+                    console.log(`成功找到目标格子，开始创建课程元素`);
+                    const courseElement = this.createCourseElement(course, startDate, endDate, cellHeight);
+                    
+                    // 根据课程的精确开始时间调整在格子中的位置
+                    const minuteOffset = startMinute; // 分钟偏移
+                    const pixelOffset = (minuteOffset / 60) * cellHeight; // 使用动态格子高度
+                    
+                    // 设置课程元素的精确位置
+                    courseElement.style.position = 'absolute';
+                    courseElement.style.top = `${pixelOffset}px`;
+                    courseElement.style.left = '2px';
+                    courseElement.style.right = '2px';
+                    
+                    // 检查格子中是否已有课程，如果有则水平偏移避免重叠
+                    const existingCourses = targetCell.querySelectorAll('.course-item');
+                    if (existingCourses.length > 0) {
+                        const horizontalOffset = existingCourses.length * 2;
+                        courseElement.style.left = `${2 + horizontalOffset}px`;
+                        courseElement.style.right = `${2 + horizontalOffset}px`;
+                        courseElement.style.zIndex = existingCourses.length + 1;
+                    }
+                    
+                    targetCell.appendChild(courseElement);
+                    console.log(`课程 "${course.name}" 已成功添加到网格，位置偏移: ${pixelOffset}px`);
+                } else {
+                    console.error(`无法找到课程 "${course.name}" 的目标格子`, {
+                        day,
+                        startHour,
+                        dayOfWeek,
+                        可用时间段: this.timeSlots
+                    });
+                }
+            }
+
+            // 创建课程元素
+            createCourseElement(course, startDate, endDate, cellHeight) {
+                const element = document.createElement('div');
+                element.className = 'course-item';
+                element.dataset.courseId = course.id;
+                
+                console.log(`创建事件元素 "${course.name}"`);
+                
+                // 确定事件类型和样式
+                const courseType = this.getCourseType(course);
+                element.classList.add(`course-${courseType}`);
+
+                // 检查事件是否已完成或已过去
+                if (course.completed) {
+                    element.classList.add('completed-course');
+                } else if (endDate < new Date()) {
+                    element.classList.add('past-course');
+                }
+
+                // 计算高度（基于持续时间）- 精确匹配时间轴
+                const duration = (endDate - startDate) / (1000 * 60); // 分钟
+                
+                // 使用动态格子高度，并确保最小高度
+                const height = Math.max(20, (duration / 60) * cellHeight);
+                element.style.height = `${height}px`;
+                
+                console.log(`事件 "${course.name}" 高度计算:`, {
+                    持续时间_分钟: duration,
+                    格子高度: cellHeight,
+                    计算高度: height
+                });
+
+                // 获取项目名称
+                let projectName = course.project || '';
+                if (course.projectId && this.storageManager) {
+                    const projects = this.storageManager.getProjects() || [];
+                    const project = projects.find(p => p.id === course.projectId);
+                    if (project) {
+                        projectName = project.name;
+                    }
+                }
+
+                // 设置内容 - 根据高度自适应显示信息
+                const locationText = course.location || projectName || '未指定地点';
+                const timeText = `${this.formatTime(startDate)} - ${this.formatTime(endDate)}`;
+                const durationText = `${Math.round(duration)}分钟`;
+                
+                // 根据事件高度决定显示内容
+                let innerHTML = '';
+                if (height >= 60) {
+                    // 高度足够，显示完整信息
+                    innerHTML = `
+                        <div class="course-favorite-icon"><i class="fas fa-star"></i></div>
+                        <div class="course-name" title="${course.name}">${course.name}</div>
+                        <div class="course-location" title="${locationText}">${locationText}</div>
+                        <div class="course-time" title="${timeText} (${durationText})">${timeText}</div>
+                    `;
+                } else if (height >= 40) {
+                    // 中等高度，显示事件名和时间
+                    innerHTML = `
+                        <div class="course-favorite-icon"><i class="fas fa-star"></i></div>
+                        <div class="course-name" title="${course.name}">${course.name}</div>
+                        <div class="course-time" title="${timeText} (${durationText})">${timeText}</div>
+                    `;
+                } else {
+                    // 高度较小，只显示事件名，完整信息放在title中
+                    innerHTML = `
+                        <div class="course-favorite-icon"><i class="fas fa-star"></i></div>
+                        <div class="course-name" title="${course.name} | ${timeText} | ${locationText} | ${durationText}">${course.name}</div>
+                    `;
+                }
+                
+                element.innerHTML = innerHTML;
+
+                // 确保事件卡片完整显示 - 动态调整z-index
+                const baseZIndex = 10;
+                const overlapOffset = Math.floor(Math.random() * 5); // 随机偏移避免完全重叠
+                element.style.zIndex = baseZIndex + overlapOffset;
+                
+                // 鼠标悬停时提升层级
+                element.addEventListener('mouseenter', () => {
+                    element.style.zIndex = 1000;
+                    element.style.transform = 'translateY(-1px) scale(1.02)';
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.zIndex = baseZIndex + overlapOffset;
+                    element.style.transform = 'translateY(0) scale(1)';
+                });
+
+                // 移动端触摸优化
+                let touchStartTime = 0;
+                let touchStartY = 0;
+                
+                element.addEventListener('touchstart', (e) => {
+                    touchStartTime = Date.now();
+                    touchStartY = e.touches[0].clientY;
+                    element.style.zIndex = 1000;
+                    element.style.transform = 'translateY(-1px) scale(1.02)';
+                }, { passive: true });
+                
+                element.addEventListener('touchend', (e) => {
+                    const touchEndTime = Date.now();
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const touchDuration = touchEndTime - touchStartTime;
+                    const touchDistance = Math.abs(touchEndY - touchStartY);
+                    
+                    // 如果是短时间轻触且移动距离小，认为是点击
+                    if (touchDuration < 500 && touchDistance < 10) {
+                        e.preventDefault();
+                        console.log(`触摸点击事件: ${course.name}`);
+                        this.showCourseModal(course, startDate, endDate);
+                    }
+                    
+                    // 恢复样式
+                    setTimeout(() => {
+                        element.style.zIndex = baseZIndex + overlapOffset;
+                        element.style.transform = 'translateY(0) scale(1)';
+                    }, 100);
+                }, { passive: false });
+
+                // 桌面端点击事件
+                element.addEventListener('click', (e) => {
+                    // 避免与触摸事件冲突
+                    if (e.type === 'click' && e.detail === 0) return;
+                    
+                    console.log(`点击事件: ${course.name}`);
+                    this.showCourseModal(course, startDate, endDate);
+                });
+
+                // 添加收藏状态
+                if (this.favoritedCourses.has(course.id)) {
+                    element.classList.add('favorited');
+                }
+
+                console.log(`事件元素创建完成:`, {
+                    name: course.name,
+                    type: courseType,
+                    height: height,
+                    location: locationText,
+                    time: timeText
+                });
+
+                return element;
+            }
+
+            // 获取课程类型
+            getCourseType(course) {
+                const tags = course.tags || [];
+                const name = course.name || '';
+                const description = course.notes || '';
+                
+                // 优先检查标签
+                for (const tag of tags) {
+                    if (tag.includes('必修课')) return 'required';
+                    if (tag.includes('选修课')) return 'elective';
+                    if (tag.includes('公开课')) return 'public';
+                }
+                
+                // 然后检查名称和描述
+                const text = `${name} ${description}`;
+                if (text.includes('必修课')) return 'required';
+                if (text.includes('选修课')) return 'elective';
+                if (text.includes('公开课')) return 'public';
+                
+                return 'other';
+            }
+
+            // 获取筛选后的课程
+            getFilteredCourses() {
+                let filtered = this.courses;
+
+                // 1. 按类型筛选 (必修, 选修, 收藏等)
+                if (this.currentFilter === 'favorited') {
+                    filtered = filtered.filter(course => this.favoritedCourses.has(course.id));
+                } else if (this.currentFilter !== 'all') {
+                    filtered = filtered.filter(course => this.getCourseType(course) === this.currentFilter);
+                }
+
+                // 2. 按完成状态筛选
+                if (this.completionFilter === 'completed') {
+                    filtered = filtered.filter(course => course.completed);
+                } else if (this.completionFilter === 'uncompleted') {
+                    filtered = filtered.filter(course => !course.completed);
+                }
+
+                return filtered;
+            }
+
+            // 格式化时间
+            formatTime(date) {
+                return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+            }
+
+            // 显示课程详情弹窗
+            showCourseModal(course, startDate, endDate) {
+                document.getElementById('modal-course-name').textContent = course.name;
+                document.getElementById('modal-course-name-text').textContent = course.name;
+                document.getElementById('modal-course-type').textContent = this.getCourseTypeText(course);
+                document.getElementById('modal-course-time').textContent = 
+                    `${this.formatDateTime(startDate)} - ${this.formatDateTime(endDate)}`;
+                document.getElementById('modal-course-location').textContent = course.location || '未指定';
+                document.getElementById('modal-course-participants').textContent = course.participants || '未指定';
+                document.getElementById('modal-course-tags').textContent = 
+                    (course.tags || []).join(', ') || '无标签';
+                document.getElementById('modal-course-notes').textContent = course.notes || '无备注';
+
+                // 更新完成状态按钮
+                const completionBtn = document.getElementById('modal-course-completion');
+                const isCompleted = course.completed || false;
+                completionBtn.innerHTML = isCompleted ? 
+                    '<i class="fas fa-check-square"></i> 标记为未完成' : 
+                    '<i class="fas fa-square"></i> 标记为已完成';
+                completionBtn.className = isCompleted ? 
+                    'completion-toggle-btn completed' : 
+                    'completion-toggle-btn';
+
+                // 移除旧的监听器，防止重复绑定
+                const newCompletionBtn = completionBtn.cloneNode(true);
+                completionBtn.parentNode.replaceChild(newCompletionBtn, completionBtn);
+                
+                newCompletionBtn.addEventListener('click', () => {
+                    this.toggleCourseCompletion(course.id);
+                    
+                    // 更新按钮状态以反映新的完成状态
+                    const updatedCourse = this.storageManager.getEventById(course.id);
+                    if (updatedCourse) {
+                        const isNowCompleted = updatedCourse.completed || false;
+                        newCompletionBtn.innerHTML = isNowCompleted ? 
+                            '<i class="fas fa-check-square"></i> 标记为未完成' : 
+                            '<i class="fas fa-square"></i> 标记为已完成';
+                        newCompletionBtn.className = isNowCompleted ? 
+                            'completion-toggle-btn completed' : 
+                            'completion-toggle-btn';
+                    }
+                });
+
+                // 更新收藏按钮
+                const favoriteBtn = document.getElementById('modal-favorite-btn');
+                this.updateModalFavoriteButton(course.id);
+
+                // 移除旧的监听器，防止重复绑定
+                const newFavoriteBtn = favoriteBtn.cloneNode(true);
+                favoriteBtn.parentNode.replaceChild(newFavoriteBtn, favoriteBtn);
+                
+                newFavoriteBtn.addEventListener('click', () => {
+                    this.toggleFavorite(course.id);
+                });
+
+                // 分享按钮
+                const shareBtn = document.getElementById('modal-share-btn');
+                const newShareBtn = shareBtn.cloneNode(true);
+                shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
+                
+                newShareBtn.addEventListener('click', () => {
+                    this.shareCourse(course);
+                });
+
+                document.getElementById('course-modal').classList.add('show');
+            }
+
+            // 获取课程类型文本
+            getCourseTypeText(course) {
+                const type = this.getCourseType(course);
+                const typeMap = {
+                    'required': '必修课',
+                    'elective': '选修课',
+                    'public': '公开课',
+                    'other': '其他课程'
+                };
+                return typeMap[type] || '未知类型';
+            }
+
+            // 格式化日期时间
+            formatDateTime(date) {
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                const hour = date.getHours().toString().padStart(2, '0');
+                const minute = date.getMinutes().toString().padStart(2, '0');
+                return `${year}-${month}-${day} ${hour}:${minute}`;
+            }
+
+            // 更新统计信息
+            updateStats() {
+                const weekStart = new Date(this.currentWeekStart);
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                weekEnd.setHours(23, 59, 59, 999);
+                
+                const filteredCourses = this.courses.filter(course => {
+                    const startDate = new Date(course.startTime);
+                    const endDate = new Date(course.endTime);
+                    
+                    // 使用与fillCourses相同的时间范围逻辑
+                    const courseInWeek = (startDate >= weekStart && startDate <= weekEnd) ||
+                                        (endDate >= weekStart && endDate <= weekEnd) ||
+                                        (startDate <= weekStart && endDate >= weekEnd);
+                    
+                    return courseInWeek;
+                });
+
+                // 根据视图模式显示不同的统计信息
+                if (isTimetableView) {
+                    // 课程表模式统计
+                    const stats = {
+                        total: filteredCourses.length,
+                        required: filteredCourses.filter(c => this.getCourseType(c) === 'required').length,
+                        elective: filteredCourses.filter(c => this.getCourseType(c) === 'elective').length,
+                        public: filteredCourses.filter(c => this.getCourseType(c) === 'public').length
+                    };
+
+                    console.log('课程统计信息更新:', stats);
+
+                    // 更新统计卡片标题和内容
+                    document.getElementById('stats-title').textContent = isTimetableView ? '本周课程统计' : '本周事件统计';
+                    
+                    // 安全地更新DOM元素
+                    const updateElement = (id, value) => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.textContent = value;
+                        } else {
+                            console.warn(`统计元素 ${id} 未找到`);
+                        }
+                    };
+
+                    updateElement('label-total', isTimetableView ? '总课程数' : '总事件数');
+                    updateElement('label-required', isTimetableView ? '必修课' : '已完成');
+                    updateElement('label-elective', isTimetableView ? '选修课' : '未完成');
+                    updateElement('label-public', isTimetableView ? '公开课' : '今日事件');
+
+                    updateElement('total-courses', stats.total);
+                    updateElement('required-courses', stats.required);
+                    updateElement('elective-courses', stats.elective);
+                    updateElement('public-courses', stats.public);
+                } else {
+                    // 所有事件模式统计
+                    const stats = {
+                        total: filteredCourses.length,
+                        completed: filteredCourses.filter(c => c.completed).length,
+                        uncompleted: filteredCourses.filter(c => !c.completed).length,
+                        today: filteredCourses.filter(c => {
+                            const today = new Date();
+                            const eventDate = new Date(c.startTime);
+                            return eventDate.getDate() === today.getDate() &&
+                                   eventDate.getMonth() === today.getMonth() &&
+                                   eventDate.getFullYear() === today.getFullYear();
+                        }).length
+                    };
+
+                    console.log('事件统计信息更新:', stats);
+
+                    // 更新统计卡片标题和内容
+                    document.getElementById('stats-title').textContent = isTimetableView ? '本周课程统计' : '本周事件统计';
+                    
+                    // 安全地更新DOM元素
+                    const updateElement = (id, value) => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.textContent = value;
+                        } else {
+                            console.warn(`统计元素 ${id} 未找到`);
+                        }
+                    };
+
+                    updateElement('label-total', '总事件数');
+                    updateElement('label-required', '已完成');
+                    updateElement('label-elective', '未完成');
+                    updateElement('label-public', '今日事件');
+
+                    updateElement('total-courses', stats.total);
+                    updateElement('required-courses', stats.completed);
+                    updateElement('elective-courses', stats.uncompleted);
+                    updateElement('public-courses', stats.today);
+                }
+            }
+
+            // 应用主题 - 自动根据时间切换
+            applyTheme() {
+                const hour = new Date().getHours();
+                // 晚上6点到早上6点使用深色模式
+                const theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
+                
+                document.body.className = `${theme}-theme`;
+                
+                console.log(`当前时间: ${hour}:00, 应用主题: ${theme}`);
+            }
+
+            // 刷新数据
+            refreshData() {
+                console.log('开始刷新课程数据...');
+                
+                try {
+                    // 重新初始化存储管理器
+                    this.initStorageManager();
+                    
+                    // 重新加载课程数据
+                    this.loadCourses();
+                    
+                    // 特别检查周一课程
+                    this.debugMondayCourses();
+                    
+                    // 重新渲染课程表
+                    this.renderTimetable();
+                    
+                    console.log('课程数据刷新完成');
+                    
+                    // 显示刷新成功提示
+                    this.showRefreshNotification('课程表已刷新', 'success');
+                    
+                } catch (error) {
+                    console.error('刷新课程数据失败:', error);
+                    this.showRefreshNotification('刷新失败，请重试', 'error');
+                }
+            }
+
+            // 调试周一课程专用方法
+            debugMondayCourses() {
+                console.log('🔍 开始调试周一课程...');
+                
+                const mondayCourses = this.courses.filter(course => {
+                    const startDate = new Date(course.startTime);
+                    return startDate.getDay() === 1; // 周一
+                });
+                
+                console.log(`找到 ${mondayCourses.length} 个周一课程:`, mondayCourses.map(c => ({
+                    name: c.name,
+                    startTime: c.startTime,
+                    endTime: c.endTime,
+                    tags: c.tags
+                })));
+                
+                // 检查当前周的范围
+                const weekStart = new Date(this.currentWeekStart);
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                weekEnd.setHours(23, 59, 59, 999);
+                
+                console.log('当前周范围:', {
+                    开始: weekStart.toString(),
+                    结束: weekEnd.toString()
+                });
+                
+                // 检查每个周一课程是否在当前周范围内
+                mondayCourses.forEach(course => {
+                    const startDate = new Date(course.startTime);
+                    const inRange = startDate >= weekStart && startDate <= weekEnd;
+                    
+                    console.log(`周一课程 "${course.name}":`, {
+                        时间: startDate.toString(),
+                        在当前周: inRange,
+                        时间差_小时: (startDate - weekStart) / (1000 * 60 * 60)
+                    });
+                });
+            }
+
+            // 显示刷新通知
+            showRefreshNotification(message, type = 'info') {
+                // 创建通知元素
+                const notification = document.createElement('div');
+                notification.className = `refresh-notification ${type}`;
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                    z-index: 10000;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // 3秒后自动移除
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            // 切换课程完成状态
+            toggleCourseCompletion(courseId) {
+                try {
+                    // 使用存储管理器更新课程完成状态
+                    if (this.storageManager) {
+                        // 获取当前课程的完成状态
+                        const course = this.storageManager.getEventById(courseId);
+                        if (course) {
+                            const isCompleted = course.completed || false;
+                            
+                            // 更新课程完成状态
+                            const success = this.storageManager.markEventCompleted(courseId, !isCompleted);
+                            
+                            if (success) {
+                                // 显示提示
+                                this.showToast(!isCompleted ? '课程已完成！' : '课程已标记为未完成');
+                                
+                                // 触发自定义事件，通知其他页面状态已更改
+                                window.dispatchEvent(new CustomEvent('taskCompletionChanged', {
+                                    detail: { taskId: courseId, completed: !isCompleted }
+                                }));
+                                
+                                // 根据当前视图模式重新加载相应的数据
+                                if (isTimetableView) {
+                                    this.loadCourses();
+                                } else {
+                                    this.loadAllEvents();
+                                }
+                                this.renderTimetable();
+                                
+                                // 更新正在进行的课程状态
+                                this.updateOngoingCourses();
+                            } else {
+                                this.showToast('更新失败，请重试');
+                            }
+                        } else {
+                            this.showToast('未找到课程');
+                        }
+                    } else {
+                        this.showToast('存储管理器不可用');
+                    }
+                } catch (error) {
+                    console.error('切换课程状态失败:', error);
+                    this.showToast('操作失败，请重试');
+                }
+            }
+
+            // 显示提示消息
+            showToast(message) {
+                // 创建提示元素
+                const toast = document.createElement('div');
+                toast.className = 'toast-message';
+                toast.textContent = message;
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(34, 197, 94, 0.9);
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    z-index: 10000;
+                    backdrop-filter: blur(10px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                `;
+                
+                document.body.appendChild(toast);
+                
+                // 显示动画
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }, 2000);
+            }
+
+            // 添加数据验证方法
+            validateCourseData(course) {
+                const errors = [];
+                
+                if (!course.name) {
+                    errors.push('课程名称不能为空');
+                }
+                
+                if (!course.startTime) {
+                    errors.push('开始时间不能为空');
+                }
+                
+                if (!course.endTime) {
+                    errors.push('结束时间不能为空');
+                }
+                
+                if (course.startTime && course.endTime) {
+                    const start = new Date(course.startTime);
+                    const end = new Date(course.endTime);
+                    
+                    if (isNaN(start.getTime())) {
+                        errors.push('开始时间格式无效');
+                    }
+                    
+                    if (isNaN(end.getTime())) {
+                        errors.push('结束时间格式无效');
+                    }
+                    
+                    if (start >= end) {
+                        errors.push('结束时间必须晚于开始时间');
+                    }
+                }
+                
+                if (errors.length > 0) {
+                    console.warn(`课程 "${course.name}" 数据验证失败:`, errors);
+                    return false;
+                }
+                
+                return true;
+            }
+        }
+
+        // 视图切换状态：true表示课程表视图，false表示所有时间视图
+        let isTimetableView = true;
+
+        // 切换视图函数
+        function toggleView() {
+            isTimetableView = !isTimetableView;
+            
+            const viewTitle = document.getElementById('view-title');
+            const toggleText = document.getElementById('toggle-view-text');
+            const toggleIcon = document.querySelector('#toggle-view-btn i');
+            const filterTitle = document.querySelector('.filter-title');
+            const courseFilters = document.getElementById('course-filters');
+            const eventFilters = document.getElementById('event-filters');
+            
+            // 获取课程类型相关的UI元素
+            const courseTypeElements = document.querySelectorAll('.course-type-related');
+            const legendElements = document.querySelectorAll('.legend-item.course-type');
+            
+            if (isTimetableView) {
+                // 切换到课程表视图
+                viewTitle.textContent = '课程表';
+                toggleText.textContent = '显示所有事件';
+                toggleIcon.className = 'fas fa-list';
+                filterTitle.textContent = '课程筛选';
+                courseFilters.style.display = 'flex';
+                eventFilters.style.display = 'none';
+                
+                // 显示课程类型相关的UI元素
+                courseTypeElements.forEach(el => el.style.display = 'block');
+                legendElements.forEach(el => el.style.display = 'flex');
+                
+                // 更新弹窗中的标签为课程相关
+                updateModalLabels(true);
+                
+                // 应用课程表筛选条件
+                if (timetableManager) {
+                    timetableManager.loadCourses(); // 重新加载课程数据
+                    timetableManager.currentFilter = 'all';
+                    // 只选择课程筛选器中的按钮
+                    document.querySelectorAll('#course-filters .filter-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.type === 'all') {
+                            btn.classList.add('active');
+                        }
+                    });
+                    timetableManager.renderTimetable();
+                }
+            } else {
+                // 切换到所有事件视图
+                viewTitle.textContent = '所有事件';
+                toggleText.textContent = '显示课程表';
+                toggleIcon.className = 'fas fa-table';
+                filterTitle.textContent = '事件筛选';
+                courseFilters.style.display = 'none';
+                eventFilters.style.display = 'flex';
+                
+                // 隐藏课程类型相关的UI元素
+                courseTypeElements.forEach(el => el.style.display = 'none');
+                legendElements.forEach(el => el.style.display = 'none');
+                
+                // 更新弹窗中的标签为事件相关
+                updateModalLabels(false);
+                
+                // 显示所有事件（移除课程筛选）
+                if (timetableManager) {
+                    timetableManager.loadAllEvents(); // 加载所有事件
+                    timetableManager.currentFilter = 'all'; // 重置筛选条件
+                    // 只选择事件筛选器中的按钮
+                    document.querySelectorAll('#event-filters .filter-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.type === 'all') {
+                            btn.classList.add('active');
+                        }
+                    });
+                    timetableManager.renderTimetable();
+                }
+            }
+        }
+
+        // 关闭课程详情弹窗
+        function closeCourseModal() {
+            document.getElementById('course-modal').classList.remove('show');
+        }
+
+        // 返回主页
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('course-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'course-modal') {
+                closeCourseModal();
+            }
+        });
+
+        // 全局课程表管理器实例
+        let timetableManager = null;
+
+        // 监听其他页面的任务完成状态变化
+        window.addEventListener('taskCompletionChanged', function(e) {
+            // 重新加载课程数据
+            if (timetableManager) {
+                // 根据当前视图模式加载相应的数据
+                if (isTimetableView) {
+                    timetableManager.loadCourses();
+                } else {
+                    timetableManager.loadAllEvents();
+                }
+                timetableManager.renderTimetable();
+                timetableManager.updateOngoingCourses();
+            }
+        });
+
+        // 自动主题切换功能
+        function initAutoTheme() {
+            // 立即应用主题
+            applyAutoTheme();
+            
+            // 每分钟检查一次时间，确保在6点和18点准时切换
+            setInterval(() => {
+                applyAutoTheme();
+            }, 60000); // 每分钟检查一次
+            
+            console.log('自动主题切换已启用');
+        }
+
+        function applyAutoTheme() {
+            const hour = new Date().getHours();
+            // 晚上6点到早上6点使用深色模式
+            const theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
+            
+            const currentTheme = document.body.className.includes('dark') ? 'dark' : 'light';
+            
+            // 只在主题需要切换时才更新
+            if (currentTheme !== theme) {
+                document.body.className = `${theme}-theme`;
+                console.log(`主题已切换: ${currentTheme} -> ${theme} (当前时间: ${hour}:00)`);
+            }
+        }
+
+        // 初始化课程表
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('page-fade-in');
+            // 启用自动主题切换
+            initAutoTheme();
+            
+            // 启用滚动增强功能
+            enhanceWheelScroll();
+            enhanceTouchScroll();
+            enhanceKeyboardScroll();
+            
+            // 加载周末显示设置
+            loadWeekendSetting();
+            
+            // 加载筛选区域折叠状态
+            loadFilterState();
+            
+            // 添加事件筛选器监听器
+            document.querySelectorAll('#event-filters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('#event-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    if (timetableManager) {
+                        timetableManager.currentFilter = e.target.dataset.type;
+                        timetableManager.renderTimetable();
+                    }
+                });
+            });
+            
+            // 初始化弹窗标签
+            updateModalLabels(isTimetableView);
+            
+            // 如果初始视图不是课程表视图，隐藏课程类型相关元素
+            if (!isTimetableView) {
+                const courseTypeElements = document.querySelectorAll('.course-type-related');
+                const legendElements = document.querySelectorAll('.legend-item.course-type');
+                courseTypeElements.forEach(el => el.style.display = 'none');
+                legendElements.forEach(el => el.style.display = 'none');
+            }
+            
+            // 确保存储管理器已加载后再初始化课程表
+            const initTimetable = () => {
+                if (typeof StorageManager !== 'undefined') {
+                    console.log('存储管理器已加载，开始初始化课程表');
+                    timetableManager = new TimetableManager();
+                    
+                    // 监听存储变化，实时更新课程表
+                    window.addEventListener('storage', (e) => {
+                        if (e.key === 'schedule_app_all_users' || e.key === 'events') {
+                            console.log('检测到数据变化，刷新课程表');
+                            if (timetableManager) {
+                                timetableManager.refreshData();
+                            }
+                        }
+                    });
+                } else {
+                    console.log('存储管理器未加载，等待中...');
+                    // 如果存储管理器还未加载，等待一段时间后重试
+                    setTimeout(initTimetable, 100);
+                }
+            };
+            
+            initTimetable();
+
+            // 监听窗口大小变化，重新渲染课程表以确保响应式布局
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (timetableManager) {
+                        console.log('Window resized, re-rendering timetable...');
+                        timetableManager.renderTimetable();
+                    }
+                }, 200); // 防抖处理，避免频繁触发
+            });
+        });
+
+        // 周末显示状态
+        let showWeekend = true;
+
+        // 切换周末显示/隐藏功能
+        function toggleWeekend() {
+            showWeekend = !showWeekend;
+            const container = document.querySelector('.timetable-container');
+            const btn = document.getElementById('show-weekend-btn');
+            
+            if (showWeekend) {
+                // 显示周末
+                container.classList.remove('hide-weekend');
+                btn.innerHTML = '<i class="fas fa-calendar-week"></i> 显示周末';
+                btn.classList.add('active');
+                console.log('切换到显示周末模式');
+            } else {
+                // 隐藏周末
+                container.classList.add('hide-weekend');
+                btn.innerHTML = '<i class="fas fa-calendar-days"></i> 隐藏周末';
+                btn.classList.remove('active');
+                console.log('切换到隐藏周末模式');
+            }
+            
+            // 保存设置到本地存储
+            localStorage.setItem('timetable_show_weekend', showWeekend.toString());
+            
+            // 注意：不需要重新渲染课程表，只是通过CSS控制显示/隐藏
+            // 这样确保不会影响课程数据的加载和其他内容的显示
+            console.log('周末显示设置已更新，课程数据保持不变');
+        }
+
+        // 从本地存储加载周末显示设置
+        function loadWeekendSetting() {
+            const saved = localStorage.getItem('timetable_show_weekend');
+            if (saved !== null) {
+                showWeekend = saved === 'true';
+            }
+            
+            // 延迟应用设置，确保DOM完全加载
+            setTimeout(() => {
+                const container = document.querySelector('.timetable-container');
+                const btn = document.getElementById('show-weekend-btn');
+                
+                if (container && btn) {
+                    if (showWeekend) {
+                        container.classList.remove('hide-weekend');
+                        btn.innerHTML = '<i class="fas fa-calendar-week"></i> 显示周末';
+                        btn.classList.add('active');
+                    } else {
+                        container.classList.add('hide-weekend');
+                        btn.innerHTML = '<i class="fas fa-calendar-days"></i> 隐藏周末';
+                        btn.classList.remove('active');
+                    }
+                    console.log('周末显示设置已加载:', showWeekend ? '显示周末' : '隐藏周末');
+                }
+            }, 100);
+        }
+
+        // 添加刷新按钮功能
+        function refreshTimetable() {
+            if (timetableManager) {
+                timetableManager.refreshData();
+            }
+        }
+
+        // 滚动增强功能
+        let isScrolling = false;
+        let scrollTimeout;
+
+        // 优化鼠标滚轮滚动
+        function enhanceWheelScroll() {
+            let wheelHandler = function(e) {
+                // 防止过度滚动
+                if (isScrolling) return;
+                
+                isScrolling = true;
+                clearTimeout(scrollTimeout);
+                
+                // 平滑滚动
+                const delta = e.deltaY;
+                const scrollAmount = Math.abs(delta) > 100 ? delta * 0.8 : delta;
+                
+                window.scrollBy({
+                    top: scrollAmount,
+                    behavior: 'smooth'
+                });
+                
+                scrollTimeout = setTimeout(() => {
+                    isScrolling = false;
+                }, 50);
+            };
+            
+            // 添加滚轮事件监听
+            window.addEventListener('wheel', wheelHandler, { passive: true });
+            console.log('鼠标滚轮滚动增强已启用');
+        }
+
+        // 优化移动端触摸滚动
+        function enhanceTouchScroll() {
+            let touchStartY = 0;
+            let touchEndY = 0;
+            let touchStartTime = 0;
+            let isTouch = false;
+            
+            // 触摸开始
+            document.addEventListener('touchstart', function(e) {
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+                isTouch = true;
+            }, { passive: true });
+            
+            // 触摸移动
+            document.addEventListener('touchmove', function(e) {
+                if (!isTouch) return;
+                
+                const touchCurrentY = e.touches[0].clientY;
+                const deltaY = touchStartY - touchCurrentY;
+                
+                // 如果移动距离较大，启用惯性滚动
+                if (Math.abs(deltaY) > 10) {
+                    document.body.style.webkitOverflowScrolling = 'touch';
+                }
+            }, { passive: true });
+            
+            // 触摸结束
+            document.addEventListener('touchend', function(e) {
+                if (!isTouch) return;
+                
+                touchEndY = e.changedTouches[0].clientY;
+                const touchDuration = Date.now() - touchStartTime;
+                const deltaY = touchStartY - touchEndY;
+                
+                // 实现惯性滚动效果
+                if (touchDuration < 300 && Math.abs(deltaY) > 50) {
+                    const velocity = deltaY / touchDuration;
+                    const momentum = velocity * 200; // 调整惯性强度
+                    
+                    window.scrollBy({
+                        top: momentum,
+                        behavior: 'smooth'
+                    });
+                }
+                
+                isTouch = false;
+            }, { passive: true });
+            
+            console.log('移动端触摸滚动增强已启用');
+        }
+
+        // 添加键盘滚动支持
+        function enhanceKeyboardScroll() {
+            document.addEventListener('keydown', function(e) {
+                const scrollAmount = 100;
+                
+                switch(e.key) {
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        window.scrollBy({
+                            top: -scrollAmount,
+                            behavior: 'smooth'
+                        });
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        window.scrollBy({
+                            top: scrollAmount,
+                            behavior: 'smooth'
+                        });
+                        break;
+                    case 'PageUp':
+                        e.preventDefault();
+                        window.scrollBy({
+                            top: -window.innerHeight * 0.8,
+                            behavior: 'smooth'
+                        });
+                        break;
+                    case 'PageDown':
+                        e.preventDefault();
+                        window.scrollBy({
+                            top: window.innerHeight * 0.8,
+                            behavior: 'smooth'
+                        });
+                        break;
+                    case 'Home':
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                        break;
+                    case 'End':
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: document.body.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                        break;
+                }
+            });
+            
+            console.log('键盘滚动支持已启用');
+        }
+
+        // 统计卡片控制功能
+        function toggleStatsCard() {
+            const statsCard = document.getElementById('stats-card');
+            const statsOverlay = document.getElementById('stats-overlay');
+            
+            if (statsCard.classList.contains('show')) {
+                hideStatsCard();
+            } else {
+                showStatsCard();
+            }
+        }
+
+        function showStatsCard() {
+            const statsCard = document.getElementById('stats-card');
+            const statsOverlay = document.getElementById('stats-overlay');
+            
+            statsOverlay.classList.add('show');
+            statsCard.classList.add('show');
+            
+            // 防止背景滚动
+            document.body.style.overflow = 'hidden';
+            
+            console.log('显示统计卡片');
+        }
+
+        function hideStatsCard() {
+            const statsCard = document.getElementById('stats-card');
+            const statsOverlay = document.getElementById('stats-overlay');
+            
+            statsOverlay.classList.remove('show');
+            statsCard.classList.remove('show');
+            
+            // 恢复背景滚动
+            document.body.style.overflow = '';
+            
+            console.log('隐藏统计卡片');
+        }
+
+        // 键盘事件支持（ESC键关闭统计卡片）
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const statsCard = document.getElementById('stats-card');
+                if (statsCard && statsCard.classList.contains('show')) {
+                    hideStatsCard();
+                }
+            }
+        });
+
+        // 筛选区域折叠功能
+        let filterExpanded = false;
+
+        function toggleFilterSection() {
+            const filterContent = document.getElementById('filter-content');
+            const toggleIcon = document.getElementById('filter-toggle-icon');
+            const filterHeader = document.querySelector('.filter-header');
+            
+            filterExpanded = !filterExpanded;
+            
+            if (filterExpanded) {
+                // 展开筛选区域
+                filterContent.classList.remove('collapsed');
+                filterContent.classList.add('expanded');
+                toggleIcon.style.transform = 'rotate(180deg)';
+                console.log('展开筛选区域');
+            } else {
+                // 折叠筛选区域
+                filterContent.classList.remove('expanded');
+                filterContent.classList.add('collapsed');
+                toggleIcon.style.transform = 'rotate(0deg)';
+                console.log('折叠筛选区域');
+            }
+            
+            // 保存折叠状态到本地存储
+            localStorage.setItem('timetable_filter_expanded', filterExpanded.toString());
+        }
+
+        // 从本地存储加载筛选区域折叠状态
+        function loadFilterState() {
+            const saved = localStorage.getItem('timetable_filter_expanded');
+            if (saved !== null) {
+                filterExpanded = saved === 'true';
+            }
+            
+            // 延迟应用设置，确保DOM完全加载
+            setTimeout(() => {
+                const filterContent = document.getElementById('filter-content');
+                const toggleIcon = document.getElementById('filter-toggle-icon');
+                
+                if (filterContent && toggleIcon) {
+                    if (filterExpanded) {
+                        filterContent.classList.remove('collapsed');
+                        filterContent.classList.add('expanded');
+                        toggleIcon.style.transform = 'rotate(180deg)';
+                    } else {
+                        filterContent.classList.remove('expanded');
+                        filterContent.classList.add('collapsed');
+                        toggleIcon.style.transform = 'rotate(0deg)';
+                    }
+                    console.log('筛选区域折叠状态已加载:', filterExpanded ? '展开' : '折叠');
+                }
+            }, 100);
+        }
+
+        // 复制到剪贴板功能
+        async function copyToClipboard(elementId, itemName) {
+            try {
+                const element = document.getElementById(elementId);
+                if (!element) {
+                    console.error(`元素 ${elementId} 未找到`);
+                    return;
+                }
+                
+                const text = element.textContent.trim();
+                if (!text || text === '未指定' || text === '无标签' || text === '无备注') {
+                    showCopyNotification(`${itemName}为空，无法复制`, 'warning');
+                    return;
+                }
+                
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    // 降级方案：使用传统的复制方法
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '-999999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    textArea.remove();
+                }
+                
+                showCopyNotification(`${itemName}已复制到剪贴板`, 'success');
+                console.log(`复制成功: ${itemName} - ${text}`);
+                
+            } catch (err) {
+                console.error('复制失败:', err);
+                showCopyNotification(`复制${itemName}失败`, 'error');
+            }
+        }
+
+        // 显示复制通知
+        function showCopyNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `copy-notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : type === 'warning' ? '#ff9800' : '#2196F3'};
+                color: white;
+                padding: 10px 16px;
+                border-radius: 6px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                z-index: 10001;
+                font-size: 13px;
+                transition: all 0.3s ease;
+                max-width: 300px;
+                word-wrap: break-word;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 2秒后自动移除
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 2000);
+        }
+
+        // 返回功能
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+        
+        // 更新弹窗中的标签（课程/事件）
+        function updateModalLabels(isCourseView) {
+            document.getElementById('modal-name-label').textContent = isCourseView ? '课程名称' : '事件名称';
+            document.getElementById('modal-time-label').textContent = isCourseView ? '上课时间' : '事件时间';
+            document.getElementById('modal-location-label').textContent = isCourseView ? '上课地点' : '事件地点';
+            document.getElementById('modal-tags-label').textContent = isCourseView ? '课程标签' : '事件标签';
+            
+            // 更新复制按钮的文本
+            const nameCopyBtn = document.querySelector("[onclick=\"copyToClipboard('modal-course-name-text', '课程名称')\"]");
+            if (nameCopyBtn) {
+                nameCopyBtn.setAttribute('onclick', `copyToClipboard('modal-course-name-text', '${isCourseView ? '课程名称' : '事件名称'}')`);
+            }
+            
+            const locationCopyBtn = document.querySelector("[onclick=\"copyToClipboard('modal-course-location', '上课地点')\"]");
+            if (locationCopyBtn) {
+                locationCopyBtn.setAttribute('onclick', `copyToClipboard('modal-course-location', '${isCourseView ? '上课地点' : '事件地点'}')`);
+            }
+        }
+    </script>
+</body>
+</html>
