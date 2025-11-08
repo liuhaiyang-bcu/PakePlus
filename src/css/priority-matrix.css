@@ -1,0 +1,273 @@
+/* 重要等级四象限选择样式 */
+.priority-matrix {
+    margin-top: 10px;
+}
+
+.priority-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.priority-option {
+    display: block;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+}
+
+.priority-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.priority-option input[type="radio"] {
+    display: none;
+}
+
+.priority-option.urgent-important {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.priority-option.important-not-urgent {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.priority-option.urgent-not-important {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.priority-option.not-urgent-not-important {
+    border-color: #6b7280;
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+.priority-option input[type="radio"]:checked + .priority-content {
+    transform: scale(1.02);
+}
+
+.priority-option input[type="radio"]:checked ~ * {
+    opacity: 1;
+}
+
+.priority-option.urgent-important input[type="radio"]:checked {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.priority-option.important-not-urgent input[type="radio"]:checked {
+    border-color: #d97706;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.priority-option.urgent-not-important input[type="radio"]:checked {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.priority-option.not-urgent-not-important input[type="radio"]:checked {
+    border-color: #4b5563;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2);
+}
+
+.priority-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.priority-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.priority-text {
+    flex: 1;
+}
+
+.priority-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 2px;
+}
+
+.priority-desc {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* 重要等级筛选样式 */
+.priority-filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.priority-filter-option {
+    display: block;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 6px 8px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.priority-filter-option:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.priority-filter-option input[type="checkbox"] {
+    display: none;
+}
+
+.priority-filter-option input[type="checkbox"]:checked + .priority-filter-content {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+}
+
+.priority-filter-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 1px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.priority-filter-icon {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+.priority-filter-text {
+    font-size: 12px;
+    color: #374151;
+    font-weight: 500;
+}
+
+.priority-filter-actions {
+    margin-bottom: 10px;
+}
+
+.clear-priority-filter-btn {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    color: #6b7280;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.clear-priority-filter-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.priority-filter-status {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 8px;
+    color: #0369a1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 重要分级页面按钮样式 */
+.priority-matrix-btn {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.priority-matrix-btn i {
+    font-size: 11px;
+}
+
+.priority-matrix-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
+    filter: brightness(1.05);
+}
+
+.priority-matrix-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+/* 深色主题适配 */
+body.dark-theme .priority-matrix-btn {
+    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .priority-options {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .priority-option {
+        padding: 10px;
+    }
+    
+    .priority-title {
+        font-size: 13px;
+    }
+    
+    .priority-desc {
+        font-size: 11px;
+    }
+    
+    .priority-matrix-btn {
+        padding: 3px 8px;
+        font-size: 9px;
+        border-radius: 12px;
+        gap: 4px;
+    }
+    .priority-matrix-btn i { 
+        font-size: 10px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .priority-content {
+        gap: 8px;
+    }
+    
+    .priority-icon {
+        font-size: 18px;
+    }
+    
+    .priority-filter-option {
+        padding: 8px;
+    }
+}
