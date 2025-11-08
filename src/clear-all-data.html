@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>清除所有内容 - 有数规划</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/clear-dialog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* 设置页面专用变量 */
+            --settings-primary: #667eea;
+            --settings-primary-hover: #5a6fd8;
+            --settings-danger: #e53e3e;
+            --settings-danger-hover: #c53030;
+            --settings-success: #38a169;
+            --settings-warning: #dd6b20;
+            
+            /* 浅色主题 */
+            --settings-bg-light: #f5f7fa;
+            --settings-card-bg-light: #ffffff;
+            --settings-text-primary-light: #2d3748;
+            --settings-text-secondary-light: #4a5568;
+            --settings-border-light: #e1e5eb;
+            --settings-hover-light: #f8f9fa;
+            --settings-shadow-light: rgba(0, 0, 0, 0.05);
+            
+            /* 深色主题 */
+            --settings-bg-dark: #0f172a;
+            --settings-card-bg-dark: #1e293b;
+            --settings-text-primary-dark: #f1f5f9;
+            --settings-text-secondary-dark: #cbd5e1;
+            --settings-border-dark: #334155;
+            --settings-hover-dark: #334155;
+            --settings-shadow-dark: rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background-color: var(--settings-bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+            height: 100%;
+            overscroll-behavior: auto;
+            color: var(--settings-text-primary-light);
+            transition: background-color 0.3s, color 0.3s;
+            padding-top: 60px;
+            position: relative;
+            margin: 0;
+        }
+        
+        body.dark-theme {
+            background-color: var(--settings-bg-dark);
+            color: var(--settings-text-primary-dark);
+        }
+        
+        .clear-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: calc(100vh - 60px);
+        }
+        
+        /* 顶部固定导航栏 */
+        .clear-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--settings-border-light);
+            background-color: var(--settings-bg-light);
+            position: fixed !important;
+            top: 0 !important;
+            left: 0;
+            right: 0;
+            z-index: 9999 !important;
+            height: 60px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        body.dark-theme .clear-header {
+            border-bottom: 1px solid var(--settings-border-dark);
+            background-color: var(--settings-bg-dark);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .clear-header .back-btn {
+            position: absolute;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--settings-primary);
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+        
+        .clear-header .back-btn:hover {
+            background-color: var(--settings-hover-light);
+            color: var(--settings-primary-hover);
+        }
+        
+        body.dark-theme .clear-header .back-btn:hover {
+            background-color: var(--settings-hover-dark);
+            color: #88aaff;
+        }
+        
+        .clear-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--settings-text-primary-light);
+            margin: 0;
+            transition: color 0.3s;
+            text-align: center;
+        }
+        
+        body.dark-theme .clear-title {
+            color: var(--settings-text-primary-dark);
+        }
+        
+        .clear-content {
+            background: var(--settings-card-bg-light);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px var(--settings-shadow-light);
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        body.dark-theme .clear-content {
+            background: var(--settings-card-bg-dark);
+            box-shadow: 0 4px 12px var(--settings-shadow-dark);
+        }
+        
+        .clear-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #ff4757;
+            text-align: center;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .clear-title-main {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--settings-text-primary-light);
+            margin-bottom: 20px;
+            text-align: center;
+            transition: color 0.3s;
+        }
+        
+        body.dark-theme .clear-title-main {
+            color: var(--settings-text-primary-dark);
+        }
+        
+        .clear-description {
+            color: var(--settings-text-secondary-light);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 16px;
+            text-align: center;
+            transition: color 0.3s;
+        }
+        
+        body.dark-theme .clear-description {
+            color: var(--settings-text-secondary-dark);
+        }
+        
+        .clear-warning {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: #ff4757;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .clear-warning .warning-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .clear-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .clear-btn {
+            padding: 12px 30px;
+            border-radius: 25px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .clear-btn.cancel {
+            background: var(--settings-hover-light);
+            color: var(--settings-text-secondary-light);
+            border: 2px solid var(--settings-border-light);
+        }
+        
+        body.dark-theme .clear-btn.cancel {
+            background: var(--settings-hover-dark);
+            color: var(--settings-text-secondary-dark);
+            border: 2px solid var(--settings-border-dark);
+        }
+        
+        .clear-btn.cancel:hover {
+            background: var(--settings-card-bg-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.dark-theme .clear-btn.cancel:hover {
+            background: var(--settings-card-bg-dark);
+        }
+        
+        .clear-btn.confirm {
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            color: white;
+            border: 2px solid #ff4757;
+        }
+        
+        .clear-btn.confirm:hover {
+            background: linear-gradient(135deg, #ff3742, #ff2e3a);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
+        }
+        
+        .clear-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* 确认步骤样式 */
+        .clear-confirm-step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .clear-confirm-step.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .clear-confirm-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--settings-border-light);
+            border-radius: 10px;
+            font-size: 16px;
+            margin: 20px 0;
+            background: var(--settings-card-bg-light);
+            color: var(--settings-text-primary-light);
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        
+        body.dark-theme .clear-confirm-input {
+            border: 2px solid var(--settings-border-dark);
+            background: var(--settings-card-bg-dark);
+            color: var(--settings-text-primary-dark);
+        }
+        
+        .clear-confirm-input:focus {
+            outline: none;
+            border-color: #ff4757;
+            box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
+        }
+        
+        .clear-confirm-input.error {
+            border-color: #ff4757;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .clear-confirm-hint {
+            font-size: 14px;
+            color: var(--settings-text-secondary-light);
+            margin-bottom: 20px;
+            font-style: italic;
+            text-align: center;
+            transition: color 0.3s;
+        }
+        
+        body.dark-theme .clear-confirm-hint {
+            color: var(--settings-text-secondary-dark);
+        }
+        
+        /* 平板设备 */
+        @media (max-width: 768px) {
+            .clear-header {
+                padding: 10px 15px;
+                height: 50px;
+            }
+            
+            .clear-header .back-btn {
+                font-size: 18px;
+                width: 36px;
+                height: 36px;
+            }
+            
+            .clear-title {
+                font-size: 18px;
+            }
+            
+            .clear-content {
+                padding: 20px;
+            }
+            
+            .clear-title-main {
+                font-size: 22px;
+            }
+            
+            .clear-description {
+                font-size: 15px;
+            }
+            
+            .clear-warning .warning-text {
+                font-size: 15px;
+            }
+            
+            .clear-btn {
+                padding: 14px 25px;
+                font-size: 15px;
+                min-width: 100px;
+            }
+        }
+        
+        /* 手机设备 */
+        @media (max-width: 480px) {
+            .clear-container {
+                padding: 15px 10px;
+            }
+            
+            .clear-header {
+                padding: 8px 15px;
+                height: 45px;
+            }
+            
+            .clear-header .back-btn {
+                font-size: 16px;
+                width: 32px;
+                height: 32px;
+            }
+            
+            .clear-title {
+                font-size: 16px;
+            }
+            
+            .clear-content {
+                padding: 15px;
+            }
+            
+            .clear-icon {
+                font-size: 3em;
+                margin-bottom: 15px;
+            }
+            
+            .clear-title-main {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .clear-description {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            
+            .clear-warning {
+                padding: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .clear-warning .warning-text {
+                font-size: 14px;
+                gap: 8px;
+            }
+            
+            .clear-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .clear-btn {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+            
+            .clear-confirm-input {
+                padding: 14px 15px;
+                font-size: 16px;
+            }
+            
+            .clear-confirm-hint {
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <!-- 固定顶部返回按钮和标题 -->
+    <div class="clear-header">
+        <button class="back-btn" onclick="window.location.href='settings.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="clear-title">清除所有内容</h1>
+    </div>
+    
+    <div class="clear-container">
+        <div class="clear-content">
+            <div class="clear-icon">🗑️</div>
+            <h2 class="clear-title-main">确定要清除所有内容吗？</h2>
+            <p class="clear-description">
+                此操作将永久删除您的所有内容，包括：<br>
+                • 所有事件和任务<br>
+                • 项目信息<br>
+                • 清单和倒数日<br>
+                • 专注记录和积分<br>
+                • 用户设置和偏好
+            </p>
+            
+            <div class="clear-warning">
+                <div class="warning-text">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>此操作不可恢复，请谨慎操作！</span>
+                </div>
+            </div>
+            
+            <!-- 第一步确认 -->
+            <div class="clear-confirm-step" id="clear-step-1">
+                <div class="clear-actions">
+                    <button class="clear-btn cancel" id="clear-cancel-btn">
+                        <i class="fas fa-times"></i>
+                        取消
+                    </button>
+                    <button class="clear-btn confirm" id="clear-confirm-btn">
+                        <i class="fas fa-trash"></i>
+                        确认清除
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 第二步确认 -->
+            <div class="clear-confirm-step" id="clear-step-2">
+                <div class="clear-confirm-hint">
+                    请输入 <strong>"清除所有内容"</strong> 以确认操作
+                </div>
+                <input type="text" class="clear-confirm-input" id="clear-confirm-input" 
+                       placeholder="请输入：清除所有内容">
+                <div class="clear-actions">
+                    <button class="clear-btn cancel" id="clear-back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        返回
+                    </button>
+                    <button class="clear-btn confirm" id="clear-final-btn" disabled>
+                        <i class="fas fa-trash"></i>
+                        最终确认
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/storage.js"></script>
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化主题
+            initTheme();
+            
+            // 绑定事件
+            bindEvents();
+            
+            // 显示第一步
+            showStep1();
+        });
+        
+        // 初始化主题
+        function initTheme() {
+            try {
+                // 获取存储的设置数据
+                const userData = StorageManager.getData();
+                const settings = userData && userData.settings ? userData.settings : null;
+                
+                // 如果没有获取到设置数据，使用默认值
+                const theme = settings && settings.theme ? settings.theme : 'system';
+                
+                // 移除所有主题类
+                document.body.classList.remove('light-theme', 'dark-theme', 'dark-mode');
+                
+                // 根据设置应用主题
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                } else if (theme === 'light') {
+                    document.body.classList.add('light-theme');
+                } else if (theme === 'auto' || theme === 'system') {
+                    // 自动模式：根据时间判断
+                    const currentHour = new Date().getHours();
+                    const isDarkMode = currentHour >= 18 || currentHour < 6;
+                    
+                    if (isDarkMode) {
+                        document.body.classList.add('dark-theme');
+                    } else {
+                        document.body.classList.add('light-theme');
+                    }
+                }
+                
+                // 监听存储变化，实现主题联动
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'schedule_app_all_users') {
+                        try {
+                            // 重新加载主题设置
+                            const allUsersData = JSON.parse(e.newValue);
+                            const userId = localStorage.getItem('schedule_app_user_id');
+                            if (userId && allUsersData[userId]) {
+                                const userData = allUsersData[userId];
+                                const newTheme = userData.settings && userData.settings.theme ? 
+                                                userData.settings.theme : 'system';
+                                
+                                // 移除所有主题类
+                                document.body.classList.remove('light-theme', 'dark-theme');
+                                
+                                // 应用新主题
+                                if (newTheme === 'dark') {
+                                    document.body.classList.add('dark-theme');
+                                } else if (newTheme === 'light') {
+                                    document.body.classList.add('light-theme');
+                                } else if (newTheme === 'auto' || newTheme === 'system') {
+                                    const currentHour = new Date().getHours();
+                                    const isDarkMode = currentHour >= 18 || currentHour < 6;
+                                    
+                                    if (isDarkMode) {
+                                        document.body.classList.add('dark-theme');
+                                    } else {
+                                        document.body.classList.add('light-theme');
+                                    }
+                                }
+                            }
+                        } catch (error) {
+                            console.error('解析存储数据失败:', error);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('初始化主题失败:', error);
+                // 默认使用浅色主题
+                document.body.classList.add('light-theme');
+            }
+        }
+        
+        // 绑定事件
+        function bindEvents() {
+            // 取消按钮
+            const cancelBtn = document.getElementById('clear-cancel-btn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function() {
+                    window.location.href = 'settings.html';
+                });
+            }
+            
+            // 确认清除按钮
+            const confirmBtn = document.getElementById('clear-confirm-btn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function() {
+                    showStep2();
+                });
+            }
+            
+            // 返回按钮
+            const backBtn = document.getElementById('clear-back-btn');
+            if (backBtn) {
+                backBtn.addEventListener('click', function() {
+                    showStep1();
+                });
+            }
+            
+            // 最终确认按钮
+            const finalBtn = document.getElementById('clear-final-btn');
+            if (finalBtn) {
+                finalBtn.addEventListener('click', function() {
+                    executeClear();
+                });
+            }
+            
+            // 确认输入框
+            const confirmInput = document.getElementById('clear-confirm-input');
+            if (confirmInput) {
+                confirmInput.addEventListener('input', function(e) {
+                    validateInput(e.target.value);
+                });
+                
+                confirmInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !finalBtn.disabled) {
+                        e.preventDefault();
+                        executeClear();
+                    }
+                });
+            }
+        }
+        
+        // 显示第一步
+        function showStep1() {
+            const step1 = document.getElementById('clear-step-1');
+            const step2 = document.getElementById('clear-step-2');
+            
+            if (step1 && step2) {
+                step1.classList.add('show');
+                step2.classList.remove('show');
+            }
+        }
+        
+        // 显示第二步
+        function showStep2() {
+            const step1 = document.getElementById('clear-step-1');
+            const step2 = document.getElementById('clear-step-2');
+            
+            if (step1 && step2) {
+                step1.classList.remove('show');
+                step2.classList.add('show');
+                
+                // 聚焦到输入框
+                const confirmInput = document.getElementById('clear-confirm-input');
+                if (confirmInput) {
+                    setTimeout(() => {
+                        confirmInput.focus();
+                    }, 300);
+                }
+            }
+        }
+        
+        // 验证输入
+        function validateInput(value) {
+            const expectedText = '清除所有内容';
+            const isValid = value.trim() === expectedText;
+            
+            const finalBtn = document.getElementById('clear-final-btn');
+            const confirmInput = document.getElementById('clear-confirm-input');
+            
+            if (finalBtn) {
+                finalBtn.disabled = !isValid;
+            }
+            
+            if (confirmInput) {
+                if (isValid) {
+                    confirmInput.classList.remove('error');
+                } else {
+                    confirmInput.classList.add('error');
+                }
+            }
+        }
+        
+        // 执行清除操作
+        async function executeClear() {
+            try {
+                // 禁用按钮，显示加载状态
+                const finalBtn = document.getElementById('clear-final-btn');
+                if (finalBtn) {
+                    finalBtn.disabled = true;
+                    finalBtn.innerHTML = '<span class="clear-loading"></span>正在清除...';
+                }
+                
+                // 设置确认标记
+                sessionStorage.setItem('clearDataConfirmed', 'true');
+                
+                // 延迟一下让用户看到加载状态
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // 跳转到清除页面
+                window.location.href = 'clear.html';
+                
+            } catch (error) {
+                console.error('清除数据失败:', error);
+                
+                // 恢复按钮状态
+                const finalBtn = document.getElementById('clear-final-btn');
+                if (finalBtn) {
+                    finalBtn.disabled = false;
+                    finalBtn.innerHTML = '<i class="fas fa-trash"></i>最终确认';
+                }
+                
+                // 显示错误提示
+                if (window.UIManager && typeof UIManager.showNotification === 'function') {
+                    UIManager.showNotification('清除数据失败，请重试', 'error');
+                }
+            }
+        }
+        
+        // 防止页面内容被随意复制
+        (function preventCopy() {
+            function initPreventCopy() {
+                // 禁用文本选择
+                document.body.style.userSelect = 'none';
+                document.body.style.webkitUserSelect = 'none';
+                document.body.style.mozUserSelect = 'none';
+                document.body.style.msUserSelect = 'none';
+                
+                // 禁用触摸选择
+                document.body.style.webkitTouchCallout = 'none';
+                
+                // 允许输入框和文本域正常选择和复制
+                const allowSelect = function(e) {
+                    const target = e.target;
+                    const tagName = target.tagName.toLowerCase();
+                    const isInput = tagName === 'input' || tagName === 'textarea';
+                    const isEditable = target.isContentEditable || target.contentEditable === 'true';
+                    return isInput || isEditable;
+                };
+                
+                // 阻止右键菜单（输入框除外）
+                document.addEventListener('contextmenu', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止复制操作（输入框除外）
+                document.addEventListener('copy', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止剪切操作（输入框除外）
+                document.addEventListener('cut', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止拖拽选择（输入框除外）
+                document.addEventListener('selectstart', function(e) {
+                    if (!allowSelect(e)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+                
+                // 阻止键盘快捷键复制（输入框除外）
+                document.addEventListener('keydown', function(e) {
+                    if (!allowSelect(e)) {
+                        // 阻止 Ctrl+C, Ctrl+X, Ctrl+A
+                        if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'a')) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                }, { passive: false });
+                
+                // 为输入框和文本域启用文本选择
+                const inputs = document.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    input.style.userSelect = 'text';
+                    input.style.webkitUserSelect = 'text';
+                    input.style.mozUserSelect = 'text';
+                    input.style.msUserSelect = 'text';
+                });
+            }
+            
+            // 如果DOM已加载，直接执行；否则等待DOM加载
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initPreventCopy);
+            } else {
+                initPreventCopy();
+            }
+        })();
+    </script>
+</body>
+</html>
