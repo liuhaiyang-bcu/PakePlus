@@ -1,0 +1,445 @@
+/* 金价查询卡片样式 */
+.gold-price-section {
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.gold-price-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.gold-price-container h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gold-price-container h3 i {
+    color: #FFD700;
+    font-size: 1.2rem;
+}
+
+.gold-price-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 头部区域 */
+.gold-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.gold-refresh-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gold-refresh-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.gold-refresh-btn:hover {
+    background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.gold-refresh-btn:active {
+    transform: translateY(0);
+}
+
+.gold-refresh-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.gold-update-time {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+}
+
+/* 加载状态 */
+.gold-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #FFD700;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #666;
+    font-size: 14px;
+}
+
+/* 金价列表 */
+.gold-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.gold-item {
+    background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+    border: 1px solid #ffeaa7;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.gold-item:hover {
+    background: linear-gradient(135deg, #fff8dc 0%, #fffacd 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+.gold-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.gold-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.gold-type {
+    font-size: 12px;
+    color: #7f8c8d;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.gold-price-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.gold-price-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+.gold-price-label {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.gold-price-value {
+    font-weight: 600;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.gold-price-value.high {
+    color: #e74c3c;
+}
+
+.gold-price-value.low {
+    color: #27ae60;
+}
+
+.gold-change {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.gold-change-percent {
+    font-weight: 600;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.gold-change-percent.positive {
+    color: #27ae60;
+    background: rgba(39, 174, 96, 0.1);
+}
+
+.gold-change-percent.negative {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.gold-trade-amount {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+.gold-update-time-item {
+    font-size: 11px;
+    color: #95a5a6;
+    text-align: right;
+    margin-top: 4px;
+}
+
+/* 占位符样式 */
+.gold-item-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #999;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+}
+
+.placeholder-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.placeholder-text {
+    font-size: 14px;
+}
+
+/* 错误状态 */
+.gold-error {
+    background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+    border: 1px solid #feb2b2;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.error-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.error-message {
+    color: #c53030;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .gold-price-section {
+        margin: 16px 0;
+        padding: 20px;
+    }
+    
+    .gold-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .gold-refresh-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .gold-refresh-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    
+    .gold-price-info {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .gold-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .gold-change {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+/* 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+    .gold-price-section {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .gold-price-container h3 {
+        color: #e0e0e0;
+    }
+    
+    .gold-item {
+        background: linear-gradient(135deg, #2a2a1a 0%, #3a3a2a 100%);
+        border-color: #555;
+    }
+    
+    .gold-item:hover {
+        background: linear-gradient(135deg, #3a3a2a 0%, #4a4a3a 100%);
+    }
+    
+    .gold-name {
+        color: #e0e0e0;
+    }
+    
+    .gold-type {
+        color: #aaa;
+        background: rgba(255, 215, 0, 0.2);
+    }
+    
+    .gold-price-item {
+        background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .gold-price-label {
+        color: #aaa;
+    }
+    
+    .gold-price-value {
+        color: #e0e0e0;
+    }
+    
+    .gold-trade-amount {
+        color: #aaa;
+    }
+    
+    .gold-update-time-item {
+        color: #888;
+    }
+    
+    .gold-item-placeholder {
+        background: rgba(0, 0, 0, 0.2);
+        border-color: #555;
+        color: #aaa;
+    }
+    
+    .gold-error {
+        background: linear-gradient(135deg, #2a1a1a 0%, #3a2222 100%);
+        border-color: #5a2a2a;
+    }
+    
+    .error-message {
+        color: #ff6b6b;
+    }
+    
+    .gold-update-time {
+        color: #aaa;
+    }
+}
+
+/* 加载状态动画 */
+.gold-refresh-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.gold-refresh-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* 价格趋势指示器 */
+.gold-trend {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 12px;
+}
+
+.gold-trend.up {
+    color: #27ae60;
+}
+
+.gold-trend.down {
+    color: #e74c3c;
+}
+
+.gold-trend.neutral {
+    color: #7f8c8d;
+}
+
+
+
+
