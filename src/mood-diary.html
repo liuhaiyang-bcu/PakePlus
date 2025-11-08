@@ -1,0 +1,3431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>心情笔记 | Mood Notes</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 加载页面样式 */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+            opacity: 1;
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            background: var(--card-bg);
+            box-shadow: var(--box-shadow-lg);
+            border: 1px solid var(--border-color);
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+
+        .loading-logo-container {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 50px;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            margin-bottom: 30px;
+            position: relative;
+            animation: pulse 2s infinite;
+        }
+
+        .loading-logo-container::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.15;
+            animation: ripple 2s infinite;
+        }
+
+        .loading-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .loading-subtext {
+            font-size: 14px;
+            color: var(--gray-500);
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            max-width: 90%;
+        }
+
+        .loading-progress {
+            width: 100%;
+            height: 6px;
+            background-color: var(--hover-bg);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            animation: progress 2s ease-in-out;
+        }
+
+        .loading-status {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 15px;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes ripple {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.15;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes progress {
+            0% {
+                width: 0;
+            }
+            80% {
+                width: 90%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #93c5fd;
+            --secondary-color: #a78bfa;
+            --accent-color: #fbbf24;
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --danger-color: #f87171;
+            --light-color: #fef7f0;
+            --dark-color: #1e293b;
+            --gray-100: #f8fafc;
+            --gray-200: #f1f5f9;
+            --gray-300: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 20px;
+            --border-radius-xl: 24px;
+            --box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
+            --box-shadow-lg: 0 10px 15px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -2px rgba(59, 130, 246, 0.05);
+            --box-shadow-warm: 0 4px 20px rgba(59, 130, 246, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --max-width: 1200px;
+            --warm-gradient: linear-gradient(135deg, #fef7f0 0%, #fef3ec 100%);
+            --blue-gradient: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+
+        /* 禁止用户选择文本 */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background: var(--warm-gradient);
+            color: var(--text-color);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        /* 允许在输入框中选择文本 */
+        input, textarea, select {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        /* 浮动返回按钮样式 */
+        .floating-back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--hover-bg), #fefefe);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 18px;
+            z-index: 1000;
+            box-shadow: var(--box-shadow-warm);
+        }
+
+        .floating-back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--warm-overlay);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 50%;
+        }
+
+        .floating-back-btn:hover {
+            background: linear-gradient(135deg, var(--primary-light), #dbeafe);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-warm);
+            color: var(--primary-color);
+        }
+
+        .floating-back-btn:hover::before {
+            opacity: 1;
+        }
+
+        /* Light mode variables */
+        :root[data-theme="light"] {
+            --bg-color: #fef7f0;
+            --card-bg: #ffffff;
+            --text-color: #374151;
+            --border-color: #f3e8ff;
+            --input-bg: #ffffff;
+            --input-border: #e0e7ff;
+            --hover-bg: #fef3ec;
+            --scrollbar-track: #fef3ec;
+            --scrollbar-thumb: #d1d5db;
+            --chart-bg: #f8fafc;
+            --empty-state-color: #9ca3af;
+            --empty-state-icon-color: #d1d5db;
+            --warm-overlay: rgba(251, 191, 36, 0.05);
+        }
+
+        /* Dark mode variables */
+        :root[data-theme="dark"] {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f1f5f9;
+            --border-color: #334155;
+            --input-bg: #1e293b;
+            --input-border: #475569;
+            --hover-bg: #334155;
+            --scrollbar-track: #1e293b;
+            --scrollbar-thumb: #475569;
+            --chart-bg: #1e293b;
+            --empty-state-color: #64748b;
+            --empty-state-icon-color: #475569;
+            /* 深色模式下的全局背景与叠加优化 */
+            --warm-gradient: linear-gradient(135deg, #0b1220 0%, #0f172a 100%);
+            --warm-overlay: rgba(59, 130, 246, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: var(--warm-gradient);
+            color: var(--text-color);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .app-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--card-bg);
+            box-shadow: var(--box-shadow-warm);
+            border-radius: var(--border-radius-lg);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--blue-gradient);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .about-btn {
+            margin-left: 16px;
+        }
+
+        .btn-about {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: var(--border-radius-md);
+            background: linear-gradient(135deg, var(--hover-bg), #fefefe);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--warm-overlay);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-about:hover {
+            background: linear-gradient(135deg, var(--accent-color), #fde68a);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-warm);
+            color: #92400e;
+        }
+
+        .btn-about:hover::before {
+            opacity: 1;
+        }
+
+        /* 关于弹窗样式 */
+        .about-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .about-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .about-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--box-shadow-warm);
+            border: 1px solid var(--border-color);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .about-modal.show .about-content {
+            transform: scale(1);
+        }
+
+        .about-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--blue-gradient);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .about-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .about-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .about-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .about-close:hover {
+            color: var(--danger-color);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .about-body {
+            color: var(--text-color);
+            line-height: 1.7;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .about-body h3 {
+            color: var(--primary-color);
+            margin: 20px 0 12px 0;
+            font-size: 1.1rem;
+        }
+
+        .about-body p {
+            margin-bottom: 16px;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .feature-list li::before {
+            content: '✨';
+            font-size: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            position: relative;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        .stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 20px;
+        }
+
+        /* Form Styles */
+        .mood-form-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-warm);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mood-form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--blue-gradient);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius-md);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .mood-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .mood-option {
+            text-align: center;
+            padding: 16px 8px;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border-color);
+            background: linear-gradient(135deg, var(--card-bg), #fefefe);
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mood-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--warm-overlay);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .mood-option:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-warm);
+        }
+
+        .mood-option:hover::before {
+            opacity: 1;
+        }
+
+        .mood-option.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.1));
+            box-shadow: var(--box-shadow-warm);
+            transform: translateY(-2px);
+        }
+
+        .mood-option.selected::before {
+            opacity: 0;
+        }
+
+        .mood-emoji {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            color: var(--text-color);
+        }
+
+        .mood-emoji i {
+            font-size: 1.5rem;
+        }
+
+        .mood-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--box-shadow-warm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Entries Styles */
+        .entries-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-warm);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .entries-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--blue-gradient);
+        }
+
+        .entries-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .entries-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-group {
+            position: relative;
+            min-width: 180px;
+            flex: 1;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 8px 36px 8px 12px;
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius-md);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 0.9rem;
+        }
+
+        /* Clear search button */
+        .clear-search-btn {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 2px;
+            display: none;
+        }
+
+        .clear-search-btn:hover {
+            color: var(--danger-color);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 14px;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--hover-bg);
+            background-color: var(--hover-bg);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            padding: 8px 14px;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .btn-icon-only {
+            padding: 8px 10px;
+        }
+
+        .btn-icon-only i {
+            margin-right: 0;
+        }
+
+        /* Import/Export button group */
+        .import-export-group {
+            display: flex;
+            gap: 4px;
+        }
+
+        /* Mobile button optimizations */
+        @media (max-width: 768px) {
+            .entries-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            
+            .entries-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .input-group {
+                flex: 1;
+                min-width: 120px;
+            }
+            
+            #searchInput {
+                padding: 10px 50px 10px 12px;
+                font-size: 0.95rem;
+            }
+            
+            .search-icon {
+                font-size: 0.95rem;
+                right: 32px;
+            }
+            
+            .clear-search-btn {
+                right: 10px;
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .btn-icon-only {
+                padding: 8px;
+            }
+            
+            .import-export-group {
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .entries-actions {
+                flex-wrap: wrap;
+            }
+            
+            .input-group {
+                order: 1;
+                min-width: 100%;
+            }
+            
+            .entries-actions > :not(.input-group):not(.import-export-group) {
+                order: 2;
+            }
+            
+            .import-export-group {
+                order: 3;
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .btn span {
+                display: inline;
+            }
+            
+            .btn-icon-only span,
+            .btn-outline span,
+            .btn-danger span {
+                display: inline;
+            }
+            
+            .btn i {
+                margin-right: 6px;
+            }
+            
+            #searchInput {
+                padding: 12px 50px 12px 16px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .import-export-group {
+                flex-direction: row;
+            }
+            
+            .import-export-group .btn {
+                width: auto;
+                flex: 1;
+            }
+            
+            .btn {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .btn span {
+                display: none;
+            }
+            
+            .btn i {
+                margin-right: 0;
+            }
+        }
+
+        .entries-list {
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .entries-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .entries-list::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+            border-radius: 2px;
+        }
+
+        .entries-list::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 2px;
+        }
+
+        .entry {
+            padding: 20px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+            transition: var(--transition);
+            background: linear-gradient(135deg, var(--card-bg), #fefefe);
+            position: relative;
+            overflow: hidden;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .entry::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--warm-overlay);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .entry:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--box-shadow-warm);
+            transform: translateY(-1px);
+        }
+
+        .entry:hover::before {
+            opacity: 1;
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .entry-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .entry-date {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        .entry-mood-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: var(--border-radius-xl);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* 复制按钮样式 */
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--border-radius-md);
+            background: linear-gradient(135deg, var(--hover-bg), #fefefe);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--warm-overlay);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, var(--primary-light), #dbeafe);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: var(--box-shadow-warm);
+            color: var(--primary-color);
+        }
+
+        .copy-btn:hover::before {
+            opacity: 1;
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, var(--success-color), #6ee7b7);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        /* 删除按钮样式 */
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--border-radius-md);
+            background: linear-gradient(135deg, var(--danger-color), #fca5a5);
+            border: 1px solid var(--danger-color);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .delete-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #dc2626, var(--danger-color));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .delete-btn:hover::before {
+            opacity: 1;
+        }
+
+        .recent-entry .delete-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+
+        .mood-5 { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+        .mood-4 { background-color: rgba(139, 92, 246, 0.1); color: var(--secondary-color); }
+        .mood-3 { background-color: rgba(100, 116, 139, 0.1); color: var(--gray-600); }
+        .mood-2 { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+        .mood-1 { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
+
+        .entry-content {
+            color: var(--text-color);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 15px;
+            color: var(--empty-state-color);
+        }
+
+        .empty-state-icon {
+            font-size: 2.5rem;
+            margin-bottom: 14px;
+            color: var(--empty-state-icon-color);
+        }
+
+        .empty-state-text {
+            font-size: 0.95rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-warm);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--blue-gradient);
+        }
+
+        .mood-chart {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .chart-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 70px;
+            background-color: var(--chart-bg);
+            border-radius: var(--border-radius-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, var(--primary-color), var(--primary-light));
+            border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+            box-shadow: 0 -2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .chart-label {
+            font-size: 0.7rem;
+            color: var(--gray-600);
+        }
+
+        .chart-value {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .recent-entries {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .recent-entry {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .recent-entry:last-child {
+            border-bottom: none;
+        }
+
+        .recent-entry-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+
+        .recent-entry-date {
+            font-size: 0.7rem;
+            color: var(--gray-500);
+        }
+
+        .recent-entry-content {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-warm);
+            padding: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--blue-gradient);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            border-radius: var(--border-radius-md);
+            background: linear-gradient(135deg, var(--hover-bg), #fefefe);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--warm-overlay);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--box-shadow-warm);
+            transform: translateY(-1px);
+        }
+
+        .nav-tab.active::before {
+            opacity: 0;
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: linear-gradient(135deg, var(--border-color), #f8fafc);
+            transform: translateY(-1px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .nav-tab:hover:not(.active)::before {
+            opacity: 1;
+        }
+
+        .nav-tab:active {
+            transform: scale(0.98);
+        }
+
+        .nav-icon {
+            font-size: 0.9rem;
+        }
+
+        .nav-text {
+            display: inline-block;
+        }
+
+        /* Mobile Navigation Enhancements */
+        @media (max-width: 576px) {
+            .nav-container {
+                padding: 6px;
+                margin-bottom: 12px;
+                border-radius: var(--border-radius-md);
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-tabs {
+                gap: 2px;
+            }
+            
+            .nav-tab {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+                border-radius: var(--border-radius-sm);
+                gap: 4px;
+            }
+            
+            .nav-icon {
+                font-size: 0.8rem;
+            }
+            
+            /* Very small screens */
+            @media (max-width: 360px) {
+                .nav-tab {
+                    padding: 4px 6px;
+                    font-size: 0.7rem;
+                }
+                
+                .nav-icon {
+                    font-size: 0.7rem;
+                }
+                
+                .nav-text {
+                    display: none;
+                }
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-row: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 16px;
+            }
+            
+            header {
+                padding: 14px 16px;
+            }
+            
+            .stats {
+                gap: 12px;
+            }
+            
+            .stat-value {
+                font-size: 1.1rem;
+            }
+            
+            .mood-form-container, .entries-container, .sidebar-card {
+                padding: 16px;
+            }
+            
+            .mood-selector {
+                gap: 6px;
+            }
+            
+            .mood-option {
+                padding: 10px 4px;
+            }
+            
+            .mood-emoji {
+                font-size: 1.3rem;
+            }
+            
+            .mood-emoji i {
+                font-size: 1.3rem;
+            }
+            
+            .mood-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo-text {
+                font-size: 1.2rem;
+            }
+            
+            .stats {
+                gap: 8px;
+            }
+            
+            .stat-item {
+                text-align: left;
+            }
+            
+            .entries-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .entries-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .mood-chart {
+                gap: 4px;
+            }
+            
+            .mood-emoji {
+                font-size: 1.1rem;
+            }
+            
+            .mood-emoji i {
+                font-size: 1.1rem;
+            }
+        }
+
+        .tag-badge {
+            display: inline-block;
+            background-color: var(--hover-bg);
+            color: var(--text-color);
+            padding: 3px 10px;
+            border-radius: var(--border-radius-xl);
+            font-size: 0.8rem;
+            transition: var(--transition);
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .tag-badge:hover {
+            background-color: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        /* 卡片动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* 为所有主要卡片添加进入动画 */
+        header {
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .nav-container {
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .mood-form-container {
+            animation: fadeInLeft 0.6s ease-out 0.2s both;
+        }
+
+        .entries-container {
+            animation: fadeInRight 0.6s ease-out 0.3s both;
+        }
+
+        .sidebar-card {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .sidebar-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .sidebar-card:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .sidebar-card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        /* 心情选项动画 */
+        .mood-option {
+            animation: scaleIn 0.4s ease-out both;
+        }
+
+        .mood-option:nth-child(1) { animation-delay: 0.1s; }
+        .mood-option:nth-child(2) { animation-delay: 0.15s; }
+        .mood-option:nth-child(3) { animation-delay: 0.2s; }
+        .mood-option:nth-child(4) { animation-delay: 0.25s; }
+        .mood-option:nth-child(5) { animation-delay: 0.3s; }
+
+        /* 导航标签动画 */
+        .nav-tab {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+
+        .nav-tab:nth-child(1) { animation-delay: 0.1s; }
+        .nav-tab:nth-child(2) { animation-delay: 0.15s; }
+        .nav-tab:nth-child(3) { animation-delay: 0.2s; }
+
+        /* 统计项动画 */
+        .stat-item {
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.2s; }
+        .stat-item:nth-child(2) { animation-delay: 0.25s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+
+        /* 图表条形动画 */
+        .chart-bar {
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        .chart-bar:nth-child(1) { animation-delay: 0.1s; }
+        .chart-bar:nth-child(2) { animation-delay: 0.15s; }
+        .chart-bar:nth-child(3) { animation-delay: 0.2s; }
+        .chart-bar:nth-child(4) { animation-delay: 0.25s; }
+        .chart-bar:nth-child(5) { animation-delay: 0.3s; }
+
+        /* 增强悬停动画效果 */
+        header:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-warm);
+        }
+
+        .mood-form-container:hover,
+        .entries-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .sidebar-card:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--box-shadow-warm);
+        }
+
+        /* 按钮脉冲动画 */
+        .btn-primary:active {
+            animation: pulse 0.3s ease-in-out;
+        }
+
+        .btn-about:active {
+            animation: pulse 0.2s ease-in-out;
+        }
+
+        /* 记录条目动画 */
+        .entry {
+            animation: fadeInUp 0.4s ease-out both;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .entry:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .entry:nth-child(even) {
+            animation-delay: 0.15s;
+        }
+
+        .entry:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        /* 最近记录动画 */
+        .recent-entry {
+            animation: fadeInLeft 0.3s ease-out both;
+            transition: all 0.3s ease;
+        }
+
+        .recent-entry:nth-child(1) { animation-delay: 0.1s; }
+        .recent-entry:nth-child(2) { animation-delay: 0.15s; }
+        .recent-entry:nth-child(3) { animation-delay: 0.2s; }
+
+        .recent-entry:hover {
+            transform: translateX(5px);
+            background: var(--hover-bg);
+        }
+
+        /* 标签徽章动画 */
+        .tag-badge {
+            animation: scaleIn 0.3s ease-out both;
+            transition: all 0.3s ease;
+        }
+
+        .tag-badge:hover {
+            transform: translateY(-1px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        /* 心情徽章动画 */
+        .entry-mood-badge {
+            transition: all 0.3s ease;
+        }
+
+        .entry-mood-badge:hover {
+            transform: scale(1.1);
+        }
+
+        /* 表单输入动画 */
+        input:focus,
+        textarea:focus,
+        select:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        /* 空状态动画 */
+        .empty-state {
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+
+        .empty-state-icon {
+            animation: pulse 2s infinite;
+        }
+
+        /* 页面切换动画 */
+        .page-container {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .page-container.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        /* 关于弹窗动画增强 */
+        .about-modal {
+            backdrop-filter: blur(5px);
+        }
+
+        .about-content {
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        /* 响应式动画优化 */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* 移动端动画优化 */
+        @media (max-width: 768px) {
+            .sidebar-card:hover {
+                transform: translateY(-1px) scale(1.01);
+            }
+            
+            .entry:hover {
+                transform: translateY(-1px);
+            }
+            
+            .mood-form-container:hover,
+            .entries-container:hover {
+                transform: translateY(-2px);
+            }
+        }
+        /* 深色模式下，覆盖浅色渐变以避免偏白发灰问题 */
+        [data-theme="dark"] .btn-about,
+        [data-theme="dark"] .nav-tab,
+        [data-theme="dark"] .mood-option,
+        [data-theme="dark"] .entry {
+            background: var(--card-bg) !important;
+        }
+
+        /* 深色模式下浮动返回按钮样式 */
+        [data-theme="dark"] .floating-back-btn {
+            background: var(--card-bg) !important;
+        }
+
+        [data-theme="dark"] .floating-back-btn::before {
+            background: var(--warm-overlay);
+        }
+
+        /* 深色模式下复制按钮样式 */
+        [data-theme="dark"] .copy-btn {
+            background: var(--card-bg) !important;
+        }
+
+        [data-theme="dark"] .copy-btn::before {
+            background: var(--warm-overlay);
+        }
+
+        /* 深色模式下的导航 hover 态，避免使用硬编码浅色 */
+        [data-theme="dark"] .nav-tab:hover:not(.active) {
+            background: var(--hover-bg) !important;
+            box-shadow: var(--box-shadow);
+            transform: translateY(-1px);
+        }
+
+        /* 搜索输入等控件 hover/聚焦边界在深色下更自然 */
+        [data-theme="dark"] .btn-outline:hover {
+            border-color: var(--hover-bg);
+            background-color: var(--hover-bg);
+        }
+
+        /* 提示/叠加一致性（使用已在 dark 定义的 --warm-overlay） */
+        [data-theme="dark"] .btn-about::before,
+        [data-theme="dark"] .nav-tab::before,
+        [data-theme="dark"] .mood-option::before,
+        [data-theme="dark"] .entry::before {
+            background: var(--warm-overlay);
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载页面 -->
+    <div id="loading-screen">
+        <div class="loading-container">
+            <div class="loading-logo-container">
+                <i class="fas fa-smile"></i>
+            </div>
+            <div class="loading-text">心情笔记</div>
+            <div class="loading-subtext">随心而记，温暖成册</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+            </div>
+            <div class="loading-status">正在加载中...</div>
+        </div>
+    </div>
+
+    <!-- 浮动返回按钮 -->
+    <a href="javascript:void(0)" class="floating-back-btn" title="返回笔记" onclick="try{localStorage.setItem('returnToNotes','1')}catch(e){}; window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="app-container">
+        <!-- Navigation -->
+        <div class="nav-container">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-page="record" title="记录心情">
+                    <i class="fas fa-plus-circle nav-icon"></i>
+                    <span class="nav-text">记录心情</span>
+                </button>
+                <button class="nav-tab" data-page="history" title="历史记录">
+                    <i class="fas fa-history nav-icon"></i>
+                    <span class="nav-text">历史记录</span>
+                </button>
+                <button class="nav-tab" data-page="analytics" title="数据分析">
+                    <i class="fas fa-chart-bar nav-icon"></i>
+                    <span class="nav-text">数据分析</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Record Page -->
+        <div class="page-container active" id="record-page">
+            <header>
+                <div class="header-left">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <div class="logo-text">心情<span>笔记</span></div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalEntries">0</div>
+                        <div class="stat-label">总记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="currentStreak">0</div>
+                        <div class="stat-label">连续记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="moodTrend">-</div>
+                        <div class="stat-label">心情趋势</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="mood-form-container">
+                <h2 class="section-title"><i class="fas fa-plus-circle"></i> 添加新记录</h2>
+                <form id="moodForm">
+                    <div class="form-group">
+                        <label>今日心情</label>
+                        <div class="mood-selector" id="moodSelector">
+                            <div class="mood-option" data-mood="5">
+                                <div class="mood-emoji"><i class="fas fa-laugh"></i></div>
+                                <div class="mood-label">非常开心</div>
+                            </div>
+                            <div class="mood-option" data-mood="4">
+                                <div class="mood-emoji"><i class="fas fa-smile"></i></div>
+                                <div class="mood-label">开心</div>
+                            </div>
+                            <div class="mood-option" data-mood="3">
+                                <div class="mood-emoji"><i class="fas fa-meh"></i></div>
+                                <div class="mood-label">一般</div>
+                            </div>
+                            <div class="mood-option" data-mood="2">
+                                <div class="mood-emoji"><i class="fas fa-frown"></i></div>
+                                <div class="mood-label">低落</div>
+                            </div>
+                            <div class="mood-option" data-mood="1">
+                                <div class="mood-emoji"><i class="fas fa-sad-tear"></i></div>
+                                <div class="mood-label">非常低落</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedMood" name="mood" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entryTitle">标题（可选）</label>
+                        <div class="input-group">
+                            <input type="text" id="entryTitle" name="title" placeholder="为这次记录添加一个标题...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entryTags">标签（可选）</label>
+                        <div class="input-group">
+                            <input type="text" id="entryTags" name="tags" placeholder="添加标签，用逗号分隔（如：工作,家庭,健康）">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entryContent">详细记录（可选）</label>
+                        <textarea id="entryContent" name="content" placeholder="详细描述你今天的感受、发生的事情或任何想记录的内容..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-save"></i> 保存记录
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- History Page -->
+        <div class="page-container" id="history-page">
+            <header>
+                <div class="header-left">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <div class="logo-text">心情<span>笔记</span></div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalEntries2">0</div>
+                        <div class="stat-label">总记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="currentStreak2">0</div>
+                        <div class="stat-label">连续记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="moodTrend2">-</div>
+                        <div class="stat-label">心情趋势</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Hidden file input for import -->
+            <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+            <div class="entries-container">
+                <div class="entries-header">
+                    <h2 class="section-title"><i class="fas fa-history"></i> 历史记录</h2>
+                    <div class="entries-actions">
+                        <div class="input-group">
+                            <input type="text" id="searchInput" placeholder="搜索记录...">
+                            <i class="fas fa-search search-icon"></i>
+                            <button class="clear-search-btn" id="clearSearchBtn" title="清除搜索">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="import-export-group">
+                            <button class="btn btn-outline" id="importEntries">
+                                <i class="fas fa-file-import"></i> <span>导入</span>
+                            </button>
+                            <button class="btn btn-outline" id="exportEntries" title="下载JSON文件">
+                                <i class="fas fa-download"></i> <span>下载JSON</span>
+                            </button>
+                        </div>
+                        <button class="btn btn-danger" id="clearEntries">
+                            <i class="fas fa-trash-alt"></i> <span>清空</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="entries-list" id="entriesList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <p class="empty-state-text">暂无记录，请添加您的第一条心情笔记</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Page -->
+        <div class="page-container" id="analytics-page">
+            <header>
+                <div class="header-left">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <div class="logo-text">心情<span>笔记</span></div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalEntries3">0</div>
+                        <div class="stat-label">总记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="currentStreak3">0</div>
+                        <div class="stat-label">连续记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="moodTrend3">-</div>
+                        <div class="stat-label">心情趋势</div>
+                    </div>
+                    <div class="about-btn">
+                        <button class="btn btn-about" id="aboutBtn" title="关于心情笔记">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="main-layout">
+                <div class="main-content">
+                    <div class="sidebar-card">
+                        <h3 class="section-title"><i class="fas fa-chart-bar"></i> 心情统计</h3>
+                        <div class="mood-chart" id="moodChart">
+                            <div class="chart-bar">
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                </div>
+                                <div class="chart-value">0</div>
+                                <div class="chart-label"><i class="fas fa-sad-tear"></i></div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                </div>
+                                <div class="chart-value">0</div>
+                                <div class="chart-label"><i class="fas fa-frown"></i></div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                </div>
+                                <div class="chart-value">0</div>
+                                <div class="chart-label"><i class="fas fa-meh"></i></div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                </div>
+                                <div class="chart-value">0</div>
+                                <div class="chart-label"><i class="fas fa-smile"></i></div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-container">
+                                    <div class="bar-fill" style="height: 0%"></div>
+                                </div>
+                                <div class="chart-value">0</div>
+                                <div class="chart-label"><i class="fas fa-laugh"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="section-title"><i class="fas fa-tags"></i> 常用标签</h3>
+                        <div id="popularTags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                            <div class="empty-state">
+                                <p class="empty-state-text" style="font-size: 0.9rem;">暂无标签</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3 class="section-title"><i class="fas fa-clock"></i> 最近记录</h3>
+                        <div class="recent-entries" id="recentEntries">
+                            <div class="empty-state">
+                                <p class="empty-state-text">暂无最近记录</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 关于弹窗 -->
+        <div class="about-modal" id="aboutModal">
+            <div class="about-content">
+                <div class="about-header">
+                    <h2 class="about-title">
+                        <i class="fas fa-heart"></i>
+                        关于心情笔记
+                    </h2>
+                    <button class="about-close" id="aboutClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="about-body">
+                    <p>心情笔记是一个温馨的个人情感记录应用，帮助您记录、追踪和分析日常的心情变化。</p>
+                    
+                    <h3>✨ 主要功能</h3>
+                    <ul class="feature-list">
+                        <li>记录每日心情状态和详细感受</li>
+                        <li>添加个性化标签和标题</li>
+                        <li>查看历史记录和搜索功能</li>
+                        <li>心情数据统计和趋势分析</li>
+                        <li>数据导入和复制JSON导出功能</li>
+                        <li>温馨的用户界面设计</li>
+                    </ul>
+                    
+                    <h3>💝 设计理念</h3>
+                    <p>我们相信每一份情感都值得被记录和珍藏。心情笔记采用温暖的色彩搭配和舒适的交互体验，为您创造一个安全、私密的情感记录空间。</p>
+                    
+                    <h3>🔒 隐私保护</h3>
+                    <p>您的所有数据都存储在本地浏览器中，我们不会收集或上传任何个人信息，确保您的隐私安全。</p>
+                    
+                    <p style="text-align: center; margin-top: 24px; color: var(--gray-500); font-size: 0.9rem;">
+                        用心记录每一天 💖
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 禁止右键菜单和文本选择
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 禁止拖拽
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+
+        // 应用状态管理
+        const appState = {
+            entries: [],
+            selectedMood: null
+        };
+
+        // DOM 元素
+        const moodForm = document.getElementById('moodForm');
+        const moodSelector = document.getElementById('moodSelector');
+        const selectedMoodInput = document.getElementById('selectedMood');
+        const entryTitle = document.getElementById('entryTitle');
+        const entryContent = document.getElementById('entryContent');
+        const entryTags = document.getElementById('entryTags');
+        const entriesList = document.getElementById('entriesList');
+        const clearEntriesBtn = document.getElementById('clearEntries');
+        const exportEntriesBtn = document.getElementById('exportEntries');
+        const totalEntriesEl = document.getElementById('totalEntries');
+        const currentStreakEl = document.getElementById('currentStreak');
+
+        // 初始化应用
+        function initApp() {
+            // 初始化主题
+            initTheme();
+            loadEntries();
+            updateStats();
+            setupEventListeners();
+            renderEntries();
+            updateMoodChart();
+            
+            // 2秒后隐藏加载页面
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 2000);
+        }
+
+        // 初始化主题
+        function initTheme() {
+            const hour = new Date().getHours();
+            const isDarkMode = hour >= 18 || hour < 6; // 晚上6点到早上6点为深色模式
+            document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // 检查并切换主题
+        function checkTheme() {
+            const hour = new Date().getHours();
+            const isDarkMode = hour >= 18 || hour < 6; // 晚上6点到早上6点为深色模式
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = isDarkMode ? 'dark' : 'light';
+            
+            if (currentTheme !== newTheme) {
+                document.documentElement.setAttribute('data-theme', newTheme);
+            }
+        }
+
+        // 测试函数：手动设置主题（用于测试）
+        function setTestTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        // 测试函数：模拟特定时间（用于测试）
+        function setTestTime(hour) {
+            const isDarkMode = hour >= 18 || hour < 6;
+            document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 每分钟检查一次时间，自动切换主题
+            setInterval(checkTheme, 60000); // 每分钟检查一次
+            
+            // 心情选择
+            moodSelector.addEventListener('click', (e) => {
+                const moodOption = e.target.closest('.mood-option');
+                if (moodOption) {
+                    selectMood(moodOption);
+                }
+            });
+
+            // 表单提交
+            moodForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveEntry();
+            });
+
+            // 清空记录
+            clearEntriesBtn.addEventListener('click', clearEntries);
+            
+            // 导出记录
+            exportEntriesBtn.addEventListener('click', exportEntries);
+            
+            // 导入记录
+            const importEntriesBtn = document.getElementById('importEntries');
+            const importFileInput = document.getElementById('importFileInput');
+            importEntriesBtn.addEventListener('click', () => {
+                alert('请选择通过设置页面"备份数据"功能导出的JSON文件进行导入');
+                importFileInput.click();
+            });
+            importFileInput.addEventListener('change', handleFileImport);
+            
+            // 搜索记录
+            const searchInput = document.getElementById('searchInput');
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', (e) => {
+                // 显示/隐藏清除按钮
+                clearSearchBtn.style.display = e.target.value ? 'block' : 'none';
+                
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchEntries(e.target.value);
+                }, 300);
+            });
+            
+            // 清除搜索
+            clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                clearSearchBtn.style.display = 'none';
+                renderEntries();
+            });
+            
+            // 页面导航
+            setupNavigation();
+            
+            // 关于按钮
+            setupAboutModal();
+        }
+
+        // 处理文件导入
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importData = JSON.parse(e.target.result);
+                    
+                    // 验证导入数据格式
+                    if (!importData.entries || !Array.isArray(importData.entries)) {
+                        alert('导入文件格式不正确！');
+                        return;
+                    }
+                    
+                    // 询问用户导入方式
+                    const importMode = prompt(
+                        `要导入 ${importData.entries.length} 条记录。\n` +
+                        "请选择导入方式：\n" +
+                        "1 - 覆盖现有记录（输入 1）\n" +
+                        "2 - 合并到现有记录（输入 2）\n" +
+                        "取消 - 取消导入",
+                        "1"
+                    );
+                    
+                    if (importMode === null) {
+                        // 用户取消导入
+                        event.target.value = '';
+                        return;
+                    }
+                    
+                    if (importMode === "1") {
+                        // 覆盖现有记录
+                        if (confirm(`确定要覆盖当前的所有记录吗？这将永久删除 ${appState.entries.length} 条现有记录。`)) {
+                            appState.entries = importData.entries;
+                            saveEntries();
+                            renderEntries();
+                            updateStats();
+                            updateMoodChart();
+                            updatePopularTags();
+                            showSuccessMessage(`成功导入 ${importData.entries.length} 条记录！`);
+                        }
+                    } else if (importMode === "2") {
+                        // 合并到现有记录
+                        const existingIds = new Set(appState.entries.map(entry => entry.id));
+                        const newEntries = importData.entries.filter(entry => !existingIds.has(entry.id));
+                        
+                        if (newEntries.length > 0) {
+                            appState.entries = [...appState.entries, ...newEntries];
+                            saveEntries();
+                            renderEntries();
+                            updateStats();
+                            updateMoodChart();
+                            updatePopularTags();
+                            showSuccessMessage(`成功合并导入 ${newEntries.length} 条新记录！`);
+                        } else {
+                            alert('没有新的记录需要导入。');
+                        }
+                    } else {
+                        alert('无效的导入选项。');
+                    }
+                } catch (error) {
+                    console.error('导入失败:', error);
+                    alert('导入失败：文件格式不正确或已损坏！');
+                } finally {
+                    // 清空文件输入
+                    event.target.value = '';
+                }
+            };
+            
+            reader.onerror = function() {
+                alert('读取文件时发生错误！');
+                event.target.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // 导出记录
+        function exportEntries() {
+            if (appState.entries.length === 0) {
+                alert('没有记录可导出！');
+                return;
+            }
+            
+            // 创建导出数据对象
+            const exportData = {
+                metadata: {
+                    exportDate: new Date().toISOString(),
+                    totalEntries: appState.entries.length,
+                    version: "1.0"
+                },
+                entries: appState.entries
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            
+            // 创建下载链接并触发下载
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '心情笔记数据备份.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showSuccessMessage('JSON数据文件已下载！');
+        }
+
+
+
+        // 保存记录到本地存储
+        function saveEntries() {
+            try {
+                localStorage.setItem('moodEntries', JSON.stringify(appState.entries));
+            } catch (error) {
+                console.error('保存失败:', error);
+                alert('保存失败，请重试！');
+            }
+        }
+
+        // 从本地存储加载记录
+        function loadEntries() {
+            try {
+                const savedEntries = localStorage.getItem('moodEntries');
+                if (savedEntries) {
+                    appState.entries = JSON.parse(savedEntries);
+                }
+            } catch (error) {
+                console.error('加载失败:', error);
+                appState.entries = [];
+            }
+        }
+
+        // 清空所有记录
+        function clearEntries() {
+            if (appState.entries.length === 0) {
+                alert('没有记录可清空！');
+                return;
+            }
+
+            if (confirm('确定要清空所有心情记录吗？此操作不可恢复！')) {
+                appState.entries = [];
+                saveEntries();
+                renderEntries();
+                updateStats();
+                updateMoodChart();
+            }
+        }
+
+        // 删除单条记录
+        function deleteEntry(entryId) {
+            if (!entryId) return;
+            
+            // 确认删除
+            if (!confirm('确定要删除这条心情记录吗？此操作不可恢复！')) {
+                return;
+            }
+            
+            // 查找并删除记录
+            const index = appState.entries.findIndex(entry => entry.id == entryId);
+            if (index !== -1) {
+                appState.entries.splice(index, 1);
+                saveEntries();
+                renderEntries();
+                updateStats();
+                updateMoodChart();
+                showSuccessMessage('记录删除成功！');
+            }
+        }
+
+        // 添加搜索功能
+        function searchEntries(query) {
+            if (!query.trim()) {
+                renderEntries();
+                return;
+            }
+            
+            const filteredEntries = appState.entries.filter(entry => 
+                entry.title.toLowerCase().includes(query.toLowerCase()) ||
+                entry.content.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filteredEntries.length === 0) {
+                entriesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <p class="empty-state-text">未找到与"${query}"相关的记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            renderFilteredEntries(filteredEntries);
+        }
+        
+        // 渲染筛选后的记录
+        function renderFilteredEntries(filteredEntries) {
+            const entriesHTML = filteredEntries.map(entry => {
+                const date = new Date(entry.date);
+                const formattedDate = date.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const moodIcons = ['<i class="fas fa-sad-tear"></i>', '<i class="fas fa-frown"></i>', '<i class="fas fa-meh"></i>', '<i class="fas fa-smile"></i>', '<i class="fas fa-laugh"></i>'];
+                const moodLabels = ['非常低落', '低落', '一般', '开心', '非常开心'];
+                const moodClasses = ['mood-1', 'mood-2', 'mood-3', 'mood-4', 'mood-5'];
+                
+                return `
+                    <div class="entry">
+                        <div class="entry-header">
+                            <div class="entry-meta">
+                                <div class="entry-date">${formattedDate}</div>
+                            </div>
+                            <div class="entry-mood-badge ${moodClasses[entry.mood - 1]}">
+                                <span>${moodIcons[entry.mood - 1]}</span>
+                                <span>${moodLabels[entry.mood - 1]}</span>
+                            </div>
+                        </div>
+                        <h3 style="margin: 0 0 12px 0; color: var(--text-color); font-size: 1.1rem;">${entry.title}</h3>
+                        <div class="entry-content">${entry.content.replace(/\n/g, '<br>')}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            entriesList.innerHTML = entriesHTML;
+        }
+
+        // 设置页面导航
+        function setupNavigation() {
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const page = tab.dataset.page;
+                    switchPage(page);
+                });
+            });
+        }
+
+        // 切换页面
+        function switchPage(pageName) {
+            // 更新导航标签状态
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.nav-tab[data-page="${pageName}"]`).classList.add('active');
+            
+            // 显示对应页面
+            document.querySelectorAll('.page-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(`${pageName}-page`).classList.add('active');
+            
+            // 更新统计数据（因为每个页面都有统计数据）
+            updateStats();
+        }
+
+        // 选择心情
+        function selectMood(selectedOption) {
+            // 移除其他选项的选中状态
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // 添加选中状态到当前选项
+            selectedOption.classList.add('selected');
+            
+            // 更新选中的心情值
+            appState.selectedMood = selectedOption.dataset.mood;
+            selectedMoodInput.value = appState.selectedMood;
+        }
+
+        // 保存心情记录
+        function saveEntry() {
+            if (!appState.selectedMood) {
+                alert('请选择您的心情状态！');
+                return;
+            }
+
+            // 处理标签
+            let tags = [];
+            if (entryTags.value.trim()) {
+                tags = entryTags.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            }
+
+            const entry = {
+                id: Date.now(),
+                mood: parseInt(appState.selectedMood),
+                title: entryTitle.value.trim() || getDefaultTitle(appState.selectedMood),
+                content: entryContent.value.trim() || '无详细记录',
+                tags: tags,
+                date: new Date().toISOString()
+            };
+
+            appState.entries.unshift(entry);
+            saveEntries();
+            renderEntries();
+            updateStats();
+            updateMoodChart();
+            
+            // 重置表单
+            resetForm();
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // 显示成功消息
+            showSuccessMessage('心情笔记保存成功！');
+        }
+
+        // 显示成功消息
+        function showSuccessMessage(message) {
+            // 创建消息元素
+            const messageEl = document.createElement('div');
+            messageEl.textContent = message;
+            messageEl.style.position = 'fixed';
+            messageEl.style.top = '20px';
+            messageEl.style.right = '20px';
+            messageEl.style.backgroundColor = 'var(--success-color)';
+            messageEl.style.color = 'white';
+            messageEl.style.padding = '12px 20px';
+            messageEl.style.borderRadius = 'var(--border-radius-md)';
+            messageEl.style.boxShadow = 'var(--box-shadow-lg)';
+            messageEl.style.zIndex = '10000';
+            messageEl.style.opacity = '0';
+            messageEl.style.transform = 'translateX(100%)';
+            messageEl.style.transition = 'opacity 0.3s, transform 0.3s';
+            
+            document.body.appendChild(messageEl);
+            
+            // 显示动画
+            setTimeout(() => {
+                messageEl.style.opacity = '1';
+                messageEl.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(messageEl);
+                }, 3000);
+            }, 3000);
+        }
+
+        // 获取默认标题
+        function getDefaultTitle(mood) {
+            const titles = {
+                '5': '非常开心的一天',
+                '4': '开心的一天',
+                '3': '平常的一天',
+                '2': '有些低落',
+                '1': '心情低落'
+            };
+            return titles[mood];
+        }
+
+        // 重置表单
+        function resetForm() {
+            document.querySelectorAll('.mood-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            appState.selectedMood = null;
+            selectedMoodInput.value = '';
+            entryTitle.value = '';
+            entryContent.value = '';
+            entryTags.value = '';
+        }
+
+        // 渲染心情记录
+        function renderEntries() {
+            if (appState.entries.length === 0) {
+                entriesList.innerHTML = ''
+                    + '<div class="empty-state">'
+                    + '    <div class="empty-state-icon">'
+                    + '        <i class="fas fa-book-open"></i>'
+                    + '    </div>'
+                    + '    <p class="empty-state-text">暂无记录，请添加您的第一条心情记录</p>'
+                    + '</div>';
+                document.getElementById('recentEntries').innerHTML = ''
+                    + '<div class="empty-state">'
+                    + '    <p class="empty-state-text">暂无最近记录</p>'
+                    + '</div>';
+                return;
+            }
+
+            // 渲染所有记录
+            let entriesHTML = '';
+            appState.entries.forEach(function(entry) {
+                const date = new Date(entry.date);
+                const formattedDate = date.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const moodIcons = ['<i class="fas fa-sad-tear"></i>', '<i class="fas fa-frown"></i>', '<i class="fas fa-meh"></i>', '<i class="fas fa-smile"></i>', '<i class="fas fa-laugh"></i>'];
+                const moodLabels = ['非常低落', '低落', '一般', '开心', '非常开心'];
+                const moodClasses = ['mood-1', 'mood-2', 'mood-3', 'mood-4', 'mood-5'];
+                
+                // 处理标签显示
+                let tagsHTML = '';
+                if (entry.tags && entry.tags.length > 0) {
+                    entry.tags.forEach(function(tag) {
+                        tagsHTML += '<span style="display: inline-block; background-color: var(--hover-bg); color: var(--text-color); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-right: 6px;">' + tag + '</span>';
+                    });
+                }
+                
+                entriesHTML += ''
+                    + '<div class="entry" data-entry-id="' + entry.id + '">'
+                    + '    <div class="entry-header">'
+                    + '        <div class="entry-meta">'
+                    + '            <div class="entry-date">' + formattedDate + '</div>'
+                    + '        </div>'
+                    + '        <div class="entry-mood-badge ' + moodClasses[entry.mood - 1] + '">'
+                    + '            <span>' + moodIcons[entry.mood - 1] + '</span>'
+                    + '            <span>' + moodLabels[entry.mood - 1] + '</span>'
+                    + '        </div>'
+                    + '        <div class="entry-actions">'
+                    + '            <button class="copy-btn" data-entry-id="' + entry.id + '" title="复制内容">'
+                    + '                <i class="fas fa-copy"></i>'
+                    + '            </button>'
+                    + '            <button class="delete-btn" data-entry-id="' + entry.id + '" title="删除记录">'
+                    + '                <i class="fas fa-trash-alt"></i>'
+                    + '            </button>'
+                    + '        </div>'
+                    + '    </div>'
+                    + '    <h3 style="margin: 0 0 12px 0; color: var(--text-color); font-size: 1.1rem;">' + entry.title + '</h3>'
+                    + (tagsHTML ? '<div style="margin-bottom: 12px;">' + tagsHTML + '</div>' : '')
+                    + '    <div class="entry-content" id="entry-content-' + entry.id + '">' + entry.content.replace(/\n/g, '<br>') + '</div>'
+                    + '</div>';
+            });
+
+            entriesList.innerHTML = entriesHTML;
+
+            // 为复制按钮添加事件监听器
+            var copyButtons = document.querySelectorAll('.copy-btn');
+            for (var i = 0; i < copyButtons.length; i++) {
+                copyButtons[i].addEventListener('click', function() {
+                    var entryId = this.getAttribute('data-entry-id');
+                    copyEntryContent(entryId);
+                });
+            }
+
+            // 为删除按钮添加事件监听器
+            var deleteButtons = document.querySelectorAll('.delete-btn');
+            for (var j = 0; j < deleteButtons.length; j++) {
+                deleteButtons[j].addEventListener('click', function() {
+                    var entryId = this.getAttribute('data-entry-id');
+                    deleteEntry(entryId);
+                });
+            }
+
+            // 渲染最近记录（前3条）
+            const recentEntries = appState.entries.slice(0, 3);
+            let recentEntriesHTML = '';
+            
+            if (recentEntries.length > 0) {
+                recentEntries.forEach(function(entry) {
+                    const date = new Date(entry.date);
+                    const formattedDate = date.toLocaleDateString('zh-CN', {
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    
+                    const moodIcons = ['<i class="fas fa-sad-tear"></i>', '<i class="fas fa-frown"></i>', '<i class="fas fa-meh"></i>', '<i class="fas fa-smile"></i>', '<i class="fas fa-laugh"></i>'];
+                    
+                    recentEntriesHTML += ''
+                        + '<div class="recent-entry" data-entry-id="' + entry.id + '">'
+                        + '    <div class="recent-entry-header">'
+                        + '        <div class="entry-mood-badge ' + ['mood-1', 'mood-2', 'mood-3', 'mood-4', 'mood-5'][entry.mood - 1] + '">'
+                        + '            <span>' + moodIcons[entry.mood - 1] + '</span>'
+                        + '        </div>'
+                        + '        <div class="recent-entry-actions">'
+                        + '            <button class="copy-btn" style="width: 28px; height: 28px; font-size: 12px;" data-entry-id="' + entry.id + '" title="复制内容">'
+                        + '                <i class="fas fa-copy"></i>'
+                        + '            </button>'
+                        + '            <button class="delete-btn" style="width: 28px; height: 28px; font-size: 12px; margin-left: 4px;" data-entry-id="' + entry.id + '" title="删除记录">'
+                        + '                <i class="fas fa-trash-alt"></i>'
+                        + '            </button>'
+                        + '        </div>'
+                        + '        <div class="recent-entry-date">' + formattedDate + '</div>'
+                        + '    </div>'
+                        + '    <h4 style="margin: 0 0 4px 0; font-size: 0.95rem; color: var(--text-color);">' + entry.title + '</h4>'
+                        + '    <div class="recent-entry-content">' + entry.content + '</div>'
+                        + '</div>';
+                });
+            } else {
+                recentEntriesHTML = ''
+                    + '<div class="empty-state">'
+                    + '    <p class="empty-state-text">暂无最近记录</p>'
+                    + '</div>';
+            }
+
+            document.getElementById('recentEntries').innerHTML = recentEntriesHTML;
+
+            // 为最近记录中的复制按钮添加事件监听器
+            var recentCopyButtons = document.querySelectorAll('.recent-entry .copy-btn');
+            for (var j = 0; j < recentCopyButtons.length; j++) {
+                recentCopyButtons[j].addEventListener('click', function() {
+                    var entryId = this.getAttribute('data-entry-id');
+                    copyEntryContent(entryId);
+                });
+            }
+
+            // 为最近记录中的删除按钮添加事件监听器
+            var recentDeleteButtons = document.querySelectorAll('.recent-entry .delete-btn');
+            for (var k = 0; k < recentDeleteButtons.length; k++) {
+                recentDeleteButtons[k].addEventListener('click', function() {
+                    var entryId = this.getAttribute('data-entry-id');
+                    deleteEntry(entryId);
+                });
+            }
+        }
+
+        // 复制记录内容
+        function copyEntryContent(entryId) {
+            // 查找对应的记录
+            var entry = null;
+            for (var i = 0; i < appState.entries.length; i++) {
+                if (appState.entries[i].id == entryId) {
+                    entry = appState.entries[i];
+                    break;
+                }
+            }
+            
+            if (!entry) return;
+
+            // 构造要复制的内容（增强版）
+            var moodLabels = ['非常低落', '低落', '一般', '开心', '非常开心'];
+            var moodEmojis = ['😢', '😞', '😐', '😊', '😄'];
+            
+            // 根据心情选择额外的emoji
+            var additionalEmojis = '';
+            switch(entry.mood) {
+                case 1: // 非常低落
+                    additionalEmojis = '💔🌧️';
+                    break;
+                case 2: // 低落
+                    additionalEmojis = '💭🌧️';
+                    break;
+                case 3: // 一般
+                    additionalEmojis = '☁️';
+                    break;
+                case 4: // 开心
+                    additionalEmojis = '✨🌈';
+                    break;
+                case 5: // 非常开心
+                    additionalEmojis = '🎉🎊💖';
+                    break;
+            }
+            
+            // 处理标签
+            var tagsText = '';
+            if (entry.tags && entry.tags.length > 0) {
+                tagsText = '\n标签: ' + entry.tags.join(', ');
+            }
+            
+            // 构造复制内容，包含更多emoji和来源标注
+            var contentToCopy = '📝 标题: ' + entry.title + 
+                              '\n' + moodEmojis[entry.mood - 1] + ' 心情: ' + moodLabels[entry.mood - 1] + ' ' + additionalEmojis +
+                              '\n💭 内容: ' + entry.content + 
+                              tagsText +
+                              '\n📅 日期: ' + new Date(entry.date).toLocaleString('zh-CN') +
+                              '\n\n📋 来自有数规划-心情小记 📝';
+
+            // 尝试使用现代 Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(contentToCopy).then(function() {
+                    showCopySuccess(entryId);
+                }).catch(function(err) {
+                    console.error('复制失败: ', err);
+                    // 降级到传统方法
+                    fallbackCopyTextToClipboard(contentToCopy, entryId);
+                });
+            } else {
+                // 降级到传统方法
+                fallbackCopyTextToClipboard(contentToCopy, entryId);
+            }
+        }
+
+        // 传统复制方法
+        function fallbackCopyTextToClipboard(text, entryId) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // 避免滚动到底部
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess(entryId);
+                } else {
+                    showCopyFailure(entryId);
+                }
+            } catch (err) {
+                console.error('复制失败: ', err);
+                showCopyFailure(entryId);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 显示复制成功提示
+        function showCopySuccess(entryId) {
+            const copyBtn = document.querySelector('.copy-btn[data-entry-id="' + entryId + '"]');
+            if (copyBtn) {
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(function() {
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }
+            
+            // 显示全局提示消息
+            showSuccessMessage('内容已复制到剪贴板！');
+        }
+
+        // 显示复制失败提示
+        function showCopyFailure(entryId) {
+            const copyBtn = document.querySelector('.copy-btn[data-entry-id="' + entryId + '"]');
+            if (copyBtn) {
+                const originalIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-times"></i>';
+                copyBtn.style.background = 'linear-gradient(135deg, var(--danger-color), #fca5a5)';
+                copyBtn.style.borderColor = 'var(--danger-color)';
+                copyBtn.style.color = 'white';
+                
+                setTimeout(function() {
+                    copyBtn.innerHTML = originalIcon;
+                    copyBtn.style.background = '';
+                    copyBtn.style.borderColor = '';
+                    copyBtn.style.color = '';
+                }, 2000);
+            }
+            
+            // 显示全局提示消息
+            showErrorMessage('复制失败，请重试！');
+        }
+
+        // 显示错误消息
+        function showErrorMessage(message) {
+            // 创建消息元素
+            const messageEl = document.createElement('div');
+            messageEl.textContent = message;
+            messageEl.style.position = 'fixed';
+            messageEl.style.top = '20px';
+            messageEl.style.right = '20px';
+            messageEl.style.backgroundColor = 'var(--danger-color)';
+            messageEl.style.color = 'white';
+            messageEl.style.padding = '12px 20px';
+            messageEl.style.borderRadius = 'var(--border-radius-md)';
+            messageEl.style.boxShadow = 'var(--box-shadow-lg)';
+            messageEl.style.zIndex = '10000';
+            messageEl.style.opacity = '0';
+            messageEl.style.transform = 'translateX(100%)';
+            messageEl.style.transition = 'opacity 0.3s, transform 0.3s';
+            
+            document.body.appendChild(messageEl);
+            
+            // 显示动画
+            setTimeout(function() {
+                messageEl.style.opacity = '1';
+                messageEl.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // 3秒后自动隐藏
+            setTimeout(function() {
+                messageEl.style.opacity = '0';
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(function() {
+                    document.body.removeChild(messageEl);
+                }, 300);
+            }, 3000);
+        }
+
+        // 更新统计数据
+        function updateStats() {
+            const totalEntries = appState.entries.length;
+            document.getElementById('totalEntries').textContent = totalEntries;
+            document.getElementById('totalEntries2').textContent = totalEntries;
+            document.getElementById('totalEntries3').textContent = totalEntries;
+            
+            // 计算连续记录天数
+            if (appState.entries.length === 0) {
+                document.getElementById('currentStreak').textContent = 0;
+                document.getElementById('currentStreak2').textContent = 0;
+                document.getElementById('currentStreak3').textContent = 0;
+                return;
+            }
+            
+            // 按日期排序
+            const sortedEntries = [...appState.entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let streak = 1;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const firstEntryDate = new Date(sortedEntries[0].date);
+            firstEntryDate.setHours(0, 0, 0, 0);
+            
+            // 如果最新记录不是今天，连续天数为0
+            if (firstEntryDate.getTime() !== today.getTime()) {
+                document.getElementById('currentStreak').textContent = 0;
+                document.getElementById('currentStreak2').textContent = 0;
+                document.getElementById('currentStreak3').textContent = 0;
+            } else {
+                // 计算连续天数
+                for (let i = 1; i < sortedEntries.length; i++) {
+                    const currentDate = new Date(sortedEntries[i-1].date);
+                    const prevDate = new Date(sortedEntries[i].date);
+                    
+                    currentDate.setHours(0, 0, 0, 0);
+                    prevDate.setHours(0, 0, 0, 0);
+                    
+                    const diffTime = currentDate.getTime() - prevDate.getTime();
+                    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+                    
+                    if (diffDays === 1) {
+                        streak++;
+                    } else {
+                        break;
+                    }
+                }
+                document.getElementById('currentStreak').textContent = streak;
+                document.getElementById('currentStreak2').textContent = streak;
+                document.getElementById('currentStreak3').textContent = streak;
+            }
+            
+            // 更新心情趋势
+            updateMoodTrend();
+        }
+
+        // 更新常用标签
+        function updatePopularTags() {
+            if (appState.entries.length === 0) {
+                document.getElementById('popularTags').innerHTML = `
+                    <div class="empty-state">
+                        <p class="empty-state-text" style="font-size: 0.9rem;">暂无标签</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 收集所有标签
+            const allTags = [];
+            appState.entries.forEach(entry => {
+                if (entry.tags && entry.tags.length > 0) {
+                    allTags.push(...entry.tags);
+                }
+            });
+            
+            if (allTags.length === 0) {
+                document.getElementById('popularTags').innerHTML = `
+                    <div class="empty-state">
+                        <p class="empty-state-text" style="font-size: 0.9rem;">暂无标签</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 统计标签频率
+            const tagCount = {};
+            allTags.forEach(tag => {
+                tagCount[tag] = (tagCount[tag] || 0) + 1;
+            });
+            
+            // 按频率排序并取前5个
+            const sortedTags = Object.entries(tagCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            // 生成标签HTML
+            const tagsHTML = sortedTags.map(([tag, count]) => 
+                `<span class="tag-badge" style="cursor: pointer;" data-tag="${tag}">${tag} (${count})</span>`
+            ).join('');
+            
+            document.getElementById('popularTags').innerHTML = tagsHTML;
+            
+            // 添加标签点击事件
+            document.querySelectorAll('.tag-badge').forEach(badge => {
+                badge.addEventListener('click', (e) => {
+                    const tag = e.target.dataset.tag;
+                    searchEntriesByTag(tag);
+                });
+            });
+        }
+
+        // 按标签搜索
+        function searchEntriesByTag(tag) {
+            const filteredEntries = appState.entries.filter(entry => 
+                entry.tags && entry.tags.includes(tag)
+            );
+            
+            if (filteredEntries.length === 0) {
+                entriesList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <p class="empty-state-text">未找到包含标签"${tag}"的记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            renderFilteredEntries(filteredEntries);
+        }
+
+        // 更新心情图表
+        function updateMoodChart() {
+            if (appState.entries.length === 0) return;
+            
+            // 统计各心情的数量
+            const moodCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+            appState.entries.forEach(entry => {
+                moodCounts[entry.mood]++;
+            });
+            
+            // 找到最大值用于计算比例
+            const maxCount = Math.max(...Object.values(moodCounts));
+            
+            // 更新图表
+            const chartBars = document.querySelectorAll('.chart-bar');
+            chartBars.forEach((bar, index) => {
+                const moodValue = index + 1;
+                const count = moodCounts[moodValue];
+                const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
+                
+                bar.querySelector('.bar-fill').style.height = `${percentage}%`;
+                bar.querySelector('.chart-value').textContent = count;
+            });
+        }
+
+        // 添加心情趋势分析
+        function getMoodTrend() {
+            if (appState.entries.length < 5) return 'insufficient';
+            
+            // 获取最近14条记录
+            const recentEntries = [...appState.entries]
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .slice(-14);
+            
+            if (recentEntries.length < 5) return 'insufficient';
+            
+            // 短期趋势 (最近7天)
+            const shortTerm = recentEntries.slice(-7);
+            const shortWeights = Array.from({length: 7}, (_, i) => i + 1);
+            const shortWeightedSum = shortTerm.reduce((sum, entry, i) => sum + entry.mood * shortWeights[i], 0);
+            const shortWeightedAvg = shortWeightedSum / shortWeights.reduce((sum, w) => sum + w, 0);
+            
+            // 长期趋势 (14天)
+            const longWeights = Array.from({length: recentEntries.length}, (_, i) => i + 1);
+            const longWeightedSum = recentEntries.reduce((sum, entry, i) => sum + entry.mood * longWeights[i], 0);
+            const longWeightedAvg = longWeightedSum / longWeights.reduce((sum, w) => sum + w, 0);
+            
+            // 计算趋势一致性
+            const shortTrend = getTrendDirection(shortTerm);
+            const longTrend = getTrendDirection(recentEntries);
+            
+            // 如果短期和长期趋势一致，则趋势更可信
+            if (shortTrend === longTrend) {
+                return shortTrend;
+            }
+            
+            // 如果不一致，根据权重判断
+            const weightedTrend = shortWeightedAvg - longWeightedAvg;
+            
+            if (Math.abs(weightedTrend) < 0.1) return 'stable';
+            if (weightedTrend > 0.3) return 'improving';
+            if (weightedTrend < -0.3) return 'declining';
+            
+            return 'stable';
+        }
+
+        // 辅助函数：计算趋势方向
+        function getTrendDirection(entries) {
+            if (entries.length < 3) return 'stable';
+            
+            const weights = Array.from({length: entries.length}, (_, i) => i + 1);
+            const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            
+            const weightedSum = entries.reduce((sum, entry, i) => sum + entry.mood * weights[i], 0);
+            const weightedAvg = weightedSum / totalWeight;
+            
+            const firstHalf = entries.slice(0, Math.floor(entries.length / 2));
+            const secondHalf = entries.slice(Math.floor(entries.length / 2));
+            
+            const firstAvg = firstHalf.reduce((sum, entry) => sum + entry.mood, 0) / firstHalf.length;
+            const secondAvg = secondHalf.reduce((sum, entry) => sum + entry.mood, 0) / secondHalf.length;
+            
+            const trendStrength = secondAvg - firstAvg;
+            
+            if (Math.abs(trendStrength) < 0.2) return 'stable';
+            if (trendStrength > 0.4) return 'improving';
+            if (trendStrength < -0.4) return 'declining';
+            
+            return 'stable';
+        }
+
+        // 更新心情趋势显示
+        function updateMoodTrend() {
+            const trend = getMoodTrend();
+            const trendElement = document.getElementById('moodTrend');
+            const trendElement2 = document.getElementById('moodTrend2');
+            const trendElement3 = document.getElementById('moodTrend3');
+            
+            if (!trendElement || !trendElement2 || !trendElement3) return;
+            
+            const trendText = {
+                'improving': '改善中',
+                'declining': '下降中',
+                'stable': '稳定',
+                'insufficient': '数据不足'
+            };
+            
+            const trendIcon = {
+                'improving': '↗️',
+                'declining': '↘️',
+                'stable': '➡️',
+                'insufficient': 'ℹ️'
+            };
+            
+            const trendHTML = `${trendIcon[trend]} ${trendText[trend]}`;
+            trendElement.innerHTML = trendHTML;
+            trendElement2.innerHTML = trendHTML;
+            trendElement3.innerHTML = trendHTML;
+        }
+
+        // 设置关于弹窗
+        function setupAboutModal() {
+            const aboutBtn = document.getElementById('aboutBtn');
+            const aboutModal = document.getElementById('aboutModal');
+            const aboutClose = document.getElementById('aboutClose');
+            
+            if (aboutBtn) {
+                aboutBtn.addEventListener('click', () => {
+                    aboutModal.classList.add('show');
+                });
+            }
+            
+            if (aboutClose) {
+                aboutClose.addEventListener('click', () => {
+                    aboutModal.classList.remove('show');
+                });
+            }
+            
+            // 点击背景关闭弹窗
+            aboutModal.addEventListener('click', (e) => {
+                if (e.target === aboutModal) {
+                    aboutModal.classList.remove('show');
+                }
+            });
+            
+            // ESC键关闭弹窗
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && aboutModal.classList.contains('show')) {
+                    aboutModal.classList.remove('show');
+                }
+            });
+        }
+
+        // 禁止右键菜单和文本选择
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 禁止拖拽
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+
+        // 禁止键盘快捷键选择文本
+        document.addEventListener('keydown', function(e) {
+            // 禁止Ctrl+A全选
+            if (e.ctrlKey && e.key === 'a') {
+                e.preventDefault();
+            }
+            // 禁止Ctrl+C复制
+            if (e.ctrlKey && e.key === 'c') {
+                e.preventDefault();
+            }
+            // 禁止Ctrl+X剪切
+            if (e.ctrlKey && e.key === 'x') {
+                e.preventDefault();
+            }
+        });
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
