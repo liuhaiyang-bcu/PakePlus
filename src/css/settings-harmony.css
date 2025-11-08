@@ -1,0 +1,1293 @@
+:root {
+  /* 鸿蒙5主题颜色 */
+  --harmony-primary: #007DFF; /* 鸿蒙主色 */
+  --harmony-primary-hover: #0066CC;
+  --harmony-primary-active: #0052A3;
+  --harmony-danger: #FF3B30;
+  --harmony-danger-hover: #E6342A;
+  --harmony-success: #34C759;
+  --harmony-warning: #FF9500;
+  --harmony-info: #5AC8FA;
+  
+  /* 鸿蒙浅色主题 */
+  --harmony-bg-light: #F2F2F2;
+  --harmony-card-bg-light: #FFFFFF;
+  --harmony-text-primary-light: #000000;
+  --harmony-text-secondary-light: #8E8E8E;
+  --harmony-text-tertiary-light: #B3B3B3;
+  --harmony-border-light: #E5E5E5;
+  --harmony-hover-light: #F7F7F7;
+  --harmony-shadow-light: rgba(0, 0, 0, 0.05);
+  --harmony-divider-light: #E0E0E0;
+  
+  /* 鸿蒙深色主题 */
+  --harmony-bg-dark: #000000;
+  --harmony-card-bg-dark: #1C1C1E;
+  --harmony-text-primary-dark: #FFFFFF;
+  --harmony-text-secondary-dark: #98989A;
+  --harmony-text-tertiary-dark: #636366;
+  --harmony-border-dark: #2C2C2E;
+  --harmony-hover-dark: #2C2C2E;
+  --harmony-shadow-dark: rgba(0, 0, 0, 0.3);
+  --harmony-divider-dark: #2C2C2E;
+  
+  /* 鸿蒙尺寸变量 */
+  --harmony-header-height-desktop: 56px;
+  --harmony-header-height-tablet: 48px;
+  --harmony-header-height-mobile: 44px;
+  --harmony-sidebar-width: 240px;
+  --harmony-border-radius: 16px;
+  --harmony-border-radius-small: 12px;
+  --harmony-transition-duration: 0.2s;
+  --harmony-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 全局样式 */
+html {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  width: 100%;
+  height: 100%;
+  /* 确保固定定位元素相对于viewport定位 */
+  position: static;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth; /* 启用平滑滚动，与鼠标滚轮一致 */
+}
+
+body {
+  background-color: var(--harmony-bg-light);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'HarmonyOS Sans';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: 100%;
+  overscroll-behavior: auto;
+  scroll-behavior: smooth; /* 启用平滑滚动，与鼠标滚轮一致 */
+  color: var(--harmony-text-primary-light);
+  transition: background-color var(--harmony-transition-duration), color var(--harmony-transition-duration);
+  padding-top: var(--harmony-header-height-desktop);
+  position: relative;
+  margin: 0;
+  width: 100%;
+  /* 确保固定定位元素正常工作 */
+  transform: none;
+  -webkit-transform: none;
+}
+
+body.dark-theme {
+  background-color: var(--harmony-bg-dark);
+  color: var(--harmony-text-primary-dark);
+}
+
+.settings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 20px 20px;
+  min-height: calc(100vh - var(--harmony-header-height-desktop));
+  position: relative;
+  z-index: 1;
+  /* 确保容器不会影响固定定位 */
+  transform: none;
+  /* 确保容器不会创建新的层叠上下文影响固定定位 */
+  isolation: isolate;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth; /* 启用平滑滚动，与鼠标滚轮一致 */
+}
+
+/* 顶部固定导航栏 - 商业软件风格 */
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-bottom: 1px solid var(--harmony-border-light);
+  background-color: var(--harmony-card-bg-light);
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 9999 !important;
+  height: var(--harmony-header-height-desktop);
+  box-shadow: 0 1px 3px var(--harmony-shadow-light), 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  /* 添加这些属性确保固定定位正常工作 */
+  will-change: transform;
+  transform: translateZ(0); /* 触发硬件加速 */
+  -webkit-transform: translateZ(0);
+  contain: layout style paint; /* 创建独立的渲染容器 */
+  /* 确保始终固定在顶部，不受滚动影响 */
+}
+
+body.dark-theme .settings-header {
+  border-bottom: 1px solid var(--harmony-border-dark);
+  background-color: var(--harmony-card-bg-dark);
+  box-shadow: 0 1px 3px var(--harmony-shadow-dark), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.settings-header .back-btn {
+  position: absolute;
+  left: 0;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--harmony-primary);
+  padding: 0;
+  border-radius: 0;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--harmony-header-height-desktop);
+  height: var(--harmony-header-height-desktop);
+}
+
+.settings-header .back-btn:hover {
+  background-color: var(--harmony-hover-light);
+  transform: translateX(-2px);
+}
+
+body.dark-theme .settings-header .back-btn:hover {
+  background-color: var(--harmony-hover-dark);
+}
+
+.settings-header .back-btn:active {
+  transform: translateX(-2px) scale(0.95);
+}
+
+.settings-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--harmony-text-primary-light);
+  margin: 0;
+  transition: color var(--harmony-transition-duration);
+  text-align: center;
+  letter-spacing: -0.2px;
+}
+
+body.dark-theme .settings-title {
+  color: var(--harmony-text-primary-dark);
+}
+
+/* 双栏布局 */
+.settings-layout {
+  display: flex;
+  gap: 24px;
+  margin-top: 0;
+}
+
+/* 侧边栏 - 商业软件风格 */
+.settings-sidebar {
+  flex: 0 0 var(--harmony-sidebar-width);
+  background: var(--harmony-card-bg-light);
+  border-radius: var(--harmony-border-radius);
+  padding: 12px;
+  box-shadow: 0 2px 8px var(--harmony-shadow-light), 0 1px 2px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  position: fixed !important;
+  top: calc(var(--harmony-header-height-desktop) + 20px) !important;
+  width: var(--harmony-sidebar-width);
+  z-index: 1000;
+  border: 1px solid var(--harmony-border-light);
+  /* 确保侧边栏不会影响导航栏的固定定位 */
+  transform: none;
+  isolation: isolate;
+}
+
+body.dark-theme .settings-sidebar {
+  background: var(--harmony-card-bg-dark);
+  box-shadow: 0 2px 8px var(--harmony-shadow-dark), 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-color: var(--harmony-border-dark);
+}
+
+.settings-sidebar .settings-tab {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 6px;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: var(--harmony-border-radius-small);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--harmony-text-secondary-light);
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  box-shadow: none;
+  position: relative;
+  letter-spacing: 0.2px;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 125, 255, 0.2);
+}
+
+body.dark-theme .settings-sidebar .settings-tab {
+  color: var(--harmony-text-secondary-dark);
+}
+
+.settings-sidebar .settings-tab:hover:not(.active) {
+  background: var(--harmony-hover-light);
+  color: var(--harmony-text-primary-light);
+  transform: translateX(2px);
+}
+
+body.dark-theme .settings-sidebar .settings-tab:hover:not(.active) {
+  background: var(--harmony-hover-dark);
+  color: var(--harmony-text-primary-dark);
+}
+
+.settings-sidebar .settings-tab.active {
+  background: var(--harmony-primary);
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 125, 255, 0.25);
+  font-weight: 600;
+}
+
+.settings-sidebar .settings-tab.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 2px 2px 0;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* 主内容区 */
+.settings-main {
+  flex: 1;
+  margin-top: var(--harmony-header-height-desktop);
+  margin-left: calc(var(--harmony-sidebar-width) + 24px);
+  position: relative;
+  z-index: 1;
+  /* 确保主内容区不会创建新的层叠上下文影响固定定位 */
+  transform: none;
+  isolation: isolate;
+}
+
+/* 底部导航栏（移动端） */
+.settings-bottom-nav {
+  display: none;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  background-color: var(--harmony-card-bg-light);
+  border-top: 1px solid var(--harmony-border-light);
+  box-shadow: 0 -2px 12px var(--harmony-shadow-light), 0 -1px 3px rgba(0, 0, 0, 0.08);
+  z-index: 9998 !important;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  /* 确保底部导航栏正确固定 */
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  contain: layout style paint;
+  /* 布局属性 */
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: row;
+  /* 确保始终固定在底部，不受滚动影响 */
+}
+
+body.dark-theme .settings-bottom-nav {
+  background-color: var(--harmony-card-bg-dark);
+  border-top: 1px solid var(--harmony-border-dark);
+  box-shadow: 0 -2px 12px var(--harmony-shadow-dark), 0 -1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  color: var(--harmony-text-secondary-light);
+  position: relative;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 125, 255, 0.2);
+  min-height: 60px;
+  gap: 4px;
+}
+
+body.dark-theme .bottom-nav-item {
+  color: var(--harmony-text-secondary-dark);
+}
+
+.bottom-nav-item i {
+  font-size: 20px;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  margin-bottom: 2px;
+}
+
+.bottom-nav-item span {
+  font-size: 11px;
+  font-weight: 500;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  letter-spacing: 0.2px;
+}
+
+.bottom-nav-item.active {
+  color: var(--harmony-primary);
+}
+
+.bottom-nav-item.active i {
+  transform: scale(1.1);
+}
+
+.bottom-nav-item.active span {
+  font-weight: 600;
+}
+
+.bottom-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  background-color: var(--harmony-primary);
+  border-radius: 0 0 3px 3px;
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+
+.bottom-nav-item:not(.active):active {
+  color: var(--harmony-primary);
+}
+
+.settings-body {
+  margin-top: 0;
+  padding-bottom: 80px; /* 为底部导航栏留出空间 */
+}
+
+/* 设置区域 - 商业软件风格 */
+.settings-section {
+  display: none;
+  background: var(--harmony-card-bg-light);
+  border-radius: var(--harmony-border-radius);
+  padding: 0 24px 20px 24px;
+  box-shadow: 0 2px 8px var(--harmony-shadow-light), 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  border: 1px solid var(--harmony-border-light);
+}
+
+body.dark-theme .settings-section {
+  background: var(--harmony-card-bg-dark);
+  box-shadow: 0 2px 8px var(--harmony-shadow-dark), 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-color: var(--harmony-border-dark);
+}
+
+/* 用户管理区域特殊优化 - 更紧凑 */
+#user-settings.settings-section {
+  padding: 0 20px 16px 20px;
+}
+
+.settings-section.active {
+  display: block;
+  animation: fadeInHarmony 0.3s var(--harmony-ease);
+}
+
+@keyframes fadeInHarmony {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--harmony-text-primary-light);
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--harmony-divider-light);
+  transition: color var(--harmony-transition-duration), border-color var(--harmony-transition-duration);
+  letter-spacing: -0.3px;
+}
+
+body.dark-theme .section-title {
+  color: var(--harmony-text-primary-dark);
+  border-bottom: 2px solid var(--harmony-divider-dark);
+}
+
+/* 用户管理区域标题优化 */
+#user-settings .section-title {
+  font-size: 20px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+}
+
+/* 设置选项 - 商业软件风格 */
+.settings-option {
+  margin-bottom: 20px;
+  padding: 0;
+  border-radius: 0;
+  transition: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 用户管理区域选项优化 */
+#user-settings .settings-option {
+  margin-bottom: 14px;
+  gap: 6px;
+}
+
+.settings-option:hover {
+  background-color: transparent;
+}
+
+.settings-option::after {
+  display: none;
+}
+
+.settings-option label {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--harmony-text-primary-light);
+  margin-bottom: 0;
+  transition: color var(--harmony-transition-duration);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+/* 用户管理区域标签优化 */
+#user-settings .settings-option label {
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+body.dark-theme .settings-option label {
+  color: var(--harmony-text-primary-dark);
+}
+
+/* Radio按钮容器样式 */
+.settings-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--harmony-hover-light);
+  border-radius: var(--harmony-border-radius-small);
+  border: 1px solid var(--harmony-border-light);
+  margin-bottom: 20px;
+}
+
+body.dark-theme .settings-option-group {
+  background: var(--harmony-hover-dark);
+  border-color: var(--harmony-border-dark);
+}
+
+/* Radio按钮样式 - 商业软件风格 */
+.settings-option input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--harmony-text-secondary-light);
+  border-radius: 50%;
+  margin-right: 12px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  background-color: var(--harmony-card-bg-light);
+}
+
+body.dark-theme .settings-option input[type="radio"] {
+  border-color: var(--harmony-text-secondary-dark);
+  background-color: var(--harmony-card-bg-dark);
+}
+
+.settings-option input[type="radio"]:hover {
+  border-color: var(--harmony-primary);
+  transform: scale(1.05);
+}
+
+.settings-option input[type="radio"]:checked {
+  border-color: var(--harmony-primary);
+  background-color: var(--harmony-primary);
+}
+
+.settings-option input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.settings-option input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 125, 255, 0.1);
+}
+
+/* 头像上传容器 */
+.avatar-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+/* 用户管理区域头像容器优化 */
+#user-settings .avatar-upload-container {
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+/* 头像预览样式 */
+.avatar-preview-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--harmony-border-light);
+  background-color: var(--harmony-hover-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  box-shadow: 0 4px 12px var(--harmony-shadow-light);
+  margin: 0 auto;
+}
+
+/* 用户管理区域头像预览优化 */
+#user-settings .avatar-preview-wrapper {
+  width: 90px;
+  height: 90px;
+  border-width: 2px;
+  box-shadow: 0 2px 8px var(--harmony-shadow-light);
+}
+
+body.dark-theme #user-settings .avatar-preview-wrapper {
+  box-shadow: 0 2px 8px var(--harmony-shadow-dark);
+}
+
+body.dark-theme .avatar-preview-wrapper {
+  border-color: var(--harmony-border-dark);
+  background-color: var(--harmony-hover-dark);
+  box-shadow: 0 4px 12px var(--harmony-shadow-dark);
+}
+
+.avatar-preview-wrapper:hover {
+  border-color: var(--harmony-primary);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 125, 255, 0.2);
+}
+
+.avatar-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.avatar-preview[src]:not([src=""]) {
+  display: block;
+}
+
+.avatar-preview-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--harmony-text-secondary-light);
+  font-size: 48px;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  pointer-events: none;
+}
+
+/* 用户管理区域占位符优化 */
+#user-settings .avatar-preview-placeholder {
+  font-size: 36px;
+}
+
+body.dark-theme .avatar-preview-placeholder {
+  color: var(--harmony-text-secondary-dark);
+}
+
+.avatar-preview-wrapper:hover .avatar-preview-placeholder {
+  color: var(--harmony-primary);
+  transform: scale(1.1);
+}
+
+/* 当有头像时隐藏占位符 - 使用JavaScript控制，这里作为备用 */
+.avatar-preview-wrapper .avatar-preview[src]:not([src=""]) ~ .avatar-preview-placeholder {
+  display: none;
+}
+
+/* 文件输入样式 */
+.settings-option input[type="file"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px dashed var(--harmony-border-light);
+  border-radius: var(--harmony-border-radius-small);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  background-color: var(--harmony-card-bg-light);
+  color: var(--harmony-text-primary-light);
+}
+
+/* 用户管理区域文件输入优化 */
+#user-settings .settings-option input[type="file"] {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+body.dark-theme .settings-option input[type="file"] {
+  border-color: var(--harmony-border-dark);
+  background-color: var(--harmony-card-bg-dark);
+  color: var(--harmony-text-primary-dark);
+}
+
+.settings-option input[type="file"]:hover {
+  border-color: var(--harmony-primary);
+  background-color: var(--harmony-hover-light);
+}
+
+body.dark-theme .settings-option input[type="file"]:hover {
+  background-color: var(--harmony-hover-dark);
+}
+
+.settings-input, .settings-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--harmony-border-light);
+  border-radius: var(--harmony-border-radius-small);
+  font-size: 15px;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  box-sizing: border-box;
+  background-color: var(--harmony-card-bg-light);
+  color: var(--harmony-text-primary-light);
+  font-family: inherit;
+}
+
+/* 用户管理区域输入框优化 */
+#user-settings .settings-input {
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+body.dark-theme .settings-input, 
+body.dark-theme .settings-select {
+  border: 2px solid var(--harmony-border-dark);
+  background-color: var(--harmony-card-bg-dark);
+  color: var(--harmony-text-primary-dark);
+}
+
+.settings-input:hover, .settings-select:hover {
+  border-color: var(--harmony-text-secondary-light);
+}
+
+body.dark-theme .settings-input:hover,
+body.dark-theme .settings-select:hover {
+  border-color: var(--harmony-text-secondary-dark);
+}
+
+.settings-input:focus, .settings-select:focus {
+  outline: none;
+  border-color: var(--harmony-primary);
+  box-shadow: 0 0 0 3px rgba(0, 125, 255, 0.1);
+  background-color: var(--harmony-card-bg-light);
+}
+
+body.dark-theme .settings-input:focus,
+body.dark-theme .settings-select:focus {
+  background-color: var(--harmony-card-bg-dark);
+}
+
+/* 按钮样式 - 商业软件风格 */
+.settings-btn {
+  padding: 11px 24px;
+  border: none;
+  border-radius: var(--harmony-border-radius-small);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  min-width: 80px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  letter-spacing: 0.3px;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 125, 255, 0.2);
+}
+
+.settings-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  opacity: 0;
+  transition: opacity var(--harmony-transition-duration) var(--harmony-ease);
+}
+
+.settings-btn:hover::before {
+  opacity: 1;
+}
+
+.settings-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.settings-btn i {
+  font-size: 16px;
+}
+
+.settings-btn.primary {
+  background: var(--harmony-primary);
+  color: white;
+}
+
+.settings-btn.primary:hover {
+  background: var(--harmony-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 125, 255, 0.3);
+}
+
+.settings-btn.primary:active {
+  background: var(--harmony-primary-active);
+  transform: translateY(0);
+}
+
+.settings-btn.secondary {
+  background: var(--harmony-hover-light);
+  color: var(--harmony-text-primary-light);
+  border: 1px solid var(--harmony-border-light);
+}
+
+body.dark-theme .settings-btn.secondary {
+  background: var(--harmony-hover-dark);
+  color: var(--harmony-text-primary-dark);
+  border: 1px solid var(--harmony-border-dark);
+}
+
+.settings-btn.secondary:hover {
+  background: #e8e8e8;
+  border-color: #d0d0d0;
+}
+
+body.dark-theme .settings-btn.secondary:hover {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
+}
+
+.settings-btn.danger {
+  background: var(--harmony-danger);
+  color: white;
+}
+
+.settings-btn.danger:hover {
+  background: var(--harmony-danger-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+}
+
+.settings-btn.danger:active {
+  background: #E6342A;
+  transform: translateY(0);
+}
+
+.settings-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.settings-btn:disabled::before {
+  display: none;
+}
+
+/* 提示文本 - 商业软件风格 */
+.input-hint {
+  font-size: 13px;
+  color: var(--harmony-text-secondary-light);
+  margin-top: 10px;
+  line-height: 1.6;
+  transition: color var(--harmony-transition-duration);
+  display: block;
+  padding-left: 0;
+}
+
+/* 用户管理区域提示文本优化 */
+#user-settings .input-hint {
+  font-size: 12px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+body.dark-theme .input-hint {
+  color: var(--harmony-text-secondary-dark);
+}
+
+.input-hint.warning {
+  color: var(--harmony-danger);
+  font-weight: 500;
+  padding: 10px 12px;
+  background: rgba(255, 59, 48, 0.1);
+  border-radius: var(--harmony-border-radius-small);
+  border-left: 3px solid var(--harmony-danger);
+  margin-top: 12px;
+}
+
+body.dark-theme .input-hint.warning {
+  background: rgba(255, 59, 48, 0.15);
+}
+
+/* 危险区域 */
+.danger-zone {
+  border-top: 1px solid var(--harmony-divider-light);
+  padding-top: 24px;
+  margin-top: 16px;
+  transition: border-color var(--harmony-transition-duration);
+}
+
+body.dark-theme .danger-zone {
+  border-top: 1px solid var(--harmony-divider-dark);
+}
+
+/* 关于内容 - 商业软件风格 */
+.about-content {
+  line-height: 1.8;
+}
+
+.about-content pre {
+  white-space: pre-wrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  color: var(--harmony-text-primary-light);
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 20px;
+  background: var(--harmony-hover-light);
+  border-radius: var(--harmony-border-radius-small);
+  border: 1px solid var(--harmony-border-light);
+}
+
+body.dark-theme .about-content pre {
+  color: var(--harmony-text-primary-dark);
+  background: var(--harmony-hover-dark);
+  border-color: var(--harmony-border-dark);
+}
+
+/* 数据管理特殊样式 */
+.data-management-section .settings-option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  background: var(--harmony-hover-light);
+  border-radius: var(--harmony-border-radius-small);
+  border: 1px solid var(--harmony-border-light);
+}
+
+body.dark-theme .data-management-section .settings-option {
+  background: var(--harmony-hover-dark);
+  border-color: var(--harmony-border-dark);
+}
+
+.data-management-section .settings-option label {
+  flex: 1;
+  margin-bottom: 0;
+  min-width: 120px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--harmony-text-primary-light);
+}
+
+body.dark-theme .data-management-section .settings-option label {
+  color: var(--harmony-text-primary-dark);
+}
+
+.data-management-section .settings-btn {
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+
+.data-management-section .input-hint {
+  flex: 1 0 100%;
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.data-management-section .danger-zone {
+  border-top: 2px solid var(--harmony-divider-light);
+  padding-top: 28px;
+  margin-top: 24px;
+}
+
+body.dark-theme .data-management-section .danger-zone {
+  border-top-color: var(--harmony-divider-dark);
+}
+
+.data-management-section .danger-zone .settings-option {
+  background: rgba(255, 59, 48, 0.05);
+  border-color: rgba(255, 59, 48, 0.2);
+}
+
+body.dark-theme .data-management-section .danger-zone .settings-option {
+  background: rgba(255, 59, 48, 0.1);
+  border-color: rgba(255, 59, 48, 0.3);
+}
+
+.data-management-section .backup-data-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.data-management-section #backup-data-text {
+  width: 100%;
+  height: 160px;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  padding: 14px;
+  border: 2px solid var(--harmony-border-light);
+  border-radius: var(--harmony-border-radius-small);
+  background-color: var(--harmony-card-bg-light);
+  color: var(--harmony-text-primary-light);
+  resize: vertical;
+  box-sizing: border-box;
+  transition: all var(--harmony-transition-duration) var(--harmony-ease);
+  line-height: 1.6;
+}
+
+body.dark-theme .data-management-section #backup-data-text {
+  border: 2px solid var(--harmony-border-dark);
+  background-color: var(--harmony-card-bg-dark);
+  color: var(--harmony-text-primary-dark);
+}
+
+.data-management-section #backup-data-text:focus {
+  outline: none;
+  border-color: var(--harmony-primary);
+  box-shadow: 0 0 0 3px rgba(0, 125, 255, 0.1);
+}
+
+/* 平板设备 */
+@media (max-width: 1023px) {
+  .settings-sidebar {
+    display: none !important;
+  }
+  
+  .settings-bottom-nav {
+    display: flex !important;
+  }
+  
+  .settings-main {
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+  }
+  
+  .settings-body {
+    padding-bottom: 80px;
+  }
+  
+  .settings-container {
+    padding: 0 16px 16px 16px;
+  }
+  
+  .settings-header {
+    padding: 0;
+    height: var(--harmony-header-height-tablet);
+    /* 确保在平板设备上也能正确固定 */
+    will-change: transform;
+  }
+  
+  .settings-header .back-btn {
+    font-size: 18px;
+    width: var(--harmony-header-height-tablet);
+    height: var(--harmony-header-height-tablet);
+  }
+  
+  .settings-title {
+    font-size: 17px;
+  }
+  
+  .settings-section {
+    padding: 0 20px 20px 20px;
+  }
+  
+  .section-title {
+    font-size: 19px;
+  }
+  
+  /* 触摸优化 */
+  .settings-option {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  .settings-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    padding: 14px 20px;
+  }
+  
+  .bottom-nav-item {
+    -webkit-tap-highlight-color: rgba(0, 125, 255, 0.2);
+    touch-action: manipulation;
+    pointer-events: auto !important;
+    cursor: pointer;
+  }
+}
+
+/* 手机设备 */
+@media (max-width: 768px) {
+  :root {
+    --harmony-header-height-desktop: var(--harmony-header-height-tablet);
+  }
+  
+  .settings-container {
+    padding: 0 12px 16px 12px;
+  }
+  
+  .settings-header {
+    padding: 0;
+    /* 确保在手机设备上也能正确固定 */
+    will-change: transform;
+  }
+  
+  .settings-header .back-btn {
+    font-size: 18px;
+    width: var(--harmony-header-height-tablet);
+    height: var(--harmony-header-height-tablet);
+  }
+  
+  .settings-title {
+    font-size: 17px;
+  }
+  
+  .settings-section {
+    padding: 0 16px 20px 16px;
+  }
+  
+  /* 用户管理区域移动端优化 */
+  #user-settings.settings-section {
+    padding: 0 14px 12px 14px;
+  }
+  
+  .section-title {
+    font-size: 19px;
+  }
+  
+  #user-settings .section-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+  
+  .settings-bottom-nav {
+    display: flex !important;
+  }
+  
+  .bottom-nav-item {
+    min-height: 56px;
+    padding: 6px 2px;
+  }
+  
+  .bottom-nav-item i {
+    font-size: 18px;
+  }
+  
+  .bottom-nav-item span {
+    font-size: 10px;
+  }
+  
+  .backup-data-buttons {
+    flex-direction: column;
+  }
+  
+  .settings-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .data-management-section .settings-option {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .data-management-section .settings-btn {
+    align-self: stretch;
+  }
+  
+  .data-management-section #backup-data-text {
+    height: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --harmony-header-height-desktop: var(--harmony-header-height-mobile);
+  }
+  
+  .settings-container {
+    padding: 0 12px 12px 12px;
+  }
+  
+  .settings-header {
+    padding: 0;
+    height: var(--harmony-header-height-mobile);
+    /* 确保在小屏幕设备上也能正确固定 */
+    will-change: transform;
+  }
+  
+  .settings-header .back-btn {
+    font-size: 16px;
+    width: var(--harmony-header-height-mobile);
+    height: var(--harmony-header-height-mobile);
+  }
+  
+  .settings-title {
+    font-size: 16px;
+  }
+  
+  .settings-section {
+    padding: 0 16px 16px 16px;
+  }
+  
+  /* 用户管理区域小屏幕优化 */
+  #user-settings.settings-section {
+    padding: 0 12px 10px 12px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+  }
+  
+  #user-settings .section-title {
+    font-size: 17px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+  
+  #user-settings .settings-option {
+    margin-bottom: 12px;
+    gap: 5px;
+  }
+  
+  #user-settings .avatar-preview-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+  
+  #user-settings .avatar-preview-placeholder {
+    font-size: 32px;
+  }
+  
+  #user-settings .avatar-upload-container {
+    gap: 8px;
+  }
+  
+  #user-settings .input-hint {
+    font-size: 11px;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  
+  .settings-bottom-nav {
+    display: flex !important;
+    padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+  }
+  
+  .bottom-nav-item {
+    min-height: 52px;
+    padding: 5px 2px;
+  }
+  
+  .bottom-nav-item i {
+    font-size: 16px;
+  }
+  
+  .bottom-nav-item span {
+    font-size: 9px;
+  }
+  
+  .settings-option {
+    padding: 12px;
+  }
+  
+  .avatar-preview-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .avatar-preview-placeholder {
+    font-size: 40px;
+  }
+  
+  .settings-input, .settings-select {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  
+  .data-management-section #backup-data-text {
+    height: 120px;
+  }
+  
+  .settings-btn {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+}
