@@ -1,0 +1,502 @@
+/* 事件卡片样式优化 - 电脑端保持原有设计，移动端优化显示 */
+
+/* 电脑端样式 (圆角矩形设计) */
+@media (min-width: 769px) {
+    .task-item {
+        background-color: var(--card-bg);
+        padding: 24px 20px; /* 增加上下内边距 */
+        min-height: 80px; /* 设置最小高度 */
+        border-radius: 16px; /* 增强圆角效果 */
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: all 0.3s ease;
+        width: 100%;
+        max-width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .task-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border-color: var(--primary-color, #007bff);
+    }
+
+    .task-color {
+        width: 18px;
+        height: 18px;
+        border-radius: 12px; /* 圆角矩形而非圆形 */
+        flex-shrink: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-checkbox {
+        width: 24px;
+        height: 24px;
+        border-radius: 8px; /* 圆角矩形复选框 */
+        border: 2px solid var(--border-color);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--card-bg);
+    }
+
+    .task-checkbox:hover {
+        border-color: var(--primary-color);
+        background: var(--primary-color-light, rgba(0, 123, 255, 0.1));
+    }
+
+    .task-checkbox.checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .task-checkbox.checked::after {
+        content: '✓';
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .task-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .task-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+        font-size: 16px;
+        color: var(--text-primary-color);
+    }
+
+    .task-info {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    /* 电脑端项目标签样式 */
+    .task-project {
+        display: inline-block;
+        background: var(--primary-color-light, rgba(0, 123, 255, 0.1));
+        color: var(--primary-color, #007bff);
+        padding: 4px 10px;
+        border-radius: 12px; /* 圆角矩形标签 */
+        font-size: 12px;
+        font-weight: 500;
+        border: 1px solid var(--primary-color-light, rgba(0, 123, 255, 0.2));
+        transition: all 0.2s ease;
+    }
+
+    .task-project:hover {
+        background: var(--primary-color-light, rgba(0, 123, 255, 0.15));
+        transform: translateY(-1px);
+    }
+
+    /* 电脑端标签容器 */
+    .task-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 4px;
+    }
+
+    .task-tag {
+        background: var(--accent-color-light, rgba(108, 117, 125, 0.1));
+        color: var(--accent-color, #6c757d);
+        padding: 3px 8px;
+        border-radius: 10px; /* 圆角矩形标签 */
+        font-size: 11px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid var(--accent-color-light, rgba(108, 117, 125, 0.2));
+        transition: all 0.2s ease;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .task-tag:hover {
+        background: var(--accent-color-light, rgba(108, 117, 125, 0.15));
+        transform: translateY(-1px);
+    }
+
+    .task-tag i {
+        font-size: 9px;
+        flex-shrink: 0;
+    }
+
+    .task-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .task-actions button {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 10px; /* 圆角矩形按钮 */
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .task-actions button:hover {
+        background-color: var(--primary-color-light, rgba(0, 123, 255, 0.1));
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-actions button:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+}
+
+/* 移动端样式优化 */
+@media (max-width: 768px) {
+    .task-item {
+        background-color: var(--card-bg);
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-bottom: 8px;
+        position: relative;
+        border: 1px solid var(--border-color);
+    }
+
+    .task-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .task-color {
+        width: 4px;
+        height: 100%;
+        border-radius: 2px;
+        flex-shrink: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    .task-checkbox {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid var(--border-color);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-top: 2px;
+        background: var(--card-bg);
+    }
+
+    .task-checkbox.checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .task-checkbox.checked::after {
+        content: '✓';
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .task-content {
+        flex: 1;
+        min-width: 0;
+        padding-left: 8px;
+    }
+
+    .task-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 16px;
+        color: var(--text-primary-color);
+        line-height: 1.3;
+        word-break: break-word;
+    }
+
+    .task-info {
+        font-size: 12px;
+        color: var(--text-secondary);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        line-height: 1.4;
+    }
+
+    /* 移动端项目信息显示 */
+    .task-project {
+        display: inline-block;
+        background: var(--primary-color-light);
+        color: var(--primary-color);
+        padding: 2px 6px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        max-width: fit-content;
+    }
+
+    /* 移动端标签显示 */
+    .task-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 4px;
+    }
+
+    .task-tag {
+        background: var(--accent-color-light);
+        color: var(--accent-color);
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .task-tag i {
+        font-size: 8px;
+        flex-shrink: 0;
+    }
+
+    /* 移动端时间地点信息 */
+    .task-info span:not(.task-project):not(.task-tags) {
+        font-size: 11px;
+        color: var(--text-secondary);
+        opacity: 0.8;
+        line-height: 1.3;
+    }
+
+    .task-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .task-actions button {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        height: 32px;
+    }
+
+    .task-actions button:hover {
+        background-color: var(--hover-bg);
+        color: var(--primary-color);
+        transform: scale(1.05);
+    }
+
+    .task-actions button i {
+        font-size: 14px;
+    }
+
+    /* 移动端批量选择复选框 */
+    .batch-checkbox {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 16px;
+        height: 16px;
+        z-index: 5;
+    }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 480px) {
+    .task-item {
+        padding: 14px;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
+
+    .task-title {
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    .task-info {
+        font-size: 11px;
+        gap: 3px;
+    }
+
+    .task-project {
+        font-size: 10px;
+        padding: 1px 5px;
+    }
+
+    .task-tag {
+        font-size: 9px;
+        padding: 1px 4px;
+        max-width: 70px;
+    }
+
+    .task-actions button {
+        padding: 5px;
+        min-width: 28px;
+        height: 28px;
+    }
+
+    .task-actions button i {
+        font-size: 12px;
+    }
+}
+
+/* 深色模式适配 */
+@media (max-width: 768px) {
+    .dark-theme .task-item {
+        background-color: var(--card-bg-dark, #2a2a2a);
+        border-color: var(--border-color-dark, #444);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark-theme .task-item:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .dark-theme .task-checkbox {
+        background: var(--card-bg-dark, #2a2a2a);
+        border-color: var(--border-color-dark, #555);
+    }
+
+    .dark-theme .task-project {
+        background: rgba(var(--primary-color-rgb), 0.2);
+        color: var(--primary-color);
+    }
+
+    .dark-theme .task-tag {
+        background: rgba(var(--accent-color-rgb), 0.2);
+        color: var(--accent-color);
+    }
+}
+
+/* 电脑端深色模式适配 */
+@media (min-width: 769px) {
+    .dark-theme .task-item {
+        background-color: var(--card-bg-dark, #2a2a2a);
+        border-color: var(--border-color-dark, #444);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .dark-theme .task-item:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        border-color: var(--primary-color);
+    }
+
+    .dark-theme .task-checkbox {
+        background: var(--card-bg-dark, #2a2a2a);
+        border-color: var(--border-color-dark, #555);
+    }
+
+    .dark-theme .task-checkbox:hover {
+        background: var(--primary-color-light, rgba(0, 123, 255, 0.2));
+    }
+
+    .dark-theme .task-actions button {
+        background: var(--card-bg-dark, #2a2a2a);
+        border-color: var(--border-color-dark, #444);
+        color: var(--text-secondary-dark, #ccc);
+    }
+
+    .dark-theme .task-actions button:hover {
+        background-color: var(--primary-color-light, rgba(0, 123, 255, 0.2));
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .dark-theme .task-project {
+        background: rgba(var(--primary-color-rgb, 0, 123, 255), 0.2);
+        color: var(--primary-color);
+        border-color: rgba(var(--primary-color-rgb, 0, 123, 255), 0.3);
+    }
+
+    .dark-theme .task-project:hover {
+        background: rgba(var(--primary-color-rgb, 0, 123, 255), 0.25);
+    }
+
+    .dark-theme .task-tag {
+        background: rgba(var(--accent-color-rgb, 108, 117, 125), 0.2);
+        color: var(--accent-color);
+        border-color: rgba(var(--accent-color-rgb, 108, 117, 125), 0.3);
+    }
+
+    .dark-theme .task-tag:hover {
+        background: rgba(var(--accent-color-rgb, 108, 117, 125), 0.25);
+    }
+}
+
+/* 正在进行事件的移动端优化 */
+@media (max-width: 768px) {
+    .ongoing-event {
+        border-width: 2px !important;
+        box-shadow: 0 0 8px 0 rgba(255,215,0,0.25) !important;
+    }
+
+    .ongoing-event::before {
+        font-size: 9px;
+        padding: 1px 4px;
+        top: -6px;
+        right: 6px;
+    }
+}
+
+/* 过去事件的移动端优化 */
+@media (max-width: 768px) {
+    .past-today-event {
+        border-width: 1px !important;
+        box-shadow: 0 0 4px 0 rgba(120,120,120,0.08) !important;
+    }
+}
+
+
+
